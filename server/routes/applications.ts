@@ -67,7 +67,7 @@ router.post(
       try { fs.readSync(handle, signature, 0, signature.length, 0); } finally { fs.closeSync(handle); }
       const ext = path.extname(req.file.originalname).toLowerCase();
       const isPdf = ext === '.pdf' && signature.subarray(0, 4).toString() === '%PDF';
-      const isOffice = ['.doc', '.docx'].includes(ext) && signature[0] === 0x50 && signature[1] === 0x4b || ext === '.doc' && signature[0] === 0xd0 && signature[1] === 0xcf;
+      const isOffice = (['.doc', '.docx'].includes(ext) && signature[0] === 0x50 && signature[1] === 0x4b) || (ext === '.doc' && signature[0] === 0xd0 && signature[1] === 0xcf);
       if (!isPdf && !isOffice) {
         fs.unlinkSync(req.file.path);
         throw new HttpError(400, 'Le contenu du fichier ne correspond pas à son format déclaré');

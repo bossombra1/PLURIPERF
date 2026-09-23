@@ -23,16 +23,15 @@ router.get(
          ORDER BY c.code`,
       )
 .all(user.id);
-    const pendingSubmissions = db
-      .prepare(
-        `SELECT s.id, s.assignment_id, s.submitted_at, a.title_fr, u.full_name AS student
-         FROM submissions s
-         JOIN assignments a ON a.id = s.assignment_id
-         JOIN users u ON u.id = s.user_id
-         WHERE s.grade IS NULL
-         ORDER BY s.submitted_at ASC LIMIT 50`,
-      )
-      .all();
+    const pendingSubmissions = db.prepare(
+      `SELECT s.id, s.assignment_id, s.submitted_at, a.title_fr, u.full_name AS student
+       FROM submissions s
+       JOIN assignments a ON a.id = s.assignment_id
+       JOIN users u ON u.id = s.user_id
+       JOIN teacher_courses tc ON tc.course_id = a.course_id
+       WHERE s.grade IS NULL AND tc.teacher_id = ?
+       ORDER BY s.submitted_at ASC LIMIT 50`,
+    ).all(user.id);
     res.json({ teacher: { fullName: user.full_name }, courses, pendingSubmissions });
   }),
 );
@@ -40,15 +39,15 @@ router.get(
 // Cours enseignés
 router.get(
   '/courses',
-  asyncHandler(async (_req: Request, res: Response) => {
+  asyncHandler(async (req: Request, res: Response) => {
+    const user = (req as any).user as AuthUser;
     res.json(
-      db
-        .prepare(
-          `SELECT c.id, c.code, c.title_fr, c.title_en, c.ects, c.semester, c.program,
-                  (SELECT COUNT(*) FROM enrollments e WHERE e.course_id = c.id) AS students
-           FROM courses c ORDER BY c.code`,
-        )
-        .all(),
+      db.prepare(
+        `SELECT c.id, c.code, c.title_fr, c.title_en, c.ects, c.semester, c.program,
+                (SELECT COUNT(*) FROM enrollments e WHERE e.course_id = c.id) AS students
+         FROM courses c JOIN teacher_courses tc ON tc.course_id = c.id
+         WHERE tc.teacher_id = ? ORDER BY c.code`,
+      ).all(user.id),
     );
   }),
 );

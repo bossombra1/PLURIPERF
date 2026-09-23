@@ -32,6 +32,7 @@ const LoginPage = lazy(() => import('./pages/LoginPage').then((m) => ({ default:
 const RegisterPage = lazy(() => import('./pages/RegisterPage').then((m) => ({ default: m.RegisterPage })));
 const ForgotPasswordPage = lazy(() => import('./pages/ForgotPasswordPage').then((m) => ({ default: m.ForgotPasswordPage })));
 const ResetPasswordPage = lazy(() => import('./pages/ResetPasswordPage').then((m) => ({ default: m.ResetPasswordPage })));
+const VerifyEmailPage = lazy(() => import('./pages/VerifyEmailPage').then((m) => ({ default: m.VerifyEmailPage })));
 const StudentSpacePage = lazy(() => import('./pages/StudentSpacePage').then((m) => ({ default: m.StudentSpacePage })));
 const StudentCoursesPage = lazy(() => import('./pages/StudentCoursesPage').then((m) => ({ default: m.StudentCoursesPage })));
 const StudentAssignmentsPage = lazy(() => import('./pages/StudentAssignmentsPage').then((m) => ({ default: m.StudentAssignmentsPage })));
@@ -156,6 +157,8 @@ const Shell: React.FC = () => {
         return <ForgotPasswordPage />;
       case 'reset-password':
         return <ResetPasswordPage />;
+      case 'verify-email':
+        return <VerifyEmailPage lang={lang} onNavigate={handleNavigate} />;
       case 'espace-etudiant':
         return (
           <RequireAuth>

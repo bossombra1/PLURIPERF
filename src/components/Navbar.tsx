@@ -345,7 +345,7 @@ export const Navbar: React.FC<NavbarProps> = ({
       </div>
 
       {/* Main Bar complying with Top Bar Contract: Zone 1 (Brand), Zone 2 (Grouped Compact Nav), Zone 3 (Actions) */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-18 flex items-center justify-between gap-4 border-b border-slate-200">
+      <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 min-h-[4.5rem] py-2 flex items-center justify-between gap-2 sm:gap-4 border-b border-slate-200">
         {/* Zone 1: Official Logo */}
         <button
           type="button"
@@ -357,12 +357,12 @@ export const Navbar: React.FC<NavbarProps> = ({
         </button>
 
         {/* Zone 2: Navigation Links arranged into compact, logical dropdowns */}
-        <nav className="hidden lg:flex items-center gap-1 xl:gap-2 text-[13px] font-semibold text-slate-700">
+        <nav className="hidden lg:flex flex-1 min-w-0 items-center justify-center gap-0.5 xl:gap-1 text-[12px] xl:text-[13px] font-semibold text-slate-700 overflow-visible">
           {/* Direct link: Accueil */}
           <button
             type="button"
             onClick={() => handleNavigate('accueil')}
-            className={`px-3 py-2 rounded-lg transition-colors whitespace-nowrap ${
+            className={`px-2 xl:px-3 py-2 rounded-lg transition-colors whitespace-nowrap ${
               currentPage === 'accueil'
                 ? 'text-[#0E192D] font-bold bg-slate-100/90 text-[#E85D1E]'
                 : 'text-slate-700 hover:text-[#E85D1E] hover:bg-slate-50'
@@ -385,7 +385,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                 <button
                   type="button"
                   onClick={() => setActiveDropdown(isOpen ? null : group.key)}
-                  className={`flex items-center gap-1 px-3 py-2 rounded-lg transition-all whitespace-nowrap ${
+                  className={`flex items-center gap-1 px-2 xl:px-3 py-2 rounded-lg transition-all whitespace-nowrap ${
                     active || isOpen
                       ? 'text-[#0E192D] font-bold bg-slate-100/80 text-[#E85D1E]'
                       : 'text-slate-700 hover:text-[#E85D1E] hover:bg-slate-50'
@@ -478,7 +478,7 @@ export const Navbar: React.FC<NavbarProps> = ({
         </nav>
 
         {/* Zone 3: Permanent Core Actions */}
-        <div className="hidden sm:flex items-center gap-2.5 shrink-0">
+        <div className="hidden xl:flex items-center gap-2 shrink-0">
           {/* Permanent Button 1: Trouver une formation */}
           <button
             type="button"
@@ -513,7 +513,7 @@ export const Navbar: React.FC<NavbarProps> = ({
         </div>
 
         {/* Mobile menu trigger */}
-        <div className="flex items-center gap-2 lg:hidden">
+        <div className="flex items-center gap-2 xl:hidden shrink-0">
           <button
             type="button"
             onClick={onOpenApply}
@@ -539,16 +539,16 @@ export const Navbar: React.FC<NavbarProps> = ({
 
       {/* Mobile Drawer with Accordion Groups for compact clear browsing */}
       {mobileMenuOpen && (
-        <div className="lg:hidden border-b border-slate-200 bg-white px-4 pt-3 pb-6 space-y-3 shadow-lg max-h-[80vh] overflow-y-auto">
+        <div className="xl:hidden border-b border-slate-200 bg-white px-3 sm:px-4 pt-3 pb-6 space-y-3 shadow-lg max-h-[calc(100vh-7rem)] overflow-y-auto">
           {/* Quick Actions Row */}
-          <div className="grid grid-cols-2 gap-2 pb-2 border-b border-slate-100">
+          <div className="grid grid-cols-1 min-[400px]:grid-cols-2 gap-2 pb-2 border-b border-slate-100">
             <button
               type="button"
               onClick={() => {
                 if (onOpenSearch) onOpenSearch();
                 else handleNavigate('formations');
               }}
-              className="flex items-center justify-center gap-2 p-2.5 text-xs font-semibold bg-slate-100 text-slate-800 rounded-lg border border-slate-200"
+              className="flex items-center justify-center gap-2 min-h-10 p-2.5 text-xs font-semibold bg-slate-100 text-slate-800 rounded-lg border border-slate-200"
             >
               <Search className="w-4 h-4 text-slate-500" />
               <span>{t.buttons.findProgram}</span>

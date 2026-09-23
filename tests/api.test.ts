@@ -1,19 +1,10 @@
 import { describe, it, expect } from 'vitest';
 import request from 'supertest';
 import express from 'express';
-import fs from 'fs';
 import authRoutes from '../server/routes/auth';
 import contactRoutes from '../server/routes/contact';
 import advisoryRoutes from '../server/routes/advisory';
 import { errorHandler, notFound } from '../server/middleware';
-
-process.env.JWT_SECRET = process.env.JWT_SECRET || 'test-secret-for-vitest-0123456789abcdef';
-const dbPath = './data/test.db';
-process.env.DB_PATH = dbPath;
-// Base de test isolée : on repart d'une base vierge (seed + migrations au démarrage de la route)
-for (const p of [dbPath, `${dbPath}-wal`, `${dbPath}-shm`]) {
-  try { fs.rmSync(p, { force: true }); } catch { /* noop */ }
-}
 
 function buildApp() {
   const app = express();

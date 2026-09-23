@@ -109,9 +109,26 @@ router.get(
   }),
 );
 
+// Une candidature précise : propriétaire ou personnel autorisé
+router.get(
+  '/:id',
+  requireAuth,
+  asyncHandler(async (req: Request, res: Response) => {
+    const user = (req as any).user as AuthUser;
+    const row = db.prepare(
+      'SELECT id, reference, program, level, full_name, email, phone, country, current_diploma, motivation, need_scholarship, status, created_at FROM applications WHERE id = ?',
+    ).get(req.params.id) as any;
+    if (!row) throw new HttpError(404, 'Candidature introuvable');
+    if (row.email !== user.email && !['advisor', 'editor', 'admin', 'super_admin'].includes(user.role)) {
+      throw new HttpError(403, 'Accès refusé');
+    }
+    res.json(row);
+  }),
+);
+
 // Mes candidatures (étudiant connecté)
 router.get(
-  '/mine',
+  '/me',
   requireAuth,
   asyncHandler(async (req: Request, res: Response) => {
     const user = (req as any).user as AuthUser;
@@ -125,3 +142,9 @@ router.get(
 );
 
 export default router;
+// Alias de compatibilité avec l'ancienne route frontend.
+router.get('/mine', requireAuth, asyncHandler(async (req: Request, res: Response) => {
+  const user = (req as any).user as AuthUser;
+  const rows = db.prepare('SELECT reference, program, level, status, created_at FROM applications WHERE user_id = ? ORDER BY created_at DESC').all(user.id);
+  res.json(rows);
+}));

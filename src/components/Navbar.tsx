@@ -298,12 +298,12 @@ export const Navbar: React.FC<NavbarProps> = ({
   const isGroupActive = (group: DropdownGroup) => group.activePages.includes(activePage as PageId);
 
   return (
-    <header className="sticky top-0 z-40 bg-white shadow-xs" ref={navRef}>
+    <header className="sticky top-0 z-40 bg-white border-b-4 border-[#006b32]" ref={navRef}>
       {/* Top Academic Ribbon with Official Motto */}
-      <div className="bg-[#173f38] text-white text-xs py-1.5 px-4 sm:px-8 border-b border-[#b56f45]/50">
+      <div className="bg-[#00552b] text-white text-xs py-1.5 px-4 sm:px-8 border-b border-[#e85b1a]/50">
         <div className="max-w-7xl mx-auto flex items-center justify-between gap-4">
           <div className="flex items-center gap-2 overflow-hidden text-slate-300">
-            <span className="font-bold text-[#b56f45] tracking-wider text-[11px] uppercase">
+            <span className="font-bold text-[#e85b1a] tracking-wider text-[11px] uppercase">
               PLURIPERF
             </span>
             <span className="text-slate-600 hidden sm:inline">|</span>
@@ -316,13 +316,13 @@ export const Navbar: React.FC<NavbarProps> = ({
 
           <div className="flex items-center gap-3 shrink-0">
             {/* Language toggle */}
-            <div className="flex items-center bg-[#12332e] rounded border border-[#2a5048] p-0.5 text-[11px]">
+            <div className="flex items-center bg-[#004f25] rounded border border-[#2a5048] p-0.5 text-[11px]">
               <button
                 type="button"
                 onClick={() => handleSetLang('fr')}
                 className={`px-2 py-0.5 font-bold rounded transition-colors ${
                   lang === 'fr'
-                    ? 'bg-[#b56f45] text-white'
+                    ? 'bg-[#e85b1a] text-white'
                     : 'text-slate-400 hover:text-white'
                 }`}
               >
@@ -333,7 +333,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                 onClick={() => handleSetLang('en')}
                 className={`px-2 py-0.5 font-bold rounded transition-colors ${
                   lang === 'en'
-                    ? 'bg-[#b56f45] text-white'
+                    ? 'bg-[#e85b1a] text-white'
                     : 'text-slate-400 hover:text-white'
                 }`}
               >
@@ -362,15 +362,15 @@ export const Navbar: React.FC<NavbarProps> = ({
         </button>
 
         {/* Zone 2: Navigation Links arranged into compact, logical dropdowns */}
-        <nav className="hidden lg:flex flex-1 min-w-0 items-center justify-center gap-0.5 xl:gap-1 text-[12px] xl:text-[13px] font-semibold text-slate-700 overflow-visible">
+        <nav className="hidden lg:flex flex-1 min-w-0 items-center justify-center gap-0.5 xl:gap-1 text-[12px] xl:text-[13px] font-semibold text-[#303631] overflow-visible">
           {/* Direct link: Accueil */}
           <button
             type="button"
             onClick={() => handleNavigate('accueil')}
-            className={`px-2 xl:px-3 py-2 rounded-lg transition-colors whitespace-nowrap ${
+            className={`px-2 xl:px-3 py-2 rounded-sm transition-colors whitespace-nowrap ${
               activePage === 'accueil'
-                ? 'text-[#173f38] font-bold bg-slate-100/90 text-[#b56f45]'
-                : 'text-slate-700 hover:text-[#b56f45] hover:bg-slate-50'
+                ? 'text-[#173f38] font-bold bg-[#f0f0ec] text-[#e85b1a]'
+                : 'text-[#303631] hover:text-[#e85b1a] hover:bg-[#f4f4f1]'
             }`}
           >
             {t.nav.accueil}
@@ -390,27 +390,27 @@ export const Navbar: React.FC<NavbarProps> = ({
                 <button
                   type="button"
                   onClick={() => setActiveDropdown(isOpen ? null : group.key)}
-                  className={`flex items-center gap-1 px-2 xl:px-3 py-2 rounded-lg transition-all whitespace-nowrap ${
+                  className={`flex items-center gap-1 px-2 xl:px-3 py-2 rounded-sm transition-all whitespace-nowrap ${
                     active || isOpen
-                      ? 'text-[#173f38] font-bold bg-slate-100/80 text-[#b56f45]'
-                      : 'text-slate-700 hover:text-[#b56f45] hover:bg-slate-50'
+                      ? 'text-[#173f38] font-bold bg-[#f0f0ec] text-[#e85b1a]'
+                      : 'text-[#303631] hover:text-[#e85b1a] hover:bg-[#f4f4f1]'
                   }`}
                   aria-expanded={isOpen}
                 >
                   <span>{lang === 'fr' ? group.titleFr : group.titleEn}</span>
                   <ChevronDown
                     className={`w-3.5 h-3.5 transition-transform duration-200 ${
-                      isOpen ? 'rotate-180 text-[#b56f45]' : 'text-slate-400'
+                      isOpen ? 'rotate-180 text-[#e85b1a]' : 'text-slate-400'
                     }`}
                   />
                 </button>
 
                 {/* Dropdown Menu Popover */}
                 {isOpen && (
-                  <div className="absolute left-0 top-full mt-1 w-80 sm:w-96 bg-white border border-slate-200 rounded-2xl shadow-xl py-2 z-50 animate-in fade-in slide-in-from-top-1 duration-150">
+                  <div className="absolute left-0 top-full mt-1 w-80 sm:w-96 bg-white border border-slate-200 rounded-none shadow-lg py-2 z-50 animate-in fade-in slide-in-from-top-1 duration-150">
                     <div className="px-4 py-2 border-b border-slate-100 flex items-center justify-between text-[11px] font-bold text-slate-400 uppercase tracking-wider">
                       <span>{lang === 'fr' ? group.titleFr : group.titleEn}</span>
-                      <span className="text-[#b56f45] font-normal normal-case">
+                      <span className="text-[#e85b1a] font-normal normal-case">
                         {group.items.length} {lang === 'fr' ? 'sections' : 'items'}
                       </span>
                     </div>
@@ -430,26 +430,26 @@ export const Navbar: React.FC<NavbarProps> = ({
                             onClick={() => handleNavigate(item.id, item.sectionId)}
                             className={`w-full text-left px-4 py-2.5 transition-colors flex items-start gap-3 group/item ${
                               isCurrent
-                                ? 'bg-[#f5ebe4] text-[#b56f45]'
-                                : 'hover:bg-slate-50 text-slate-800'
+                                ? 'bg-[#f5ebe4] text-[#e85b1a]'
+                                : 'hover:bg-[#f4f4f1] text-[#303631]'
                             }`}
                           >
                             <div
-                              className={`p-2 rounded-xl shrink-0 transition-colors ${
+                              className={`p-2 rounded-sm shrink-0 transition-colors ${
                                 isCurrent
-                                  ? 'bg-[#b56f45] text-white'
-                                  : 'bg-slate-100 text-slate-600 group-hover/item:bg-[#f1e1d6] group-hover/item:text-[#b56f45]'
+                                  ? 'bg-[#e85b1a] text-white'
+                                  : 'bg-slate-100 text-slate-600 group-hover/item:bg-[#f1e1d6] group-hover/item:text-[#e85b1a]'
                               }`}
                             >
                               <Icon className="w-4 h-4" />
                             </div>
                             <div className="min-w-0 flex-1">
                               <div className="flex items-center gap-2">
-                                <span className="font-bold text-xs text-slate-900 group-hover/item:text-[#b56f45] leading-snug">
+                                <span className="font-bold text-xs text-[#202420] group-hover/item:text-[#e85b1a] leading-snug">
                                   {lang === 'fr' ? item.labelFr : item.labelEn}
                                 </span>
                                 {item.badge && (
-                                  <span className="px-1.5 py-0.5 rounded text-[9px] font-bold bg-[#f1e1d6] text-[#b56f45] uppercase tracking-wide">
+                                  <span className="px-1.5 py-0.5 rounded text-[9px] font-bold bg-[#f1e1d6] text-[#e85b1a] uppercase tracking-wide">
                                     {item.badge}
                                   </span>
                                 )}
@@ -472,10 +472,10 @@ export const Navbar: React.FC<NavbarProps> = ({
           <button
             type="button"
             onClick={() => handleNavigate('contacts')}
-            className={`px-3 py-2 rounded-lg transition-colors whitespace-nowrap ${
+            className={`px-3 py-2 rounded-sm transition-colors whitespace-nowrap ${
               activePage === 'contacts'
-                ? 'text-[#173f38] font-bold bg-slate-100/90 text-[#b56f45]'
-                : 'text-slate-700 hover:text-[#b56f45] hover:bg-slate-50'
+                ? 'text-[#173f38] font-bold bg-[#f0f0ec] text-[#e85b1a]'
+                : 'text-[#303631] hover:text-[#e85b1a] hover:bg-[#f4f4f1]'
             }`}
           >
             {t.nav.contacts}
@@ -488,7 +488,7 @@ export const Navbar: React.FC<NavbarProps> = ({
           <button
             type="button"
             onClick={onOpenSearch || (() => handleNavigate('formations'))}
-            className="flex items-center gap-1.5 px-3 py-2 text-xs font-semibold text-slate-700 bg-slate-100 hover:bg-slate-200/80 border border-slate-200 rounded-lg transition-colors whitespace-nowrap"
+            className="flex items-center gap-1.5 px-3 py-2 text-xs font-semibold text-[#303631] bg-slate-100 hover:bg-slate-200/80 border border-slate-200 rounded-sm transition-colors whitespace-nowrap"
             title={t.buttons.findProgram}
           >
             <Search className="w-3.5 h-3.5 text-slate-500" />
@@ -500,7 +500,7 @@ export const Navbar: React.FC<NavbarProps> = ({
           <button
             type="button"
             onClick={onOpenApply}
-            className="flex items-center gap-1.5 px-4 py-2 text-xs font-bold text-white bg-[#b56f45] hover:bg-[#995938] active:scale-[0.98] rounded-lg shadow-xs transition-all whitespace-nowrap"
+            className="flex items-center gap-1.5 px-4 py-2 text-xs font-bold text-white bg-[#e85b1a] hover:bg-[#c84710] active:scale-[0.98] rounded-sm shadow-none transition-all whitespace-nowrap"
           >
             <GraduationCap className="w-4 h-4" />
             <span>{t.buttons.apply}</span>
@@ -513,22 +513,22 @@ export const Navbar: React.FC<NavbarProps> = ({
                 <button
                   type="button"
                   onClick={() => handleNavigate('contacts')}
-                  className="hidden lg:flex items-center gap-1.5 px-3 py-2 text-xs font-semibold text-slate-800 bg-white hover:bg-slate-50 border border-slate-300 rounded-lg transition-colors"
+                  className="hidden lg:flex items-center gap-1.5 px-3 py-2 text-xs font-semibold text-[#303631] bg-white hover:bg-[#f4f4f1] border border-slate-300 rounded-sm transition-colors"
                   title="Administration"
                 >
                   <Shield className="w-3.5 h-3.5 text-emerald-600" />
                   <span>Admin</span>
                 </button>
               )}
-              <span className="hidden lg:block text-xs font-semibold text-slate-700 max-w-32 truncate">
+              <span className="hidden lg:block text-xs font-semibold text-[#303631] max-w-32 truncate">
                 {user.fullName}
               </span>
               <button
                 type="button"
                 onClick={onLogout}
-                className="flex items-center gap-1.5 px-3 py-2 text-xs font-semibold text-slate-600 hover:text-slate-900 bg-white hover:bg-slate-50 border border-slate-300 rounded-lg transition-colors"
+                className="flex items-center gap-1.5 px-3 py-2 text-xs font-semibold text-slate-600 hover:text-[#202420] bg-white hover:bg-[#f4f4f1] border border-slate-300 rounded-sm transition-colors"
               >
-                <LogIn className="w-3.5 h-3.5 text-[#b56f45] rotate-180" />
+                <LogIn className="w-3.5 h-3.5 text-[#e85b1a] rotate-180" />
                 <span>{lang === 'fr' ? 'Quitter' : 'Logout'}</span>
               </button>
             </div>
@@ -536,9 +536,9 @@ export const Navbar: React.FC<NavbarProps> = ({
           <button
             type="button"
             onClick={onOpenLogin}
-            className="flex items-center gap-1.5 px-3 py-2 text-xs font-semibold text-slate-800 bg-white hover:bg-slate-50 border border-slate-300 rounded-lg transition-colors whitespace-nowrap shadow-2xs"
+            className="flex items-center gap-1.5 px-3 py-2 text-xs font-semibold text-[#303631] bg-white hover:bg-[#f4f4f1] border border-slate-300 rounded-sm transition-colors whitespace-nowrap shadow-2xs"
           >
-            <LogIn className="w-3.5 h-3.5 text-[#b56f45]" />
+            <LogIn className="w-3.5 h-3.5 text-[#e85b1a]" />
             <span>{t.buttons.login}</span>
           </button>
           )}
@@ -549,7 +549,7 @@ export const Navbar: React.FC<NavbarProps> = ({
           <button
             type="button"
             onClick={onOpenApply}
-            className="sm:hidden px-3 py-1.5 text-xs font-bold bg-[#b56f45] text-white rounded-lg"
+            className="sm:hidden px-3 py-1.5 text-xs font-bold bg-[#e85b1a] text-white rounded-sm"
           >
             {t.buttons.apply}
           </button>
@@ -557,13 +557,13 @@ export const Navbar: React.FC<NavbarProps> = ({
           <button
             type="button"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="p-2 text-[#1f5b50] hover:text-[#b56f45] hover:bg-[#f0eee8] rounded-lg"
+            className="p-2 text-[#1f5b50] hover:text-[#e85b1a] hover:bg-[#f0eee8] rounded-sm"
             aria-label="Toggle menu"
           >
             {mobileMenuOpen ? (
-              <X className="w-5 h-5 text-slate-700" />
+              <X className="w-5 h-5 text-[#303631]" />
             ) : (
-              <Menu className="w-5 h-5 text-slate-700" />
+              <Menu className="w-5 h-5 text-[#303631]" />
             )}
           </button>
         </div>
@@ -580,7 +580,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                 if (onOpenSearch) onOpenSearch();
                 else handleNavigate('formations');
               }}
-              className="flex items-center justify-center gap-2 min-h-10 p-2.5 text-xs font-semibold bg-slate-100 text-slate-800 rounded-lg border border-slate-200"
+              className="flex items-center justify-center gap-2 min-h-10 p-2.5 text-xs font-semibold bg-slate-100 text-[#303631] rounded-sm border border-slate-200"
             >
               <Search className="w-4 h-4 text-slate-500" />
               <span>{t.buttons.findProgram}</span>
@@ -591,9 +591,9 @@ export const Navbar: React.FC<NavbarProps> = ({
                 onOpenLogin();
                 setMobileMenuOpen(false);
               }}
-              className="flex items-center justify-center gap-2 p-2.5 text-xs font-semibold bg-slate-100 text-slate-800 rounded-lg border border-slate-200"
+              className="flex items-center justify-center gap-2 p-2.5 text-xs font-semibold bg-slate-100 text-[#303631] rounded-sm border border-slate-200"
             >
-              <LogIn className="w-4 h-4 text-[#b56f45]" />
+              <LogIn className="w-4 h-4 text-[#e85b1a]" />
               <span>{t.buttons.login}</span>
             </button>
           </div>
@@ -602,10 +602,10 @@ export const Navbar: React.FC<NavbarProps> = ({
           <button
             type="button"
             onClick={() => handleNavigate('accueil')}
-            className={`w-full text-left px-3 py-2 rounded-lg font-bold text-sm transition-colors ${
+            className={`w-full text-left px-3 py-2 rounded-sm font-bold text-sm transition-colors ${
               currentPage === 'accueil'
-                ? 'bg-[#f5ebe4] text-[#b56f45]'
-                : 'text-slate-800 hover:bg-slate-100'
+                ? 'bg-[#f5ebe4] text-[#e85b1a]'
+                : 'text-[#303631] hover:bg-slate-100'
             }`}
           >
             {t.nav.accueil}
@@ -617,20 +617,20 @@ export const Navbar: React.FC<NavbarProps> = ({
               const isOpen = mobileOpenGroup === group.key;
               const active = isGroupActive(group);
               return (
-                <div key={group.key} className="border border-slate-200 rounded-xl overflow-hidden">
+                <div key={group.key} className="border border-slate-200 rounded-sm overflow-hidden">
                   <button
                     type="button"
                     onClick={() => setMobileOpenGroup(isOpen ? null : group.key)}
                     className={`w-full flex items-center justify-between px-3.5 py-2.5 text-xs font-bold text-left transition-colors ${
                       active
-                        ? 'bg-[#f5ebe4]/70 text-[#b56f45]'
-                        : 'bg-slate-50 text-slate-800 hover:bg-slate-100'
+                        ? 'bg-[#f5ebe4]/70 text-[#e85b1a]'
+                        : 'bg-slate-50 text-[#303631] hover:bg-slate-100'
                     }`}
                   >
                     <span>{lang === 'fr' ? group.titleFr : group.titleEn}</span>
                     <ChevronDown
                       className={`w-4 h-4 text-slate-400 transition-transform ${
-                        isOpen ? 'rotate-180 text-[#b56f45]' : ''
+                        isOpen ? 'rotate-180 text-[#e85b1a]' : ''
                       }`}
                     />
                   </button>
@@ -645,10 +645,10 @@ export const Navbar: React.FC<NavbarProps> = ({
                             key={`${item.id}-${item.sectionId || ''}`}
                             type="button"
                             onClick={() => handleNavigate(item.id, item.sectionId)}
-                            className={`w-full text-left px-2.5 py-2 rounded-lg text-xs flex items-center gap-2.5 transition-colors ${
+                            className={`w-full text-left px-2.5 py-2 rounded-sm text-xs flex items-center gap-2.5 transition-colors ${
                               isCurrent
-                                ? 'bg-[#f5ebe4] text-[#b56f45] font-bold'
-                                : 'text-slate-700 hover:bg-slate-50'
+                                ? 'bg-[#f5ebe4] text-[#e85b1a] font-bold'
+                                : 'text-[#303631] hover:bg-[#f4f4f1]'
                             }`}
                           >
                             <Icon className="w-3.5 h-3.5 text-slate-500 shrink-0" />
@@ -672,10 +672,10 @@ export const Navbar: React.FC<NavbarProps> = ({
           <button
             type="button"
             onClick={() => handleNavigate('contacts')}
-            className={`w-full text-left px-3 py-2 rounded-lg font-bold text-sm transition-colors ${
+            className={`w-full text-left px-3 py-2 rounded-sm font-bold text-sm transition-colors ${
               currentPage === 'contacts'
-                ? 'bg-[#f5ebe4] text-[#b56f45]'
-                : 'text-slate-800 hover:bg-slate-100'
+                ? 'bg-[#f5ebe4] text-[#e85b1a]'
+                : 'text-[#303631] hover:bg-slate-100'
             }`}
           >
             {t.nav.contacts}
@@ -689,7 +689,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                 onOpenApply();
                 setMobileMenuOpen(false);
               }}
-              className="w-full py-2.5 bg-[#b56f45] hover:bg-[#995938] font-bold text-white rounded-lg text-sm flex items-center justify-center gap-2 shadow"
+              className="w-full py-2.5 bg-[#e85b1a] hover:bg-[#c84710] font-bold text-white rounded-sm text-sm flex items-center justify-center gap-2 shadow"
             >
               <GraduationCap className="w-4 h-4" />
               <span>{t.buttons.apply}</span>

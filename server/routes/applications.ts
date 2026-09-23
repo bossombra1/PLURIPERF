@@ -6,7 +6,7 @@ import crypto from 'crypto';
 import { z } from 'zod';
 import { zodParse } from '../validate';
 import { db } from '../db';
-import { requireAuth, AuthUser } from '../auth';
+import { requireAuth, optionalAuth, AuthUser } from '../auth';
 import { HttpError, asyncHandler } from '../middleware';
 import { config } from '../config';
 import { notifyStaff } from '../mailer';
@@ -51,6 +51,7 @@ const applicationSchema = z.object({
 
 router.post(
   '/',
+  optionalAuth,
   upload.single('cv'),
   asyncHandler(async (req: Request, res: Response) => {
     const parsed = applicationSchema.safeParse({

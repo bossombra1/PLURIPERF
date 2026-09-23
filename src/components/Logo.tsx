@@ -18,7 +18,17 @@ const sizes = {
 export const Logo: React.FC<LogoProps> = ({ className = '', variant = 'full-horizontal', size = 'md' }) => {
   const sizeClass = sizes[size];
   const classes = variant === 'emblem-only' ? sizeClass.emblem + ' w-auto object-contain ' + className : (variant === 'full-stacked' ? sizeClass.stacked : sizeClass.horizontal) + ' w-auto object-contain object-left ' + className;
-  return <img src={logoPluriperf} alt="PLURIPERF International University" className={classes} />;
+  return (
+    <span className={'inline-flex min-w-0 items-center gap-3 ' + className}>
+      <img src={logoPluriperf} alt="PLURIPERF" className={classes} />
+      {variant !== 'emblem-only' && (
+        <span className="hidden min-w-0 leading-tight sm:block">
+          <span className="block text-sm font-bold tracking-wide text-[var(--text-primary)]">PLURIPERF</span>
+          <span className="block text-[11px] font-medium uppercase tracking-[0.12em] text-[var(--text-secondary)]">International University</span>
+        </span>
+      )}
+    </span>
+  );
 };
 
 export default Logo;

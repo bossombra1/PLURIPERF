@@ -13,7 +13,13 @@ import { WhatsAppModal } from './components/WhatsAppModal';
 import { CabinetQuoteModal } from './components/CabinetQuoteModal';
 
 const HomePage = lazy(() => import('./pages/HomePage').then((m) => ({ default: m.HomePage })));
-const UniversityPage = lazy(() => import('./pages/UniversityPage').then((m) => ({ default: m.UniversityPage })));
+const UniversityPresentationPage = lazy(() => import('./pages/university/UniversityPresentationPage').then((m) => ({ default: m.UniversityPresentationPage })));
+const UniversityMotPresidentPage = lazy(() => import('./pages/university/UniversityMotPresidentPage').then((m) => ({ default: m.UniversityMotPresidentPage })));
+const UniversityVisionPage = lazy(() => import('./pages/university/UniversityVisionPage').then((m) => ({ default: m.UniversityVisionPage })));
+const UniversityMinPage = lazy(() => import('./pages/university/UniversityMinPage').then((m) => ({ default: m.UniversityMinPage })));
+const UniversityHistoirePage = lazy(() => import('./pages/university/UniversityHistoirePage').then((m) => ({ default: m.UniversityHistoirePage })));
+const UniversityGouvernancePage = lazy(() => import('./pages/university/UniversityGouvernancePage').then((m) => ({ default: m.UniversityGouvernancePage })));
+const UniversityReconnaissancesPage = lazy(() => import('./pages/university/UniversityReconnaissancesPage').then((m) => ({ default: m.UniversityReconnaissancesPage })));
 const FacultiesPage = lazy(() => import('./pages/FacultiesPage').then((m) => ({ default: m.FacultiesPage })));
 const FacultyDetailPage = lazy(() => import('./pages/FacultyDetailPage').then((m) => ({ default: m.FacultyDetailPage })));
 const FormationsPage = lazy(() => import('./pages/FormationsPage').then((m) => ({ default: m.FormationsPage })));
@@ -122,8 +128,32 @@ const Shell: React.FC = () => {
       case '':
         return <HomePage {...commonProps} onOpenApply={() => setIsApplyModalOpen(true)} onOpenSearch={() => handleNavigate('formations')} onOpenConsulting={() => setIsCabinetModalOpen(true)} onApplyForProgram={handleApplyForProgram} />;
 
-      case 'universite':
-        return <UniversityPage {...commonProps} onOpenApply={() => setIsApplyModalOpen(true)} initialSection={location.hash.slice(1)} />;
+      case 'universite': {
+        const uniModalProps = {
+          onOpenApply: () => { setPreselectedProgram(''); setIsApplyModalOpen(true); },
+          onOpenAppointment: () => setIsAppointmentModalOpen(true),
+          onOpenWhatsApp: () => setIsWhatsAppModalOpen(true),
+        };
+        if (routeParam === 'mot-du-president' || routeParam === 'mot-president') {
+          return <UniversityMotPresidentPage {...commonProps} {...uniModalProps} />;
+        }
+        if (routeParam === 'vision-et-valeurs' || routeParam === 'vision') {
+          return <UniversityVisionPage {...commonProps} {...uniModalProps} />;
+        }
+        if (routeParam === 'modele-min' || routeParam === 'min') {
+          return <UniversityMinPage {...commonProps} {...uniModalProps} />;
+        }
+        if (routeParam === 'histoire-et-jalons' || routeParam === 'histoire') {
+          return <UniversityHistoirePage {...commonProps} {...uniModalProps} />;
+        }
+        if (routeParam === 'gouvernance') {
+          return <UniversityGouvernancePage {...commonProps} {...uniModalProps} />;
+        }
+        if (routeParam === 'agrements-et-partenaires' || routeParam === 'agrements' || routeParam === 'reconnaissances') {
+          return <UniversityReconnaissancesPage {...commonProps} {...uniModalProps} />;
+        }
+        return <UniversityPresentationPage {...commonProps} {...uniModalProps} />;
+      }
       case 'facultes':
         if (routeParam) return <FacultyDetailPage {...commonProps} facultyId={routeParam} onApplyForProgram={handleApplyForProgram} />;
         return <FacultiesPage {...commonProps} onApplyForProgram={handleApplyForProgram} />;
@@ -223,7 +253,7 @@ const Shell: React.FC = () => {
         onOpenWhatsApp={() => setIsWhatsAppModalOpen(true)}
       />
 
-      <main className={isAdminOrStudent ? 'flex-1' : 'flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 pt-4'}>
+      <main className={isAdminOrStudent ? 'app-main flex-1' : 'app-main flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 pt-4'}>
         <Suspense fallback={<LoadingState />}>{renderCurrentPage()}</Suspense>
       </main>
 

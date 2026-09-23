@@ -225,3 +225,187 @@ button { touch-action: manipulation; }
 @media (orientation: landscape) and (max-height: 600px) {
   .mobile-nav { max-height: calc(100dvh - 90px); }
 }
+
+/* Page responsiveness only — preserves the existing visual design */
+.app-main {
+  min-width: 0;
+  max-width: 100%;
+  overflow-x: clip;
+}
+
+.app-main > * {
+  min-width: 0;
+  max-width: 100%;
+}
+
+.app-main img,
+.app-main video,
+.app-main iframe,
+.app-main svg {
+  max-width: 100%;
+}
+
+.app-main input,
+.app-main select,
+.app-main textarea,
+.app-main button {
+  min-width: 0;
+  max-width: 100%;
+}
+
+.app-main pre,
+.app-main code {
+  max-width: 100%;
+  overflow-x: auto;
+}
+
+@media (max-width: 1024px) {
+  .app-main .grid {
+    min-width: 0;
+  }
+
+  .app-main [class*="grid-cols-4"] {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .app-main [class*="grid-cols-5"],
+  .app-main [class*="grid-cols-6"] {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .app-main .flex {
+    min-width: 0;
+  }
+
+  .app-main .overflow-x-auto {
+    max-width: 100%;
+  }
+}
+
+@media (max-width: 767px) {
+  .app-main {
+    width: 100%;
+    padding-left: 0;
+    padding-right: 0;
+    overflow-x: clip;
+  }
+
+  .app-main > .max-w-7xl,
+  .app-main > .max-w-6xl,
+  .app-main > .max-w-5xl,
+  .app-main > .max-w-4xl,
+  .app-main > .max-w-3xl {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  /* Prevent horizontal overflow from fixed/min-content children. */
+  .app-main .flex,
+  .app-main .grid {
+    min-width: 0;
+    max-width: 100%;
+  }
+
+  .app-main .flex > *,
+  .app-main .grid > * {
+    min-width: 0;
+  }
+
+  /* Forms and action rows wrap instead of forcing the viewport wider. */
+  .app-main form.flex,
+  .app-main .flex.flex-row {
+    flex-wrap: wrap;
+  }
+
+  .app-main form.flex > input,
+  .app-main form.flex > textarea,
+  .app-main form.flex > select {
+    flex: 1 1 220px;
+    width: 100%;
+  }
+
+  /* Dense horizontal toolbars become vertically usable on phones. */
+  .app-main .items-center.justify-between,
+  .app-main .items-start.justify-between {
+    flex-wrap: wrap;
+    row-gap: 12px;
+  }
+
+  /* Keep long labels, email addresses and codes inside the viewport. */
+  .app-main h1,
+  .app-main h2,
+  .app-main h3,
+  .app-main h4,
+  .app-main p,
+  .app-main span,
+  .app-main label,
+  .app-main a,
+  .app-main button {
+    overflow-wrap: anywhere;
+  }
+
+  /* Tables remain usable without changing their desktop appearance. */
+  .app-main table {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .app-main .overflow-hidden:has(> table) {
+    overflow-x: auto;
+  }
+
+  /* Responsive media blocks never create a wider page. */
+  .app-main [class*="aspect-"] {
+    max-width: 100%;
+  }
+
+  .app-main [class*="w-screen"],
+  .app-main [class*="min-w-"] {
+    max-width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .app-main {
+    font-size: 15px;
+  }
+
+  .app-main .gap-8 {
+    gap: 1.25rem;
+  }
+
+  .app-main .gap-10 {
+    gap: 1.5rem;
+  }
+
+  .app-main .p-8 {
+    padding: 1.25rem;
+  }
+
+  .app-main .p-10 {
+    padding: 1.5rem;
+  }
+
+  .app-main .px-8 {
+    padding-left: 1.25rem;
+    padding-right: 1.25rem;
+  }
+
+  .app-main .px-10 {
+    padding-left: 1.25rem;
+    padding-right: 1.25rem;
+  }
+}
+
+@media (max-width: 360px) {
+  .app-main .p-8,
+  .app-main .p-10 {
+    padding: 1rem;
+  }
+
+  .app-main .px-8,
+  .app-main .px-10 {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+}

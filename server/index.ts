@@ -24,24 +24,28 @@ app.use(express.json({ limit: '1mb' }));
 const apiLimiter = rateLimit({ windowMs: 15 * 60_000, limit: 300, standardHeaders: true });
 const authLimiter = rateLimit({ windowMs: 15 * 60_000, limit: 20, standardHeaders: true });
 
-app.use('/api/auth', authLimiter, authRoutes);
-app.use('/api/applications', apiLimiter, applicationRoutes);
-app.use('/api/appointments', apiLimiter, appointmentRoutes);
-app.use('/api/contact', apiLimiter, contactRoutes);
-app.use('/api/advisory', apiLimiter, advisoryRoutes);
-app.use('/api', apiLimiter, contentRoutes);
-app.use('/api/admin', adminRoutes);
-app.use('/api/student', apiLimiter, studentRoutes);
-app.use('/api/teacher', apiLimiter, teacherRoutes);
+const mountApi = (prefix: string) => {
+  app.use(`${prefix}/auth`, authLimiter, authRoutes);
+  app.use(`${prefix}/applications`, apiLimiter, applicationRoutes);
+  app.use(`${prefix}/appointments`, apiLimiter, appointmentRoutes);
+  app.use(`${prefix}/contact`, apiLimiter, contactRoutes);
+  app.use(`${prefix}/advisory`, apiLimiter, advisoryRoutes);
+  app.use(prefix, apiLimiter, contentRoutes);
+  app.use(`${prefix}/admin`, adminRoutes);
+  app.use(`${prefix}/student`, apiLimiter, studentRoutes);
+  app.use(`${prefix}/teacher`, apiLimiter, teacherRoutes);
+};
 
-// Fichiers CV téléchargeables uniquement côté serveur (pas d'accès public direct)
+mountApi('/api');
+mountApi('/api/v1');
+
 app.get('/health', (_req, res) => res.json({ status: 'ok', env: config.env }));
 app.get('/api/health', (_req, res) => res.json({ status: 'ok', env: config.env }));
+app.get('/api/v1/health', (_req, res) => res.json({ status: 'ok', env: config.env }));
 
 app.use('/api', notFound);
 app.use(errorHandler);
 
-// En production : servir le build frontend + fallback SPA
 if (config.env === 'production') {
   const dist = path.resolve('dist');
   app.use(express.static(dist));

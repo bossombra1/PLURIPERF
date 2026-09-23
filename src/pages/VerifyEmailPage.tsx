@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { CheckCircle2, XCircle } from 'lucide-react';
 import { api, ApiError } from '../api/client';
-import type { Language } from '../types';
+import type { Language, PageId } from '../types';
 
-export const VerifyEmailPage: React.FC<{ lang: Language; onNavigate: (page: any) => void }> = ({ lang, onNavigate }) => {
+export const VerifyEmailPage: React.FC<{ lang: Language; onNavigate: (page: PageId) => void }> = ({ lang, onNavigate }) => {
   const [state, setState] = useState<'loading' | 'success' | 'error'>('loading');
   const [message, setMessage] = useState('');
 

@@ -1,0 +1,99 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500" width="100%" height="100%">
+  <defs>
+    <!-- Terracotta / Orange gradient from the official logo -->
+    <linearGradient id="pluriperfOrange" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#E85D1E" />
+      <stop offset="100%" stop-color="#D44910" />
+    </linearGradient>
+    
+    <!-- Deep Navy for the central pillars and text -->
+    <linearGradient id="pluriperfNavy" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#0E192D" />
+      <stop offset="100%" stop-color="#08101E" />
+    </linearGradient>
+    
+    <!-- Shadow filter -->
+    <radialGradient id="shadowGradient" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#94A3B8" stop-opacity="0.8" />
+      <stop offset="100%" stop-color="#94A3B8" stop-opacity="0" />
+    </radialGradient>
+  </defs>
+
+  <!-- Central Emblem -->
+  <g transform="translate(0, -10)">
+    <!-- Orange Leaf / Flame / Drop Silhouette -->
+    <!-- Clip path to carve the navy pillars inside the orange drop -->
+    <g id="emblem-group">
+      <!-- Outer Drop/Oval: peaks at (250, 48), bulges to 140 on left and 360 on right, rounded base at (250, 290) -->
+      <path
+        d="M 250,45 
+           C 256,58 318,142 355,195 
+           C 375,224 372,260 348,284 
+           C 324,308 285,315 250,315 
+           C 215,315 176,308 152,284 
+           C 128,260 125,224 145,195 
+           C 182,142 244,58 250,45 Z"
+        fill="url(#pluriperfOrange)"
+      />
+
+      <!-- Left Navy Pillar (Arching upward towards peak, separated by white borders) -->
+      <path
+        d="M 245,62 
+           L 182,298 
+           C 194,305 208,310 223,313 
+           L 242,185 
+           L 246,62 Z"
+        fill="url(#pluriperfNavy)"
+      />
+
+      <!-- Right Navy Pillar (Arching upward towards peak) -->
+      <path
+        d="M 255,62 
+           L 318,298 
+           C 306,305 292,310 277,313 
+           L 258,185 
+           L 254,62 Z"
+        fill="url(#pluriperfNavy)"
+      />
+
+      <!-- Inner White Contours / Slits for sharp crispness -->
+      <!-- Left Outer White Slit -->
+      <path
+        d="M 247,56 L 176,300 L 182,298 L 246,62 Z"
+        fill="#FFFFFF"
+      />
+      <!-- Right Outer White Slit -->
+      <path
+        d="M 253,56 L 324,300 L 318,298 L 254,62 Z"
+        fill="#FFFFFF"
+      />
+      
+      <!-- Center White Spire Arrow extending between the two pillars -->
+      <polygon
+        points="250,60 242,185 247,314 250,314 253,314 258,185"
+        fill="#FFFFFF"
+      />
+
+      <!-- Center lower orange triangular wedge -->
+      <polygon
+        points="250,195 245,314 255,314"
+        fill="url(#pluriperfOrange)"
+      />
+    </g>
+
+    <!-- Subtle bottom shadow underneath the emblem -->
+    <ellipse cx="250" cy="336" rx="72" ry="3.5" fill="url(#shadowGradient)" />
+  </g>
+
+  <!-- Typography "PLURIPERF" -->
+  <text
+    x="250"
+    y="442"
+    text-anchor="middle"
+    font-family="system-ui, -apple-system, 'Plus Jakarta Sans', sans-serif"
+    font-weight="800"
+    font-size="62"
+    letter-spacing="3.5"
+    fill="#0A1428"
+  >PLURIPERF</text>
+</svg>

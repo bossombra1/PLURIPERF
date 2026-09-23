@@ -79,7 +79,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   const [mobileOpenGroup, setMobileOpenGroup] = useState<string | null>('universite');
   const navRef = useRef<HTMLDivElement>(null);
 
-  const t = getT(lang);
+  const t = getT(lang);\n  const activePage = String(currentPage).replace(/^\\//, '').split('/')[0] || 'accueil';
 
   // Close dropdown on click outside
   useEffect(() => {
@@ -101,7 +101,7 @@ export const Navbar: React.FC<NavbarProps> = ({
     setActiveDropdown(null);
     setMobileMenuOpen(false);
 
-    if (sectionId && page === currentPage) {
+    if (sectionId && page === activePage) {
       const el = document.getElementById(sectionId);
       if (el) {
         el.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -294,7 +294,7 @@ export const Navbar: React.FC<NavbarProps> = ({
     },
   ];
 
-  const isGroupActive = (group: DropdownGroup) => group.activePages.includes(currentPage as PageId);
+  const isGroupActive = (group: DropdownGroup) => group.activePages.includes(activePage as PageId);
 
   return (
     <header className="sticky top-0 z-40 bg-white shadow-xs" ref={navRef}>
@@ -367,7 +367,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             type="button"
             onClick={() => handleNavigate('accueil')}
             className={`px-2 xl:px-3 py-2 rounded-lg transition-colors whitespace-nowrap ${
-              currentPage === 'accueil'
+              activePage === 'accueil'
                 ? 'text-[#173f38] font-bold bg-slate-100/90 text-[#b56f45]'
                 : 'text-slate-700 hover:text-[#b56f45] hover:bg-slate-50'
             }`}
@@ -418,7 +418,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                       {group.items.map((item) => {
                         const Icon = item.icon;
                         const isCurrent =
-                          currentPage === item.id &&
+                          activePage === item.id &&
                           (!item.sectionId ||
                             (typeof window !== 'undefined' &&
                               window.location.hash === `#${item.sectionId}`));
@@ -472,7 +472,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             type="button"
             onClick={() => handleNavigate('contacts')}
             className={`px-3 py-2 rounded-lg transition-colors whitespace-nowrap ${
-              currentPage === 'contacts'
+              activePage === 'contacts'
                 ? 'text-[#173f38] font-bold bg-slate-100/90 text-[#b56f45]'
                 : 'text-slate-700 hover:text-[#b56f45] hover:bg-slate-50'
             }`}
@@ -556,7 +556,7 @@ export const Navbar: React.FC<NavbarProps> = ({
           <button
             type="button"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="p-2 text-slate-700 hover:text-slate-900 hover:bg-slate-100 rounded-lg"
+            className="p-2 text-[#1f5b50] hover:text-[#b56f45] hover:bg-[#f0eee8] rounded-lg"
             aria-label="Toggle menu"
           >
             {mobileMenuOpen ? (

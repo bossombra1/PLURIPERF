@@ -1,4 +1,24 @@
 import React from 'react';
-interface LogoProps{className?:string;variant?:'full-horizontal'|'full-stacked'|'emblem-only';theme?:'dark'|'light';size?:'sm'|'md'|'lg'|'xl'}
-export const EmblemSvg:React.FC<{className?:string}>=({className='w-10 h-10'})=><svg viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg" className={className} aria-label="Emblème PLURIPERF"><circle cx="60" cy="60" r="56" stroke="currentColor" strokeWidth="3"/><path d="M60 17 91 72c6 11-2 25-15 25H44c-13 0-21-14-15-25L60 17Z" fill="#006b32"/><path d="M60 31v58M43 68h34" stroke="#fff" strokeWidth="5" strokeLinecap="round"/><path d="M60 31 43 68M60 31l17 37" stroke="#fff" strokeWidth="3"/></svg>;
-export const Logo:React.FC<LogoProps>=({className='',variant='full-horizontal',theme='light',size='md'})=>{const dark=theme==='dark';const e={sm:'w-8 h-8',md:'w-10 h-10',lg:'w-14 h-14',xl:'w-20 h-20'}[size];const t={sm:'text-sm',md:'text-lg',lg:'text-2xl',xl:'text-3xl'}[size];const s={sm:'text-[8px]',md:'text-[9px]',lg:'text-[10px]',xl:'text-xs'}[size];if(variant==='emblem-only')return <EmblemSvg className={`${e} ${className}`}/>;if(variant==='full-stacked')return <div className={`flex flex-col items-center ${className}`}><EmblemSvg className={e}/><div className="mt-2 text-center"><b className={`block uppercase tracking-[.12em] ${t} ${dark?'text-white':'text-[#202420]'}`}>PLURIPERF</b><span className={`block mt-1 uppercase tracking-[.16em] ${s} ${dark?'text-white/70':'text-[#68716b]'}`}>International University</span></div></div>;return <div className={`flex items-center gap-3 shrink-0 ${className}`}><EmblemSvg className={e}/><div><b className={`block uppercase tracking-[.12em] leading-none ${t} ${dark?'text-white':'text-[#202420]'}`}>PLURIPERF</b><span className={`block mt-1 uppercase tracking-[.16em] leading-none ${s} ${dark?'text-white/70':'text-[#68716b]'}`}>International University</span></div></div>};
+import logoPluriperf from '../assets/logo-pluriperf.png';
+
+interface LogoProps {
+  className?: string;
+  variant?: 'full-horizontal' | 'full-stacked' | 'emblem-only';
+  theme?: 'dark' | 'light';
+  size?: 'sm' | 'md' | 'lg' | 'xl';
+}
+
+const sizes = {
+  sm: { horizontal: 'h-9 max-w-[180px]', stacked: 'h-20 max-w-[180px]', emblem: 'h-9 w-9' },
+  md: { horizontal: 'h-11 max-w-[220px]', stacked: 'h-24 max-w-[220px]', emblem: 'h-11 w-11' },
+  lg: { horizontal: 'h-14 max-w-[280px]', stacked: 'h-32 max-w-[280px]', emblem: 'h-14 w-14' },
+  xl: { horizontal: 'h-20 max-w-[360px]', stacked: 'h-44 max-w-[360px]', emblem: 'h-20 w-20' },
+};
+
+export const Logo: React.FC<LogoProps> = ({ className = '', variant = 'full-horizontal', size = 'md' }) => {
+  const sizeClass = sizes[size];
+  const classes = variant === 'emblem-only' ? sizeClass.emblem + ' w-auto object-contain ' + className : (variant === 'full-stacked' ? sizeClass.stacked : sizeClass.horizontal) + ' w-auto object-contain object-left ' + className;
+  return <img src={logoPluriperf} alt="PLURIPERF International University" className={classes} />;
+};
+
+export default Logo;

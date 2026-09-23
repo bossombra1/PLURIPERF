@@ -7,7 +7,25 @@
     --font-mono: 'JetBrains Mono', monospace;
   }
 
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+
+  html {
+    width: 100%;
+    min-width: 320px;
+    overflow-x: hidden;
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+  }
+
   body {
+    width: 100%;
+    min-width: 320px;
+    margin: 0;
+    overflow-x: hidden;
     font-family: var(--font-sans);
     background-color: #f8fafc;
     color: #0f172a;
@@ -15,8 +33,47 @@
     -webkit-font-smoothing: antialiased;
   }
 
+  #root {
+    width: 100%;
+    min-height: 100vh;
+    overflow-x: clip;
+  }
+
   h1, h2, h3, .font-serif-prestige {
     font-family: var(--font-serif);
+  }
+
+  img,
+  svg,
+  video,
+  canvas {
+    max-width: 100%;
+  }
+
+  img,
+  video {
+    height: auto;
+  }
+
+  button,
+  input,
+  select,
+  textarea {
+    font: inherit;
+  }
+
+  button {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  input,
+  select,
+  textarea {
+    max-width: 100%;
+  }
+
+  textarea {
+    resize: vertical;
   }
 }
 
@@ -37,4 +94,221 @@
 
 ::-webkit-scrollbar-thumb:hover {
   background: #94a3b8;
+}
+
+/* =========================================================
+   PLURIPERF — responsive foundation
+   Mobile first: 320px → 480px → 640px → 768px → 1024px+
+   ========================================================= */
+
+/* Prevent flex/grid children from forcing horizontal overflow. */
+.flex > *,
+.grid > * {
+  min-width: 0;
+}
+
+/* Long institutional text must wrap instead of widening the page. */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+li,
+a,
+button,
+label,
+span {
+  overflow-wrap: anywhere;
+}
+
+/* Keep media and common content inside their containers. */
+iframe,
+embed,
+object {
+  max-width: 100%;
+}
+
+/* Tables remain usable on narrow screens instead of breaking the layout. */
+table {
+  max-width: 100%;
+}
+
+[role="dialog"] {
+  max-width: calc(100vw - 2rem);
+}
+
+/* Touch targets: comfortable without changing desktop sizing. */
+@media (max-width: 639px) {
+  body {
+    font-size: 15px;
+  }
+
+  /* Main content: remove excessive side padding on very small phones. */
+  main.flex-1 {
+    padding-left: 0.75rem !important;
+    padding-right: 0.75rem !important;
+    padding-top: 0.75rem !important;
+  }
+
+  /* Common two-column forms/cards become one column. */
+  .grid.grid-cols-2 {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+
+  /* Prevent oversized fixed-width controls from creating horizontal scroll. */
+  [class*="w-96"],
+  [class*="w-80"],
+  [class*="max-w-"] {
+    max-width: 100%;
+  }
+
+  /* Hero: preserve visual impact while keeping the complete CTA area visible. */
+  .group > .relative.h-\[440px\],
+  .group > .relative.h-\[500px\],
+  .group > .relative.h-\[560px\] {
+    min-height: 520px;
+    height: auto !important;
+  }
+
+  /* Modal shells: fit every phone, including 320px devices. */
+  .fixed.inset-0 > .bg-white.rounded-2xl {
+    width: min(100%, 28rem) !important;
+    max-height: calc(100dvh - 1rem);
+    overflow-y: auto;
+    margin: 0.5rem;
+    padding: 1rem !important;
+    border-radius: 1rem;
+  }
+
+  /* Long modal headings and descriptions stay readable. */
+  .fixed.inset-0 h3 {
+    line-height: 1.25;
+  }
+
+  /* Footer content should never force a horizontal scrollbar. */
+  footer .flex.items-center {
+    min-width: 0;
+  }
+
+  footer .flex.items-center > span,
+  footer .flex.items-center > a {
+    min-width: 0;
+  }
+}
+
+/* Small tablets / large phones. */
+@media (min-width: 640px) and (max-width: 767px) {
+  main.flex-1 {
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
+  }
+
+  .grid.grid-cols-2 {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+}
+
+/* Tablet portrait: avoid dense two-column controls and oversized cards. */
+@media (max-width: 767px) {
+  .grid.md\:grid-cols-2 {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+
+  .grid.lg\:grid-cols-2 {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+
+  /* Any horizontal action group may wrap on tablets/phones. */
+  .flex.items-center.justify-between {
+    flex-wrap: wrap;
+  }
+
+  /* Dropdowns/popovers must stay inside the viewport. */
+  .absolute {
+    max-width: calc(100vw - 1rem);
+  }
+
+  /* Improve native form controls on touch screens. */
+  input,
+  select,
+  textarea {
+    min-height: 2.625rem;
+  }
+}
+
+/* Phone landscape and small tablet: keep hero text/buttons usable. */
+@media (max-width: 767px) {
+  .text-5xl {
+    font-size: clamp(2rem, 9vw, 3rem) !important;
+    line-height: 1.05 !important;
+  }
+
+  .text-4xl {
+    font-size: clamp(1.75rem, 8vw, 2.5rem) !important;
+    line-height: 1.1 !important;
+  }
+
+  .text-3xl {
+    font-size: clamp(1.5rem, 7vw, 2rem) !important;
+  }
+
+  .text-2xl {
+    font-size: clamp(1.25rem, 6vw, 1.65rem) !important;
+  }
+}
+
+/* Tablet landscape / laptop transition. */
+@media (min-width: 768px) and (max-width: 1023px) {
+  main.flex-1 {
+    padding-left: 1.25rem !important;
+    padding-right: 1.25rem !important;
+  }
+
+  .grid.lg\:grid-cols-3,
+  .grid.lg\:grid-cols-4,
+  .grid.lg\:grid-cols-5 {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+}
+
+/* Very narrow screens: prioritize readability over decorative spacing. */
+@media (max-width: 380px) {
+  .px-6 {
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
+  }
+
+  .p-6 {
+    padding: 1rem !important;
+  }
+
+  .gap-6 {
+    gap: 1rem !important;
+  }
+
+  .gap-8 {
+    gap: 1.25rem !important;
+  }
+
+  .fixed.inset-0 {
+    padding: 0.5rem !important;
+  }
+}
+
+/* Respect users who request reduced motion. */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }

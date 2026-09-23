@@ -33,7 +33,7 @@ const mountApi = (prefix: string) => {
   app.use(`${prefix}/newsletter`, apiLimiter, newsletterRoutes);
   app.use(`${prefix}/advisory`, apiLimiter, advisoryRoutes);
   app.use(prefix, apiLimiter, contentRoutes);
-  app.use(`${prefix}/admin`, adminRoutes);
+  app.use(`${prefix}/admin`, apiLimiter, adminRoutes);
   app.use(`${prefix}/student`, apiLimiter, studentRoutes);
   app.use(`${prefix}/teacher`, apiLimiter, teacherRoutes);
 };

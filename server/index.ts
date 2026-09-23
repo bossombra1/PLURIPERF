@@ -14,6 +14,7 @@ import contentRoutes from './routes/content';
 import adminRoutes from './routes/admin';
 import studentRoutes from './routes/student';
 import teacherRoutes from './routes/teacher';
+import newsletterRoutes from './routes/newsletter';
 
 const app = express();
 app.set('trust proxy', 1);
@@ -29,6 +30,7 @@ const mountApi = (prefix: string) => {
   app.use(`${prefix}/applications`, apiLimiter, applicationRoutes);
   app.use(`${prefix}/appointments`, apiLimiter, appointmentRoutes);
   app.use(`${prefix}/contact`, apiLimiter, contactRoutes);
+  app.use(`${prefix}/newsletter`, apiLimiter, newsletterRoutes);
   app.use(`${prefix}/advisory`, apiLimiter, advisoryRoutes);
   app.use(prefix, apiLimiter, contentRoutes);
   app.use(`${prefix}/admin`, adminRoutes);

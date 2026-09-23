@@ -98,12 +98,17 @@ async function main() {
   const teacherCourses = db.prepare('SELECT id FROM courses ORDER BY id LIMIT 2').all() as { id: number }[];
   const assignTeacher = db.prepare('INSERT OR IGNORE INTO teacher_courses (teacher_id, course_id) VALUES (?, ?)');
   for (const course of teacherCourses) assignTeacher.run(t.id, course.id);
-  db.prepare(
-    'INSERT OR IGNORE INTO messages (sender_id, recipient_id, subject, body) VALUES (?, ?, ?, ?)',
-  ).run(
-    t.id, sarah.id, 'Validation de votre projet',
-    'Bonjour Sarah, j’ai bien pris connaissance de votre projet sur la modélisation bio-inspirée des corridors écologiques. Votre proposition est validée avec mention.',
-  );
+  const existingMessage = db.prepare(
+    'SELECT id FROM messages WHERE sender_id = ? AND recipient_id = ? AND subject = ?',
+  ).get(t.id, sarah.id, 'Validation de votre projet');
+  if (!existingMessage) {
+    db.prepare(
+      'INSERT INTO messages (sender_id, recipient_id, subject, body) VALUES (?, ?, ?, ?)',
+    ).run(
+      t.id, sarah.id, 'Validation de votre projet',
+      'Bonjour Sarah, j’ai bien pris connaissance de votre projet sur la modélisation bio-inspirée des corridors écologiques. Votre proposition est validée avec mention.',
+    );
+  }
 
   console.log('Seed terminé : 5 comptes, facultés, formations, actualités, bibliothèque, recherche, cours.');
   console.log('Comptes de démo (mot de passe : Pluri2026!) :');

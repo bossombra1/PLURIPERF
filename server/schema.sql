@@ -261,3 +261,12 @@ CREATE TABLE IF NOT EXISTS email_verifications (
 );
 
 CREATE INDEX IF NOT EXISTS idx_email_verifications_user ON email_verifications(user_id);
+
+
+CREATE TABLE IF NOT EXISTS teacher_courses (
+  teacher_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  course_id INTEGER NOT NULL REFERENCES courses(id) ON DELETE CASCADE,
+  PRIMARY KEY (teacher_id, course_id)
+);
+
+CREATE INDEX IF NOT EXISTS idx_teacher_courses_course ON teacher_courses(course_id);

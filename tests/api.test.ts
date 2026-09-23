@@ -1,9 +1,14 @@
 import { describe, it, expect } from 'vitest';
+import crypto from 'crypto';
 import request from 'supertest';
 import express from 'express';
 import authRoutes from '../server/routes/auth';
 import contactRoutes from '../server/routes/contact';
 import advisoryRoutes from '../server/routes/advisory';
+import applicationRoutes from '../server/routes/applications';
+import appointmentRoutes from '../server/routes/appointments';
+import teacherRoutes from '../server/routes/teacher';
+import { db } from '../server/db';
 import adminRoutes from '../server/routes/admin';
 import studentRoutes from '../server/routes/student';
 import { errorHandler, notFound } from '../server/middleware';
@@ -14,6 +19,9 @@ function buildApp() {
   app.use('/api/auth', authRoutes);
   app.use('/api/contact', contactRoutes);
   app.use('/api/advisory', advisoryRoutes);
+  app.use('/api/applications', applicationRoutes);
+  app.use('/api/appointments', appointmentRoutes);
+  app.use('/api/teacher', teacherRoutes);
   app.use('/api/admin', adminRoutes);
   app.use('/api/student', studentRoutes);
   app.use('/api', notFound);
@@ -154,5 +162,85 @@ describe('Permissions et espaces protégés', () => {
       .set('Cookie', login.headers['set-cookie'][0]);
     expect(res.status).toBe(200);
     expect(res.body.student.studentRef).toBe('PLU-2025-8842');
+  });
+});
+
+
+describe('Candidatures et CV', () => {
+  it('accepte un CV PDF valide et le téléchargement reste protégé', async () => {
+    const app = buildApp();
+    const pdf = Buffer.from('%PDF-1.4\n1 0 obj\n<<>>\nendobj\n%%EOF');
+    const create = await request(app)
+      .post('/api/applications')
+      .field('program', 'Master Management Durable')
+      .field('level', 'Master')
+      .field('fullName', 'Candidat Test')
+      .field('email', 'sarah@pluriperf.com')
+      .field('phone', '+2250700000000')
+      .field('country', 'Côte d’Ivoire')
+      .field('currentDiploma', 'Licence')
+      .attach('cv', pdf, { filename: 'cv.pdf', contentType: 'application/pdf' });
+    expect(create.status).toBe(201);
+    const unauthorized = await request(app).get(`/api/applications/${create.body.id}/cv`);
+    expect(unauthorized.status).toBe(401);
+    const login = await request(app).post('/api/auth/login').send({ email: 'sarah@pluriperf.com', password: 'Pluri2026!' });
+    const download = await request(app).get(`/api/applications/${create.body.id}/cv`).set('Cookie', login.headers['set-cookie'][0]);
+    expect(download.status).toBe(200);
+    expect(download.headers['content-type']).toMatch(/application\/pdf/);
+  });
+});
+
+describe('Rendez-vous', () => {
+  const futureDate = '2099-12-15';
+
+  it('expose les disponibilités et refuse une double réservation', async () => {
+    const app = buildApp();
+    const available = await request(app).get(`/api/appointments/availability?date=${futureDate}`);
+    expect(available.status).toBe(200);
+    expect(available.body).toContain('09:00');
+    const payload = { date: futureDate, timeSlot: '09:00', reason: 'orientation', fullName: 'Sarah Kouassi', email: 'sarah@pluriperf.com', phone: '+2250700000000' };
+    const first = await request(app).post('/api/appointments').send(payload);
+    expect(first.status).toBe(201);
+    const second = await request(app).post('/api/appointments').send(payload);
+    expect(second.status).toBe(409);
+  });
+
+  it('permet au propriétaire d’annuler son rendez-vous', async () => {
+    const app = buildApp();
+    const payload = { date: '2099-12-16', timeSlot: '11:00', reason: 'admissions', fullName: 'Sarah Kouassi', email: 'sarah@pluriperf.com', phone: '+2250700000000' };
+    const created = await request(app).post('/api/appointments').send(payload);
+    expect(created.status).toBe(201);
+    const login = await request(app).post('/api/auth/login').send({ email: 'sarah@pluriperf.com', password: 'Pluri2026!' });
+    const cancelled = await request(app).patch(`/api/appointments/${created.body.id}`).set('Cookie', login.headers['set-cookie'][0]).send({ status: 'cancelled' });
+    expect(cancelled.status).toBe(200);
+  });
+});
+
+describe('Permissions enseignant', () => {
+  it('limite les cours à ceux attribués à l’enseignant', async () => {
+    const app = buildApp();
+    const login = await request(app).post('/api/auth/login').send({ email: 'teacher@pluriperf.com', password: 'Pluri2026!' });
+    const courses = await request(app).get('/api/teacher/courses').set('Cookie', login.headers['set-cookie'][0]);
+    expect(courses.status).toBe(200);
+    expect(courses.body).toHaveLength(1);
+    expect(courses.body[0].code).toBe('TEST-101');
+    const forbidden = await request(app).post('/api/teacher/assignments').set('Cookie', login.headers['set-cookie'][0]).send({
+      courseId: 999999, titleFr: 'Devoir interdit', titleEn: 'Forbidden assignment', dueDate: '2099-12-20',
+    });
+    expect(forbidden.status).toBe(403);
+  });
+});
+
+describe('Vérification e-mail', () => {
+  it('valide un jeton de vérification et le rend inutilisable une seconde fois', async () => {
+    const rawToken = 'verification-token-for-tests-123456';
+    const hash = crypto.createHash('sha256').update(rawToken).digest('hex');
+    const user = db.prepare("SELECT id FROM users WHERE email = 'sarah@pluriperf.com'").get() as { id: number };
+    db.prepare("INSERT INTO email_verifications (user_id, token_hash, expires_at) VALUES (?, ?, datetime('now', '+1 day'))").run(user.id, hash);
+    const first = await request(buildApp()).get(`/api/auth/verify-email?token=${rawToken}`);
+    expect(first.status).toBe(200);
+    expect(first.body.verified).toBe(true);
+    const second = await request(buildApp()).get(`/api/auth/verify-email?token=${rawToken}`);
+    expect(second.status).toBe(400);
   });
 });

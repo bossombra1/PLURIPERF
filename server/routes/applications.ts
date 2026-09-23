@@ -97,6 +97,10 @@ router.post(
         req.file ? req.file.path : null,
         req.file ? req.file.originalname : null,
       );
+    db.prepare('INSERT INTO application_history (application_id, status, comment) VALUES (?, ?, ?)').run(info.lastInsertRowid, 'submitted', 'Candidature déposée');
+    if (req.file) {
+      db.prepare('INSERT INTO application_documents (application_id, document_type, storage_path, original_name, mime_type, size_bytes) VALUES (?, ?, ?, ?, ?, ?)').run(info.lastInsertRowid, 'cv', req.file.path, req.file.originalname, req.file.mimetype, req.file.size);
+    }
     if (user) {
       db.prepare(
         "INSERT INTO notifications (user_id, type, payload_fr, payload_en) VALUES (?, 'application', ?, ?)",

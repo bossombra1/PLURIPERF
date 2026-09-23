@@ -1,5 +1,5 @@
 import React, { Suspense, lazy } from 'react';
-import { BrowserRouter, Routes, Route, useLocation, useNavigate, Navigate } from 'react-router-dom';
+import { BrowserRouter, useLocation, useNavigate, Navigate } from 'react-router-dom';
 import { PageId, Language } from './types';
 import { pageToPath } from './routes';
 import { AuthProvider, useAuth } from './context/AuthContext';

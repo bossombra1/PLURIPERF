@@ -249,3 +249,15 @@ CREATE TABLE IF NOT EXISTS newsletter_subscribers (
 );
 
 CREATE INDEX IF NOT EXISTS idx_newsletter_active ON newsletter_subscribers(active);
+
+
+CREATE TABLE IF NOT EXISTS email_verifications (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  token_hash TEXT NOT NULL UNIQUE,
+  expires_at TEXT NOT NULL,
+  verified_at TEXT,
+  created_at TEXT NOT NULL DEFAULT (datetime('now'))
+);
+
+CREATE INDEX IF NOT EXISTS idx_email_verifications_user ON email_verifications(user_id);

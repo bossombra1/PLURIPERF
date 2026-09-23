@@ -7,7 +7,7 @@ interface LoadingStateProps {
   label?: string;
 }
 
-export const LoadingState: React.FC<LoadingStateProps> = ({ className, label = 'Loading…' }) => (
+export const LoadingState: React.FC<LoadingStateProps> = ({ className, label = 'Chargement…' }) => (
   <div role="status" aria-live="polite" className={cn('flex items-center justify-center gap-2 py-12 text-text-muted', className)}>
     <Loader2 className="h-5 w-5 animate-spin text-primary" aria-hidden="true" />
     <span className="text-sm">{label}</span>
@@ -45,7 +45,7 @@ interface ErrorStateProps {
   onRetry?: () => void;
 }
 
-export const ErrorState: React.FC<ErrorStateProps> = ({ title = 'Error', message, onRetry }) => (
+export const ErrorState: React.FC<ErrorStateProps> = ({ title = 'Erreur', message, onRetry }) => (
   <div role="alert" className="rounded-[calc(var(--radius)+4px)] border border-error/50 bg-error/10 p-6 text-center space-y-3">
     <p className="font-semibold text-error">{title}</p>
     <p className="text-sm text-text-secondary">{message}</p>

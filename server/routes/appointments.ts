@@ -78,8 +78,6 @@ router.get(
   }),
 );
 
-export default router;
-
 // Ancien nom conservé pour compatibilité avec les clients déjà déployés.
 router.get('/mine', requireAuth, asyncHandler(async (req: Request, res: Response) => {
   const user = (req as any).user as AuthUser;

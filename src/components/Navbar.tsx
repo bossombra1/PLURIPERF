@@ -1,30 +1,8 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
+import { ChevronDown, ExternalLink, GraduationCap, Menu, Search, X } from 'lucide-react';
 import { PageId, Language } from '../types';
 import { getT } from '../data/translations';
 import { Logo } from './Logo';
-import {
-  Search,
-  LogIn,
-  GraduationCap,
-  Menu,
-  X,
-  ChevronDown,
-  Building2,
-  BookOpen,
-  Award,
-  Leaf,
-  Briefcase,
-  Globe2,
-  Library,
-  Newspaper,
-  Mail,
-  Compass,
-  History,
-  Shield,
-  Layers,
-  Sparkles,
-  ArrowRight,
-} from 'lucide-react';
 
 interface NavbarProps {
   currentPage: PageId | string;
@@ -42,661 +20,161 @@ interface NavbarProps {
   onOpenWhatsApp?: () => void;
 }
 
-interface DropdownItem {
-  id: PageId;
-  sectionId?: string;
-  labelFr: string;
-  labelEn: string;
-  descFr: string;
-  descEn: string;
-  icon: React.ComponentType<{ className?: string }>;
-  badge?: string;
-}
-
-interface DropdownGroup {
-  key: string;
-  titleFr: string;
-  titleEn: string;
-  activePages: PageId[];
-  items: DropdownItem[];
-}
+const menuGroups: { key: string; labelFr: string; labelEn: string; pages: PageId[]; items: { page: PageId; fr: string; en: string }[] }[] = [
+  {
+    key: 'presentation', labelFr: 'PRÉSENTATION', labelEn: 'ABOUT', pages: ['universite'],
+    items: [{ page: 'universite', fr: "L'Université", en: 'The University' }],
+  },
+  {
+    key: 'academique', labelFr: 'FORMATION', labelEn: 'ACADEMICS', pages: ['formations', 'facultes', 'admissions'],
+    items: [
+      { page: 'formations', fr: 'Formations', en: 'Programs' },
+      { page: 'facultes', fr: 'Facultés', en: 'Faculties' },
+      { page: 'admissions', fr: 'Admissions', en: 'Admissions' },
+    ],
+  },
+  {
+    key: 'recherche', labelFr: 'RECHERCHES', labelEn: 'RESEARCH', pages: ['recherches'],
+    items: [{ page: 'recherches', fr: 'Recherche & impact', en: 'Research & impact' }],
+  },
+  {
+    key: 'innovation', labelFr: 'INNOVATIONS', labelEn: 'INNOVATION', pages: ['mere_nature', 'cabinet'],
+    items: [
+      { page: 'mere_nature', fr: 'Mère Nature Global', en: 'Mother Nature Global' },
+      { page: 'cabinet', fr: "Cabinet d'expertise", en: 'Advisory unit' },
+    ],
+  },
+  {
+    key: 'vie', labelFr: "VIE À PLURIPERF", labelEn: 'CAMPUS LIFE', pages: ['campus_virtuel', 'bibliotheque', 'actualites', 'contacts'],
+    items: [
+      { page: 'campus_virtuel', fr: 'Campus virtuel', en: 'Virtual campus' },
+      { page: 'bibliotheque', fr: 'Bibliothèque', en: 'Library' },
+      { page: 'actualites', fr: 'Actualités', en: 'News' },
+      { page: 'contacts', fr: 'Contacts', en: 'Contact' },
+    ],
+  },
+];
 
 export const Navbar: React.FC<NavbarProps> = ({
-  currentPage,
-  user,
-  onLogout,
-  setCurrentPage,
-  onNavigate,
-  lang,
-  setLang,
-  onLanguageChange,
-  onOpenApply,
-  onOpenSearch,
-  onOpenLogin,
+  currentPage, user, onLogout, setCurrentPage, onNavigate, lang, setLang, onLanguageChange,
+  onOpenApply, onOpenSearch, onOpenLogin,
 }) => {
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
-  const [mobileOpenGroup, setMobileOpenGroup] = useState<string | null>('universite');
-  const navRef = useRef<HTMLDivElement>(null);
-
+  const [open, setOpen] = useState<string | null>(null);
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const navRef = useRef<HTMLElement>(null);
   const t = getT(lang);
-  const activePage = String(currentPage).replace(/^\//, '').split('/')[0] || 'accueil';
 
-  // Close dropdown on click outside
   useEffect(() => {
-    const handleClickOutside = (e: MouseEvent) => {
-      if (navRef.current && !navRef.current.contains(e.target as Node)) {
-        setActiveDropdown(null);
-      }
+    const close = (event: MouseEvent) => {
+      if (navRef.current && !navRef.current.contains(event.target as Node)) setOpen(null);
     };
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
+    document.addEventListener('mousedown', close);
+    return () => document.removeEventListener('mousedown', close);
   }, []);
 
-  const handleNavigate = (page: PageId, sectionId?: string) => {
-    if (onNavigate) {
-      onNavigate(page, sectionId);
-    } else if (setCurrentPage) {
-      setCurrentPage(page);
-    }
-    setActiveDropdown(null);
-    setMobileMenuOpen(false);
-
-    if (sectionId && page === activePage) {
-      const el = document.getElementById(sectionId);
-      if (el) {
-        el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }
-    } else if (!sectionId) {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
+  const navigate = (page: PageId) => {
+    if (onNavigate) onNavigate(page);
+    else setCurrentPage?.(page);
+    setOpen(null);
+    setMobileOpen(false);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  const handleSetLang = (newLang: Language) => {
-    if (onLanguageChange) {
-      onLanguageChange(newLang);
-    } else if (setLang) {
-      setLang(newLang);
-    }
+  const changeLanguage = (next: Language) => {
+    onLanguageChange?.(next);
+    setLang?.(next);
   };
-
-  // Structured thematic groupings to prevent horizontal navbar clutter
-  const dropdownGroups: DropdownGroup[] = [
-    {
-      key: 'universite',
-      titleFr: "L'Université",
-      titleEn: 'The University',
-      activePages: ['universite'],
-      items: [
-        {
-          id: 'universite',
-          sectionId: 'presentation',
-          labelFr: 'Présentation & Chiffres clés',
-          labelEn: 'Overview & Key Figures',
-          descFr: 'Identité pionnière, campus et statistiques mondiales',
-          descEn: 'Pioneering identity, global campus and metrics',
-          icon: Building2,
-        },
-        {
-          id: 'universite',
-          sectionId: 'vision',
-          labelFr: 'Vision & Valeurs Fondatrices',
-          labelEn: 'Vision & Core Values',
-          descFr: 'Respect du Vivant, rigueur scientifique et éthique',
-          descEn: 'Reverence for life, rigor and regenerative ethics',
-          icon: Compass,
-        },
-        {
-          id: 'universite',
-          sectionId: 'motPresident',
-          labelFr: 'Mot du Président-Fondateur',
-          labelEn: "President's Charter Address",
-          descFr: 'L’engagement solennel pour le monde durable',
-          descEn: 'Solemn commitment to our planetary future',
-          icon: Sparkles,
-        },
-        {
-          id: 'universite',
-          sectionId: 'histoire',
-          labelFr: 'Histoire & Jalons Clés',
-          labelEn: 'History & Milestones',
-          descFr: 'De la chaire exploratoire à l’institution mondiale',
-          descEn: 'From exploratory chair to global charter',
-          icon: History,
-        },
-        {
-          id: 'universite',
-          sectionId: 'gouvernance',
-          labelFr: 'Gouvernance & Conseils',
-          labelEn: 'Governance & Senates',
-          descFr: 'Conseil d’administration, sénat et comité d’éthique',
-          descEn: 'Board of directors, academic senate and ethics board',
-          icon: Shield,
-        },
-        {
-          id: 'universite',
-          sectionId: 'min',
-          labelFr: 'Le Modèle MIN (Inspiré de la Nature)',
-          labelEn: 'The NIM Model (Nature-Inspired)',
-          descFr: 'Biomimétisme managérial et écologie systémique',
-          descEn: 'Managerial biomimicry and systemic ecology',
-          icon: Leaf,
-          badge: 'Signature',
-        },
-        {
-          id: 'universite',
-          sectionId: 'reconnaissances',
-          labelFr: 'Agréments & Partenaires',
-          labelEn: 'Accreditations & Alliances',
-          descFr: 'Conformité ECTS, agréments et réseau de 120+ partenaires',
-          descEn: 'ECTS standards, global charters and 120+ alliances',
-          icon: Award,
-        },
-      ],
-    },
-    {
-      key: 'academique',
-      titleFr: 'Formations & Facultés',
-      titleEn: 'Academics & Degrees',
-      activePages: ['facultes', 'formations', 'admissions'],
-      items: [
-        {
-          id: 'facultes',
-          labelFr: 'Nos 9 Facultés Pionnières',
-          labelEn: 'Our 9 Pioneer Faculties',
-          descFr: 'Écologie, économie circulaire, agroécologie, énergies...',
-          descEn: 'Ecological sciences, circularity, green transition...',
-          icon: Layers,
-          badge: '9 Facultés',
-        },
-        {
-          id: 'formations',
-          labelFr: 'Catalogue des Diplômes & Formations',
-          labelEn: 'Academic Programs & Degrees',
-          descFr: 'Bachelors, Masters, Doctorats / PhD et Certificats',
-          descEn: 'Bachelors, Masters, PhD and Executive Certificates',
-          icon: BookOpen,
-        },
-        {
-          id: 'admissions',
-          labelFr: 'Admissions, Critères & Bourses',
-          labelEn: 'Admissions & Scholarships',
-          descFr: 'Calendrier des candidatures, prérequis et accompagnement',
-          descEn: 'Application schedule, criteria and funding',
-          icon: GraduationCap,
-          badge: 'Ouvert',
-        },
-      ],
-    },
-    {
-      key: 'recherche',
-      titleFr: 'Recherche & Impact',
-      titleEn: 'Research & Impact',
-      activePages: ['recherches', 'cabinet', 'mere_nature'],
-      items: [
-        {
-          id: 'recherches',
-          labelFr: 'MIN Research Institute',
-          labelEn: 'MIN Research Institute',
-          descFr: 'Laboratoires de recherche appliquée et brevets durables',
-          descEn: 'Applied research labs and regenerative publications',
-          icon: Leaf,
-        },
-        {
-          id: 'cabinet',
-          labelFr: 'Cabinet d’Études & Conseil ESG',
-          labelEn: 'Consulting & ESG Advisory',
-          descFr: 'Audit de régénération organisationnelle et bilans carbone',
-          descEn: 'Corporate transition audits and carbon strategies',
-          icon: Briefcase,
-        },
-        {
-          id: 'mere_nature',
-          labelFr: 'Alliance Mère Nature Global',
-          labelEn: 'Mother Nature Global Alliance',
-          descFr: 'Initiative mondiale pour la protection des écosystèmes',
-          descEn: 'Global initiative for biodiversity and climate action',
-          icon: Globe2,
-        },
-      ],
-    },
-    {
-      key: 'campus',
-      titleFr: 'Campus & Ressources',
-      titleEn: 'Campus & Resources',
-      activePages: ['campus_virtuel', 'bibliotheque', 'actualites'],
-      items: [
-        {
-          id: 'campus_virtuel',
-          labelFr: 'Campus Virtuel (Espace Étudiant)',
-          labelEn: 'Virtual Campus (Student Portal)',
-          descFr: 'Accès aux cours en ligne, examens, devoirs et messagerie',
-          descEn: 'Interactive coursework, exams, grades and messaging',
-          icon: GraduationCap,
-          badge: 'Interactif',
-        },
-        {
-          id: 'bibliotheque',
-          labelFr: 'Bibliothèque Numérique',
-          labelEn: 'Digital Library & Research Hub',
-          descFr: '12 000+ ouvrages, revues scientifiques, thèses et rapports',
-          descEn: '12,000+ publications, scientific journals and theses',
-          icon: Library,
-        },
-        {
-          id: 'actualites',
-          labelFr: 'Actualités & Colloques',
-          labelEn: 'News & Symposia',
-          descFr: 'Événements scientifiques, colloques SIEDS et annonces',
-          descEn: 'Academic symposia, SIEDS events and campus bulletins',
-          icon: Newspaper,
-        },
-      ],
-    },
-  ];
-
-  const isGroupActive = (group: DropdownGroup) => group.activePages.includes(activePage as PageId);
 
   return (
-    <header className="sticky top-0 z-40 bg-white border-b-4 border-[#006b32]" ref={navRef}>
-      {/* Top Academic Ribbon with Official Motto */}
-      <div className="bg-[#00552b] text-white text-xs py-1.5 px-4 sm:px-8 border-b border-[#e85b1a]/50">
-        <div className="max-w-7xl mx-auto flex items-center justify-between gap-4">
-          <div className="flex items-center gap-2 overflow-hidden text-slate-300">
-            <span className="font-bold text-[#e85b1a] tracking-wider text-[11px] uppercase">
-              PLURIPERF
-            </span>
-            <span className="text-slate-600 hidden sm:inline">|</span>
-            <span className="truncate text-slate-300 text-[11px] sm:text-xs">
-              {lang === 'fr'
-                ? "1ère Université de Management Durable, d'Écologie responsable et de Leadership régénératif"
-                : '1st University of Sustainable Management - Responsible Ecology & Regenerative Leadership'}
-            </span>
+    <header ref={navRef} className="site-header">
+      <div className="utility-bar">
+        <div className="site-container utility-inner">
+          <div className="utility-links">
+            <button type="button" onClick={() => navigate('actualites')}>Actualités</button>
+            <button type="button" onClick={() => navigate('bibliotheque')}>Bibliothèque</button>
+            <button type="button" onClick={() => navigate('contacts')}>Nous contacter</button>
+            <span className="utility-separator">•</span>
+            <span>PLURIPERF International University</span>
           </div>
-
-          <div className="flex items-center gap-3 shrink-0">
-            {/* Language toggle */}
-            <div className="flex items-center bg-[#004f25] rounded border border-[#2a5048] p-0.5 text-[11px]">
-              <button
-                type="button"
-                onClick={() => handleSetLang('fr')}
-                className={`px-2 py-0.5 font-bold rounded transition-colors ${
-                  lang === 'fr'
-                    ? 'bg-[#e85b1a] text-white'
-                    : 'text-slate-400 hover:text-white'
-                }`}
-              >
-                FR
-              </button>
-              <button
-                type="button"
-                onClick={() => handleSetLang('en')}
-                className={`px-2 py-0.5 font-bold rounded transition-colors ${
-                  lang === 'en'
-                    ? 'bg-[#e85b1a] text-white'
-                    : 'text-slate-400 hover:text-white'
-                }`}
-              >
-                EN
-              </button>
+          <div className="utility-actions">
+            <div className="language-switch" aria-label="Choisir la langue">
+              <button type="button" className={lang === 'fr' ? 'active' : ''} onClick={() => changeLanguage('fr')}>FR</button>
+              <button type="button" className={lang === 'en' ? 'active' : ''} onClick={() => changeLanguage('en')}>EN</button>
             </div>
-
-            <span className="text-slate-600 hidden md:inline">·</span>
-            <span className="text-[11px] text-[#d0ad72] hidden md:inline italic font-serif">
-              {t.institutionalPromiseEnglish}
-            </span>
+            <button type="button" className="student-link" onClick={() => navigate('campus_virtuel')}>
+              <GraduationCap size={13} />
+              <span>{lang === 'fr' ? 'ESPACE ÉTUDIANT' : 'STUDENT SPACE'}</span>
+              <ExternalLink size={12} />
+            </button>
           </div>
         </div>
       </div>
 
-      {/* Main Bar complying with Top Bar Contract: Zone 1 (Brand), Zone 2 (Grouped Compact Nav), Zone 3 (Actions) */}
-      <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 min-h-[4.5rem] py-2 flex items-center justify-between gap-2 sm:gap-4 border-b border-slate-200">
-        {/* Zone 1: Official Logo */}
-        <button
-          type="button"
-          onClick={() => handleNavigate('accueil')}
-          className="flex items-center text-left focus:outline-none group transition-opacity hover:opacity-95 shrink-0"
-          title="Accueil PLURIPERF"
-        >
-          <Logo variant="full-horizontal" size="md" theme="light" />
-        </button>
-
-        {/* Zone 2: Navigation Links arranged into compact, logical dropdowns */}
-        <nav className="hidden lg:flex flex-1 min-w-0 items-center justify-center gap-0.5 xl:gap-1 text-[12px] xl:text-[13px] font-semibold text-[#303631] overflow-visible">
-          {/* Direct link: Accueil */}
-          <button
-            type="button"
-            onClick={() => handleNavigate('accueil')}
-            className={`px-2 xl:px-3 py-2 rounded-sm transition-colors whitespace-nowrap ${
-              activePage === 'accueil'
-                ? 'text-[#173f38] font-bold bg-[#f0f0ec] text-[#e85b1a]'
-                : 'text-[#303631] hover:text-[#e85b1a] hover:bg-[#f4f4f1]'
-            }`}
-          >
-            {t.nav.accueil}
+      <div className="main-nav-wrap">
+        <div className="site-container main-nav">
+          <button type="button" className="brand-button" onClick={() => navigate('accueil')} aria-label="Accueil PLURIPERF">
+            <Logo variant="full-horizontal" theme="light" size="md" />
           </button>
 
-          {/* Dynamic Compact Dropdown Groups */}
-          {dropdownGroups.map((group) => {
-            const isOpen = activeDropdown === group.key;
-            const active = isGroupActive(group);
-            return (
-              <div
-                key={group.key}
-                className="relative"
-                onMouseEnter={() => setActiveDropdown(group.key)}
-                onMouseLeave={() => setActiveDropdown(null)}
-              >
-                <button
-                  type="button"
-                  onClick={() => setActiveDropdown(isOpen ? null : group.key)}
-                  className={`flex items-center gap-1 px-2 xl:px-3 py-2 rounded-sm transition-all whitespace-nowrap ${
-                    active || isOpen
-                      ? 'text-[#173f38] font-bold bg-[#f0f0ec] text-[#e85b1a]'
-                      : 'text-[#303631] hover:text-[#e85b1a] hover:bg-[#f4f4f1]'
-                  }`}
-                  aria-expanded={isOpen}
-                >
-                  <span>{lang === 'fr' ? group.titleFr : group.titleEn}</span>
-                  <ChevronDown
-                    className={`w-3.5 h-3.5 transition-transform duration-200 ${
-                      isOpen ? 'rotate-180 text-[#e85b1a]' : 'text-slate-400'
-                    }`}
-                  />
-                </button>
-
-                {/* Dropdown Menu Popover */}
-                {isOpen && (
-                  <div className="absolute left-0 top-full mt-1 w-80 sm:w-96 bg-white border border-slate-200 rounded-none shadow-lg py-2 z-50 animate-in fade-in slide-in-from-top-1 duration-150">
-                    <div className="px-4 py-2 border-b border-slate-100 flex items-center justify-between text-[11px] font-bold text-slate-400 uppercase tracking-wider">
-                      <span>{lang === 'fr' ? group.titleFr : group.titleEn}</span>
-                      <span className="text-[#e85b1a] font-normal normal-case">
-                        {group.items.length} {lang === 'fr' ? 'sections' : 'items'}
-                      </span>
-                    </div>
-
-                    <div className="py-1 max-h-[70vh] overflow-y-auto">
-                      {group.items.map((item) => {
-                        const Icon = item.icon;
-                        const isCurrent =
-                          activePage === item.id &&
-                          (!item.sectionId ||
-                            (typeof window !== 'undefined' &&
-                              window.location.hash === `#${item.sectionId}`));
-                        return (
-                          <button
-                            key={`${item.id}-${item.sectionId || ''}`}
-                            type="button"
-                            onClick={() => handleNavigate(item.id, item.sectionId)}
-                            className={`w-full text-left px-4 py-2.5 transition-colors flex items-start gap-3 group/item ${
-                              isCurrent
-                                ? 'bg-[#f5ebe4] text-[#e85b1a]'
-                                : 'hover:bg-[#f4f4f1] text-[#303631]'
-                            }`}
-                          >
-                            <div
-                              className={`p-2 rounded-sm shrink-0 transition-colors ${
-                                isCurrent
-                                  ? 'bg-[#e85b1a] text-white'
-                                  : 'bg-slate-100 text-slate-600 group-hover/item:bg-[#f1e1d6] group-hover/item:text-[#e85b1a]'
-                              }`}
-                            >
-                              <Icon className="w-4 h-4" />
-                            </div>
-                            <div className="min-w-0 flex-1">
-                              <div className="flex items-center gap-2">
-                                <span className="font-bold text-xs text-[#202420] group-hover/item:text-[#e85b1a] leading-snug">
-                                  {lang === 'fr' ? item.labelFr : item.labelEn}
-                                </span>
-                                {item.badge && (
-                                  <span className="px-1.5 py-0.5 rounded text-[9px] font-bold bg-[#f1e1d6] text-[#e85b1a] uppercase tracking-wide">
-                                    {item.badge}
-                                  </span>
-                                )}
-                              </div>
-                              <p className="text-[11px] text-slate-500 line-clamp-1 mt-0.5 leading-tight">
-                                {lang === 'fr' ? item.descFr : item.descEn}
-                              </p>
-                            </div>
-                          </button>
-                        );
-                      })}
-                    </div>
-                  </div>
-                )}
-              </div>
-            );
-          })}
-
-          {/* Direct link: Contacts */}
-          <button
-            type="button"
-            onClick={() => handleNavigate('contacts')}
-            className={`px-3 py-2 rounded-sm transition-colors whitespace-nowrap ${
-              activePage === 'contacts'
-                ? 'text-[#173f38] font-bold bg-[#f0f0ec] text-[#e85b1a]'
-                : 'text-[#303631] hover:text-[#e85b1a] hover:bg-[#f4f4f1]'
-            }`}
-          >
-            {t.nav.contacts}
-          </button>
-        </nav>
-
-        {/* Zone 3: Permanent Core Actions */}
-        <div className="hidden xl:flex items-center gap-2 shrink-0">
-          {/* Permanent Button 1: Trouver une formation */}
-          <button
-            type="button"
-            onClick={onOpenSearch || (() => handleNavigate('formations'))}
-            className="flex items-center gap-1.5 px-3 py-2 text-xs font-semibold text-[#303631] bg-slate-100 hover:bg-slate-200/80 border border-slate-200 rounded-sm transition-colors whitespace-nowrap"
-            title={t.buttons.findProgram}
-          >
-            <Search className="w-3.5 h-3.5 text-slate-500" />
-            <span className="hidden xl:inline">{t.buttons.findProgram}</span>
-            <span className="xl:hidden">{lang === 'fr' ? 'Formations' : 'Degrees'}</span>
-          </button>
-
-          {/* Permanent Button 2: Candidater */}
-          <button
-            type="button"
-            onClick={onOpenApply}
-            className="flex items-center gap-1.5 px-4 py-2 text-xs font-bold text-white bg-[#e85b1a] hover:bg-[#c84710] active:scale-[0.98] rounded-sm shadow-none transition-all whitespace-nowrap"
-          >
-            <GraduationCap className="w-4 h-4" />
-            <span>{t.buttons.apply}</span>
-          </button>
-
-          {/* Permanent Button 3: Espace Campus / Se connecter */}
-          {user ? (
-            <div className="flex items-center gap-2">
-              {['admin', 'super_admin', 'advisor', 'editor'].includes(user.role) && (
-                <button
-                  type="button"
-                  onClick={() => handleNavigate('contacts')}
-                  className="hidden lg:flex items-center gap-1.5 px-3 py-2 text-xs font-semibold text-[#303631] bg-white hover:bg-[#f4f4f1] border border-slate-300 rounded-sm transition-colors"
-                  title="Administration"
-                >
-                  <Shield className="w-3.5 h-3.5 text-emerald-600" />
-                  <span>Admin</span>
-                </button>
-              )}
-              <span className="hidden lg:block text-xs font-semibold text-[#303631] max-w-32 truncate">
-                {user.fullName}
-              </span>
-              <button
-                type="button"
-                onClick={onLogout}
-                className="flex items-center gap-1.5 px-3 py-2 text-xs font-semibold text-slate-600 hover:text-[#202420] bg-white hover:bg-[#f4f4f1] border border-slate-300 rounded-sm transition-colors"
-              >
-                <LogIn className="w-3.5 h-3.5 text-[#e85b1a] rotate-180" />
-                <span>{lang === 'fr' ? 'Quitter' : 'Logout'}</span>
-              </button>
-            </div>
-          ) : (
-          <button
-            type="button"
-            onClick={onOpenLogin}
-            className="flex items-center gap-1.5 px-3 py-2 text-xs font-semibold text-[#303631] bg-white hover:bg-[#f4f4f1] border border-slate-300 rounded-sm transition-colors whitespace-nowrap shadow-2xs"
-          >
-            <LogIn className="w-3.5 h-3.5 text-[#e85b1a]" />
-            <span>{t.buttons.login}</span>
-          </button>
-          )}
-        </div>
-
-        {/* Mobile menu trigger */}
-        <div className="flex items-center gap-2 xl:hidden shrink-0">
-          <button
-            type="button"
-            onClick={onOpenApply}
-            className="sm:hidden px-3 py-1.5 text-xs font-bold bg-[#e85b1a] text-white rounded-sm"
-          >
-            {t.buttons.apply}
-          </button>
-
-          <button
-            type="button"
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="p-2 text-[#1f5b50] hover:text-[#e85b1a] hover:bg-[#f0eee8] rounded-sm"
-            aria-label="Toggle menu"
-          >
-            {mobileMenuOpen ? (
-              <X className="w-5 h-5 text-[#303631]" />
-            ) : (
-              <Menu className="w-5 h-5 text-[#303631]" />
-            )}
-          </button>
-        </div>
-      </div>
-
-      {/* Mobile Drawer with Accordion Groups for compact clear browsing */}
-      {mobileMenuOpen && (
-        <div className="xl:hidden border-b border-slate-200 bg-white px-3 sm:px-4 pt-3 pb-6 space-y-3 shadow-lg max-h-[calc(100vh-7rem)] overflow-y-auto">
-          {/* Quick Actions Row */}
-          <div className="grid grid-cols-1 min-[400px]:grid-cols-2 gap-2 pb-2 border-b border-slate-100">
-            <button
-              type="button"
-              onClick={() => {
-                if (onOpenSearch) onOpenSearch();
-                else handleNavigate('formations');
-              }}
-              className="flex items-center justify-center gap-2 min-h-10 p-2.5 text-xs font-semibold bg-slate-100 text-[#303631] rounded-sm border border-slate-200"
-            >
-              <Search className="w-4 h-4 text-slate-500" />
-              <span>{t.buttons.findProgram}</span>
+          <nav className="desktop-nav" aria-label="Navigation principale">
+            <button type="button" className={currentPage === 'accueil' ? 'nav-link active' : 'nav-link'} onClick={() => navigate('accueil')}>
+              {t.nav.accueil.toUpperCase()}
             </button>
-            <button
-              type="button"
-              onClick={() => {
-                onOpenLogin();
-                setMobileMenuOpen(false);
-              }}
-              className="flex items-center justify-center gap-2 p-2.5 text-xs font-semibold bg-slate-100 text-[#303631] rounded-sm border border-slate-200"
-            >
-              <LogIn className="w-4 h-4 text-[#e85b1a]" />
-              <span>{t.buttons.login}</span>
-            </button>
-          </div>
-
-          {/* Direct Accueil Link */}
-          <button
-            type="button"
-            onClick={() => handleNavigate('accueil')}
-            className={`w-full text-left px-3 py-2 rounded-sm font-bold text-sm transition-colors ${
-              currentPage === 'accueil'
-                ? 'bg-[#f5ebe4] text-[#e85b1a]'
-                : 'text-[#303631] hover:bg-slate-100'
-            }`}
-          >
-            {t.nav.accueil}
-          </button>
-
-          {/* Accordion Dropdown Groups in Mobile */}
-          <div className="space-y-1.5">
-            {dropdownGroups.map((group) => {
-              const isOpen = mobileOpenGroup === group.key;
-              const active = isGroupActive(group);
+            {menuGroups.map((group) => {
+              const active = group.pages.includes(currentPage as PageId);
               return (
-                <div key={group.key} className="border border-slate-200 rounded-sm overflow-hidden">
-                  <button
-                    type="button"
-                    onClick={() => setMobileOpenGroup(isOpen ? null : group.key)}
-                    className={`w-full flex items-center justify-between px-3.5 py-2.5 text-xs font-bold text-left transition-colors ${
-                      active
-                        ? 'bg-[#f5ebe4]/70 text-[#e85b1a]'
-                        : 'bg-slate-50 text-[#303631] hover:bg-slate-100'
-                    }`}
-                  >
-                    <span>{lang === 'fr' ? group.titleFr : group.titleEn}</span>
-                    <ChevronDown
-                      className={`w-4 h-4 text-slate-400 transition-transform ${
-                        isOpen ? 'rotate-180 text-[#e85b1a]' : ''
-                      }`}
-                    />
+                <div className="nav-group" key={group.key}>
+                  <button type="button" className={`nav-link ${active || open === group.key ? 'active' : ''}`} onClick={() => setOpen(open === group.key ? null : group.key)} aria-expanded={open === group.key}>
+                    {lang === 'fr' ? group.labelFr : group.labelEn}<ChevronDown size={13} />
                   </button>
-
-                  {isOpen && (
-                    <div className="bg-white px-2 py-1.5 space-y-1 border-t border-slate-100">
-                      {group.items.map((item) => {
-                        const Icon = item.icon;
-                        const isCurrent = currentPage === item.id;
-                        return (
-                          <button
-                            key={`${item.id}-${item.sectionId || ''}`}
-                            type="button"
-                            onClick={() => handleNavigate(item.id, item.sectionId)}
-                            className={`w-full text-left px-2.5 py-2 rounded-sm text-xs flex items-center gap-2.5 transition-colors ${
-                              isCurrent
-                                ? 'bg-[#f5ebe4] text-[#e85b1a] font-bold'
-                                : 'text-[#303631] hover:bg-[#f4f4f1]'
-                            }`}
-                          >
-                            <Icon className="w-3.5 h-3.5 text-slate-500 shrink-0" />
-                            <span className="truncate">{lang === 'fr' ? item.labelFr : item.labelEn}</span>
-                            {item.badge && (
-                              <span className="ml-auto text-[9px] font-bold px-1.5 py-0.2 bg-slate-100 text-slate-600 rounded">
-                                {item.badge}
-                              </span>
-                            )}
-                          </button>
-                        );
-                      })}
+                  {open === group.key && (
+                    <div className="nav-dropdown">
+                      {group.items.map((item) => (
+                        <button type="button" key={item.page} onClick={() => navigate(item.page)} className={currentPage === item.page ? 'dropdown-item active' : 'dropdown-item'}>
+                          {lang === 'fr' ? item.fr : item.en}
+                        </button>
+                      ))}
                     </div>
                   )}
                 </div>
               );
             })}
-          </div>
+          </nav>
 
-          {/* Direct Contacts Link */}
-          <button
-            type="button"
-            onClick={() => handleNavigate('contacts')}
-            className={`w-full text-left px-3 py-2 rounded-sm font-bold text-sm transition-colors ${
-              currentPage === 'contacts'
-                ? 'bg-[#f5ebe4] text-[#e85b1a]'
-                : 'text-[#303631] hover:bg-slate-100'
-            }`}
-          >
-            {t.nav.contacts}
-          </button>
-
-          {/* Apply Button */}
-          <div className="pt-2">
-            <button
-              type="button"
-              onClick={() => {
-                onOpenApply();
-                setMobileMenuOpen(false);
-              }}
-              className="w-full py-2.5 bg-[#e85b1a] hover:bg-[#c84710] font-bold text-white rounded-sm text-sm flex items-center justify-center gap-2 shadow"
-            >
-              <GraduationCap className="w-4 h-4" />
-              <span>{t.buttons.apply}</span>
+          <div className="nav-actions">
+            {onOpenSearch && <button type="button" className="icon-action" onClick={onOpenSearch} aria-label="Rechercher"><Search size={18} /></button>}
+            {user ? (
+              <button type="button" className="login-action" onClick={onLogout}>{lang === 'fr' ? 'DÉCONNEXION' : 'SIGN OUT'}</button>
+            ) : (
+              <button type="button" className="login-action" onClick={onOpenLogin}>{lang === 'fr' ? 'CONNEXION' : 'SIGN IN'}</button>
+            )}
+            <button type="button" className="apply-action" onClick={onOpenApply}>{lang === 'fr' ? 'CANDIDATER' : 'APPLY'}</button>
+            <button type="button" className="mobile-menu-button" onClick={() => setMobileOpen(!mobileOpen)} aria-expanded={mobileOpen} aria-label="Menu">
+              {mobileOpen ? <X size={23} /> : <Menu size={23} />}
             </button>
+          </div>
+        </div>
+      </div>
+
+      {mobileOpen && (
+        <div className="mobile-nav" role="dialog" aria-label="Menu mobile">
+          <button type="button" className={currentPage === 'accueil' ? 'mobile-link active' : 'mobile-link'} onClick={() => navigate('accueil')}>Accueil</button>
+          {menuGroups.map((group) => (
+            <div key={group.key} className="mobile-group">
+              <button type="button" className="mobile-group-title" onClick={() => setOpen(open === group.key ? null : group.key)}>
+                {lang === 'fr' ? group.labelFr : group.labelEn}<ChevronDown size={15} className={open === group.key ? 'rotate-180' : ''} />
+              </button>
+              {open === group.key && group.items.map((item) => <button type="button" key={item.page} className="mobile-sublink" onClick={() => navigate(item.page)}>{lang === 'fr' ? item.fr : item.en}</button>)}
+            </div>
+          ))}
+          <div className="mobile-actions">
+            <button type="button" onClick={onOpenApply} className="apply-action">{lang === 'fr' ? 'CANDIDATER' : 'APPLY'}</button>
+            <button type="button" onClick={onOpenLogin} className="login-action">{lang === 'fr' ? 'CONNEXION' : 'SIGN IN'}</button>
           </div>
         </div>
       )}
     </header>
   );
 };
+
+export default Navbar;

@@ -1,7 +1,45 @@
 import React from 'react';
-import {PageId,Language} from '../types';
-import {getT} from '../data/translations';
-import {Logo} from './Logo';
-import {MapPin,Mail,Phone,ArrowUpRight} from 'lucide-react';
-interface FooterProps{setCurrentPage?: (page:PageId)=>void;onNavigate?:(page:PageId)=>void;lang:Language;onOpenApply:()=>void;onOpenSearch?:()=>void;onOpenAppointment?:()=>void}
-export const Footer:React.FC<FooterProps>=({setCurrentPage,onNavigate,lang,onOpenApply,onOpenSearch})=>{const t=getT(lang);const go=(p:PageId)=>{onNavigate?onNavigate(p):setCurrentPage?.(p);window.scrollTo({top:0,behavior:'smooth'})};const cols=[{title:lang==='fr'?'Université':'University',items:[['universite' as PageId,lang==='fr'?'Présentation':'Overview'],['facultes',lang==='fr'?'Facultés':'Faculties'],['recherches',lang==='fr'?'Recherche':'Research'],['actualites',lang==='fr'?'Actualités':'News']]},{title:lang==='fr'?'Études':'Studies',items:[['formations' as PageId,lang==='fr'?'Formations':'Programs'],['admissions',lang==='fr'?'Admissions':'Admissions'],['bibliotheque',lang==='fr'?'Bibliothèque':'Library'],['campus_virtuel',lang==='fr'?'Vie étudiante':'Student life']]},{title:lang==='fr'?'Services':'Services',items:[['contacts' as PageId,lang==='fr'?'Contacts':'Contact'],['carrieres',lang==='fr'?'Carrières':'Careers']]}];return <footer className="bg-[#004f25] text-white"><div className="border-b border-white/15"><div className="max-w-7xl mx-auto px-5 sm:px-8 py-12 grid lg:grid-cols-[2fr_3fr] gap-12"><div><Logo variant="full-horizontal" theme="dark" size="md"/><p className="mt-5 max-w-md text-sm leading-7 text-white/75">{t.footer.aboutText}</p><div className="mt-6 space-y-2 text-sm text-white/75"><div className="flex gap-2"><MapPin size={16}/><span>{t.footer.address}</span></div><div className="flex gap-2"><Mail size={16}/><span>contact@pluriperf.com</span></div><div className="flex gap-2"><Phone size={16}/><span>+225 00 00 00 00 00</span></div></div></div><div className="grid sm:grid-cols-3 gap-8">{cols.map(c=><div key={c.title}><h3 className="font-bold text-sm uppercase tracking-wider border-b border-white/20 pb-3">{c.title}</h3><ul className="mt-4 space-y-3">{c.items.map(([p,l])=><li key={String(p)}><button onClick={()=>go(p as PageId)} className="text-sm text-white/75 hover:text-white flex items-center gap-1">{l}<ArrowUpRight size={12}/></button></li>)}</ul></div>)}</div></div></div><div className="max-w-7xl mx-auto px-5 sm:px-8 py-5 flex flex-col sm:flex-row justify-between gap-3 text-xs text-white/60"><span>© {new Date().getFullYear()} PLURIPERF International University</span><div className="flex gap-4"><button onClick={onOpenApply} className="hover:text-white">Candidater</button><button onClick={onOpenSearch} className="hover:text-white">Rechercher une formation</button></div></div></footer>};
+import { ArrowUpRight, Mail, MapPin, Phone } from 'lucide-react';
+import { PageId, Language } from '../types';
+import { getT } from '../data/translations';
+import { Logo } from './Logo';
+
+interface FooterProps {
+  setCurrentPage?: (page: PageId) => void;
+  onNavigate?: (page: PageId) => void;
+  lang: Language;
+  onOpenApply: () => void;
+  onOpenSearch?: () => void;
+  onOpenAppointment?: () => void;
+}
+
+export const Footer: React.FC<FooterProps> = ({ setCurrentPage, onNavigate, lang, onOpenApply, onOpenSearch, onOpenAppointment }) => {
+  const t = getT(lang);
+  const go = (page: PageId) => {
+    onNavigate?.(page);
+    setCurrentPage?.(page);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  return (
+    <footer className="site-footer">
+      <div className="site-container footer-topline">
+        <div><span className="eyebrow eyebrow-light">PLURIPERF</span><h2>{lang === 'fr' ? 'Former, rechercher, transformer.' : 'Educate, research, transform.'}</h2></div>
+        <button type="button" className="footer-cta" onClick={onOpenApply}>{lang === 'fr' ? 'Rejoindre l’université' : 'Join the university'} <ArrowUpRight size={16} /></button>
+      </div>
+      <div className="site-container footer-grid">
+        <div className="footer-brand">
+          <Logo variant="full-stacked" theme="dark" size="md" />
+          <p>{t.footer.aboutText}</p>
+          <div className="footer-contact"><span><MapPin size={15} /> Abidjan · Côte d’Ivoire</span><span><Phone size={15} /> +225 07 00 00 00 00</span><a href="mailto:contact@pluriperf.com"><Mail size={15} /> contact@pluriperf.com</a></div>
+        </div>
+        <div><h3>{lang === 'fr' ? 'L’université' : 'The university'}</h3><button type="button" onClick={() => go('universite')}>Présentation</button><button type="button" onClick={() => go('facultes')}>Facultés</button><button type="button" onClick={() => go('recherches')}>Recherche</button><button type="button" onClick={() => go('actualites')}>Actualités</button></div>
+        <div><h3>{lang === 'fr' ? 'Formations' : 'Academics'}</h3><button type="button" onClick={() => go('formations')}>Catalogue</button><button type="button" onClick={() => go('admissions')}>Admissions</button><button type="button" onClick={() => go('bibliotheque')}>Bibliothèque</button><button type="button" onClick={() => go('carrieres')}>Carrières</button></div>
+        <div><h3>{lang === 'fr' ? 'Accès rapide' : 'Quick access'}</h3><button type="button" onClick={onOpenApply}>{lang === 'fr' ? 'Candidater' : 'Apply now'}</button>{onOpenSearch && <button type="button" onClick={onOpenSearch}>{lang === 'fr' ? 'Trouver une formation' : 'Find a program'}</button>}{onOpenAppointment && <button type="button" onClick={onOpenAppointment}>{lang === 'fr' ? 'Prendre rendez-vous' : 'Book an appointment'}</button>}<button type="button" onClick={() => go('contacts')}>Contact</button></div>
+      </div>
+      <div className="site-container footer-bottom"><span>© {new Date().getFullYear()} PLURIPERF International University</span><span>{lang === 'fr' ? 'Portail institutionnel bilingue' : 'Bilingual institutional portal'}</span></div>
+    </footer>
+  );
+};
+
+export default Footer;

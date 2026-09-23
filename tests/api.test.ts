@@ -35,7 +35,7 @@ describe('POST /api/auth/register', () => {
       .post('/api/auth/register')
       .send({ email: createdEmail, password: 'Password123!', fullName: 'Test User' });
     expect(res.status).toBe(201);
-    expect(res.body.token).toBeTruthy();
+    expect(res.headers['set-cookie']).toBeTruthy();
     expect(res.body.user.role).toBe('student');
     expect(res.body.user.studentRef).toMatch(/^PLU-\d{4}-\d{4}$/);
   });
@@ -62,7 +62,7 @@ describe('POST /api/auth/login', () => {
       .post('/api/auth/login')
       .send({ email: 'sarah@pluriperf.com', password: 'Pluri2026!' });
     expect(res.status).toBe(200);
-    expect(res.body.token).toBeTruthy();
+    expect(res.headers['set-cookie']).toBeTruthy();
     expect(res.body.user.studentRef).toBe('PLU-2025-8842');
   });
 
@@ -71,6 +71,18 @@ describe('POST /api/auth/login', () => {
       .post('/api/auth/login')
       .send({ email: undefined, password: 'Pluri2026!', studentRef: 'PLU-2025-8842' });
     expect(res.status).toBe(200);
+    expect(res.headers['set-cookie']).toBeTruthy();
+  });
+
+  it('expose /me avec le cookie HttpOnly', async () => {
+    const login = await request(buildApp())
+      .post('/api/auth/login')
+      .send({ email: 'sarah@pluriperf.com', password: 'Pluri2026!' });
+    const res = await request(buildApp())
+      .get('/api/auth/me')
+      .set('Cookie', login.headers['set-cookie'][0]);
+    expect(res.status).toBe(200);
+    expect(res.body.user.email).toBe('sarah@pluriperf.com');
   });
 
   it('rejette un mauvais mot de passe (401)', async () => {

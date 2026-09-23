@@ -10,6 +10,7 @@ export const config = {
   passwordResetTtlMinutes: Number(process.env.PASSWORD_RESET_TTL_MINUTES || 60),
   uploadDir: process.env.UPLOAD_DIR || './uploads',
   maxFileSizeMb: Number(process.env.MAX_FILE_SIZE_MB || 10),
+  appointmentTimezone: process.env.APPOINTMENT_TIMEZONE || 'Africa/Abidjan',
   smtp: {
     host: process.env.SMTP_HOST || '',
     port: Number(process.env.SMTP_PORT || 587),

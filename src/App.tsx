@@ -253,7 +253,7 @@ const Shell: React.FC = () => {
         onOpenWhatsApp={() => setIsWhatsAppModalOpen(true)}
       />
 
-      <main className={isAdminOrStudent ? 'flex-1' : 'flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 pt-4'}>
+      <main className={isAdminOrStudent ? 'app-main flex-1' : 'app-main flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 pt-4'}>
         <Suspense fallback={<LoadingState />}>{renderCurrentPage()}</Suspense>
       </main>
 

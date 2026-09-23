@@ -4,6 +4,8 @@ import express from 'express';
 import authRoutes from '../server/routes/auth';
 import contactRoutes from '../server/routes/contact';
 import advisoryRoutes from '../server/routes/advisory';
+import adminRoutes from '../server/routes/admin';
+import studentRoutes from '../server/routes/student';
 import { errorHandler, notFound } from '../server/middleware';
 
 function buildApp() {
@@ -12,6 +14,8 @@ function buildApp() {
   app.use('/api/auth', authRoutes);
   app.use('/api/contact', contactRoutes);
   app.use('/api/advisory', advisoryRoutes);
+  app.use('/api/admin', adminRoutes);
+  app.use('/api/student', studentRoutes);
   app.use('/api', notFound);
   app.use(errorHandler);
   return app;
@@ -121,5 +125,34 @@ describe('Gestion uniforme des erreurs', () => {
     const res = await request(buildApp()).get('/api/inconnu');
     expect(res.status).toBe(404);
     expect(res.body.error).toBe('NOT_FOUND');
+  });
+});
+
+describe('Permissions et espaces protégés', () => {
+  it('refuse l espace étudiant sans session', async () => {
+    const res = await request(buildApp()).get('/api/student/dashboard');
+    expect(res.status).toBe(401);
+  });
+
+  it('autorise l administrateur à consulter les utilisateurs', async () => {
+    const login = await request(buildApp())
+      .post('/api/auth/login')
+      .send({ email: 'admin@pluriperf.com', password: 'Pluri2026!' });
+    const res = await request(buildApp())
+      .get('/api/admin/users')
+      .set('Cookie', login.headers['set-cookie'][0]);
+    expect(res.status).toBe(200);
+    expect(res.body.length).toBeGreaterThanOrEqual(2);
+  });
+
+  it('autorise l étudiant à consulter son propre dashboard', async () => {
+    const login = await request(buildApp())
+      .post('/api/auth/login')
+      .send({ email: 'sarah@pluriperf.com', password: 'Pluri2026!' });
+    const res = await request(buildApp())
+      .get('/api/student/dashboard')
+      .set('Cookie', login.headers['set-cookie'][0]);
+    expect(res.status).toBe(200);
+    expect(res.body.student.studentRef).toBe('PLU-2025-8842');
   });
 });

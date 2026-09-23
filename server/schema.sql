@@ -270,3 +270,28 @@ CREATE TABLE IF NOT EXISTS teacher_courses (
 );
 
 CREATE INDEX IF NOT EXISTS idx_teacher_courses_course ON teacher_courses(course_id);
+
+
+CREATE TABLE IF NOT EXISTS application_history (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  application_id INTEGER NOT NULL REFERENCES applications(id) ON DELETE CASCADE,
+  actor_user_id INTEGER REFERENCES users(id) ON DELETE SET NULL,
+  status TEXT NOT NULL,
+  comment TEXT,
+  created_at TEXT NOT NULL DEFAULT (datetime('now'))
+);
+
+CREATE TABLE IF NOT EXISTS application_documents (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  application_id INTEGER NOT NULL REFERENCES applications(id) ON DELETE CASCADE,
+  uploaded_by INTEGER REFERENCES users(id) ON DELETE SET NULL,
+  document_type TEXT NOT NULL,
+  storage_path TEXT NOT NULL,
+  original_name TEXT NOT NULL,
+  mime_type TEXT NOT NULL,
+  size_bytes INTEGER NOT NULL,
+  created_at TEXT NOT NULL DEFAULT (datetime('now'))
+);
+
+CREATE INDEX IF NOT EXISTS idx_application_history_application ON application_history(application_id);
+CREATE INDEX IF NOT EXISTS idx_application_documents_application ON application_documents(application_id);

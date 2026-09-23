@@ -95,6 +95,9 @@ async function main() {
   insertEnroll.run(sarah.id, courses[1]?.id ?? 2, 30, null);
 
   const t = db.prepare('SELECT id FROM users WHERE email = ?').get('teacher@pluriperf.com') as { id: number };
+  const teacherCourses = db.prepare('SELECT id FROM courses ORDER BY id LIMIT 2').all() as { id: number }[];
+  const assignTeacher = db.prepare('INSERT OR IGNORE INTO teacher_courses (teacher_id, course_id) VALUES (?, ?)');
+  for (const course of teacherCourses) assignTeacher.run(t.id, course.id);
   db.prepare(
     'INSERT OR IGNORE INTO messages (sender_id, recipient_id, subject, body) VALUES (?, ?, ?, ?)',
   ).run(

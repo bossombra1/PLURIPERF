@@ -13,4 +13,10 @@ db.pragma('foreign_keys = ON');
 const schema = fs.readFileSync(path.resolve('server/schema.sql'), 'utf-8');
 db.exec(schema);
 
+// Migrations additives nécessaires aux bases SQLite déjà existantes.
+const appointmentColumns = db.prepare('PRAGMA table_info(appointments)').all() as { name: string }[];
+if (!appointmentColumns.some((column) => column.name === 'timezone')) {
+  db.exec("ALTER TABLE appointments ADD COLUMN timezone TEXT NOT NULL DEFAULT 'Africa/Abidjan'");
+}
+
 export default db;

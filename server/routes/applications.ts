@@ -25,8 +25,15 @@ const upload = multer({
   }),
   limits: { fileSize: config.maxFileSizeMb * 1024 * 1024, files: 1 },
   fileFilter: (_req, file, cb) => {
-    const ok = ['.pdf', '.doc', '.docx'].includes(path.extname(file.originalname).toLowerCase());
-    cb(null, ok);
+    const ext = path.extname(file.originalname).toLowerCase();
+    const allowed: Record<string, string[]> = {
+      '.pdf': ['application/pdf'],
+      '.doc': ['application/msword', 'application/octet-stream'],
+      '.docx': ['application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'application/zip'],
+    };
+    if (!allowed[ext]) return cb(new HttpError(400, 'Format de CV non autorisé'));
+    if (!allowed[ext].includes(file.mimetype)) return cb(new HttpError(400, 'Type MIME de CV invalide'));
+    cb(null, true);
   },
 });
 
@@ -53,6 +60,18 @@ router.post(
     if (!parsed.success) {
       if (req.file) fs.unlinkSync(req.file.path);
       throw parsed.error;
+    }
+    if (req.file) {
+      const signature = Buffer.alloc(8);
+      const handle = fs.openSync(req.file.path, 'r');
+      try { fs.readSync(handle, signature, 0, signature.length, 0); } finally { fs.closeSync(handle); }
+      const ext = path.extname(req.file.originalname).toLowerCase();
+      const isPdf = ext === '.pdf' && signature.subarray(0, 4).toString() === '%PDF';
+      const isOffice = ['.doc', '.docx'].includes(ext) && signature[0] === 0x50 && signature[1] === 0x4b || ext === '.doc' && signature[0] === 0xd0 && signature[1] === 0xcf;
+      if (!isPdf && !isOffice) {
+        fs.unlinkSync(req.file.path);
+        throw new HttpError(400, 'Le contenu du fichier ne correspond pas à son format déclaré');
+      }
     }
     const data = parsed.data;
     const user = (req as any).user as AuthUser | undefined;

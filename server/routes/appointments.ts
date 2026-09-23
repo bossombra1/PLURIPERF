@@ -5,6 +5,7 @@ import { db } from '../db';
 import { requireAuth, AuthUser } from '../auth';
 import { HttpError, asyncHandler } from '../middleware';
 import { notifyStaff } from '../mailer';
+import { config } from '../config';
 
 const TIME_SLOTS = ['09:00', '11:00', '14:30', '16:30'] as const;
 
@@ -17,6 +18,7 @@ const appointmentSchema = z.object({
   fullName: z.string().min(2).max(120),
   email: z.string().email(),
   phone: z.string().min(6).max(30),
+  timezone: z.string().min(3).max(80).optional(),
 });
 
 router.post(
@@ -51,6 +53,7 @@ router.post(
         data.fullName,
         data.email.toLowerCase(),
         data.phone,
+        data.timezone || config.appointmentTimezone,
       );
     await notifyStaff(
       'Nouvelle demande de rendez-vous',

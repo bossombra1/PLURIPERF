@@ -20,11 +20,12 @@ const insertUser = db.prepare(
 );
 insertUser.run('sarah@pluriperf.com', passwordHash, 'Sarah Kouassi', 'student', 'PLU-2025-8842');
 insertUser.run('admin@pluriperf.com', passwordHash, 'Admin Test', 'admin', null);
+insertUser.run('teacher@pluriperf.com', passwordHash, 'Prof Test', 'teacher', null);
 const course = db.prepare(
   "INSERT INTO courses (code, title_fr, title_en, ects, semester, program) VALUES (?, ?, ?, ?, ?, ?)",
 ).run('TEST-101', 'Cours de test', 'Test Course', 6, 'S1', 'Test');
 const sarah = db.prepare("SELECT id FROM users WHERE email = 'sarah@pluriperf.com'").get() as { id: number };
-db.prepare("INSERT INTO enrollments (user_id, course_id, progress, grade) VALUES (?, ?, ?, ?)").run(
+const teacher = db.prepare("SELECT id FROM users WHERE email = 'teacher@pluriperf.com'").get() as { id: number };\ndb.prepare('INSERT INTO teacher_courses (teacher_id, course_id) VALUES (?, ?)').run(teacher.id, course.lastInsertRowid);\ndb.prepare("INSERT INTO enrollments (user_id, course_id, progress, grade) VALUES (?, ?, ?, ?)").run(
   sarah.id, course.lastInsertRowid, 50, 14,
 );
 db.close();

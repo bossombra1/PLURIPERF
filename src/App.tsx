@@ -1,5 +1,5 @@
 import React, { Suspense, lazy } from 'react';
-import { BrowserRouter, Routes, Route, useLocation, useNavigate, useParams, Navigate } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, useLocation, useNavigate, Navigate } from 'react-router-dom';
 import { PageId, Language } from './types';
 import { pageToPath } from './routes';
 import { AuthProvider, useAuth } from './context/AuthContext';
@@ -78,7 +78,8 @@ const Shell: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { user, logout } = useAuth();
-  const params = useParams();
+  const routeParts = location.pathname.split('/').filter(Boolean);
+  const routeParam = routeParts[1] || '';
 
   const [lang, setLang] = React.useState<Language>('fr');
   const [isApplyModalOpen, setIsApplyModalOpen] = React.useState(false);
@@ -123,12 +124,12 @@ const Shell: React.FC = () => {
       case 'universite':
         return <UniversityPage {...commonProps} onOpenApply={() => setIsApplyModalOpen(true)} initialSection={location.hash.slice(1)} />;
       case 'facultes':
-        if (params.facultyId) return <FacultyDetailPage {...commonProps} facultyId={params.facultyId} onApplyForProgram={handleApplyForProgram} />;
+        if (routeParam) return <FacultyDetailPage {...commonProps} facultyId={routeParam} onApplyForProgram={handleApplyForProgram} />;
         return <FacultiesPage {...commonProps} onApplyForProgram={handleApplyForProgram} />;
       case 'admissions':
         return <AdmissionsPage {...commonProps} onOpenApply={() => setIsApplyModalOpen(true)} onOpenAppointment={() => setIsAppointmentModalOpen(true)} />;
       case 'formations':
-        if (params.programId) return <FormationDetailPage {...commonProps} programId={params.programId} onApplyForProgram={handleApplyForProgram} />;
+        if (routeParam) return <FormationDetailPage {...commonProps} programId={routeParam} onApplyForProgram={handleApplyForProgram} />;
         return <FormationsPage {...commonProps} onApplyForProgram={handleApplyForProgram} />;
       case 'campus-virtuel':
         return <RequireAuth><CampusVirtuelPage {...commonProps} /></RequireAuth>;
@@ -141,7 +142,7 @@ const Shell: React.FC = () => {
       case 'recherches':
         return <RecherchesPage {...commonProps} />;
       case 'actualites':
-        if (params.articleId) return <ArticleDetailPage {...commonProps} articleId={params.articleId} />;
+        if (routeParam) return <ArticleDetailPage {...commonProps} articleId={routeParam} />;
         return <ActualitesPage {...commonProps} />;
       case 'carrieres':
         return <CareerPage {...commonProps} />;
@@ -158,48 +159,42 @@ const Shell: React.FC = () => {
       case 'espace-etudiant':
         return (
           <RequireAuth>
-            <Routes>
-              <Route index element={<StudentSpacePage {...commonProps} />} />
-              <Route path="cours" element={<StudentCoursesPage {...commonProps} />} />
-              <Route path="devoirs" element={<StudentAssignmentsPage {...commonProps} />} />
-              <Route path="notes" element={<StudentGradesPage {...commonProps} />} />
-              <Route path="diplomes" element={<StudentDiplomasPage {...commonProps} />} />
-              <Route path="messages" element={<StudentMessagesPage {...commonProps} />} />
-              <Route path="forum" element={<StudentForumPage {...commonProps} />} />
-              <Route path="*" element={<Navigate to="/espace-etudiant" replace />} />
-            </Routes>
+            {routeParam === 'cours' ? <StudentCoursesPage {...commonProps} /> :
+              routeParam === 'devoirs' ? <StudentAssignmentsPage {...commonProps} /> :
+              routeParam === 'notes' ? <StudentGradesPage {...commonProps} /> :
+              routeParam === 'diplomes' ? <StudentDiplomasPage {...commonProps} /> :
+              routeParam === 'messages' ? <StudentMessagesPage {...commonProps} /> :
+              routeParam === 'forum' ? <StudentForumPage {...commonProps} /> :
+              routeParam === '' ? <StudentSpacePage {...commonProps} /> :
+              <Navigate to="/espace-etudiant" replace />}
           </RequireAuth>
         );
       case 'espace-enseignant':
         return (
           <RequireRole roles={['teacher']}>
-            <Routes>
-              <Route index element={<TeacherSpacePage {...commonProps} />} />
-              <Route path="cours" element={<TeacherCoursesPage {...commonProps} />} />
-              <Route path="devoirs" element={<TeacherAssignmentsPage {...commonProps} />} />
-              <Route path="notes" element={<TeacherGradesPage {...commonProps} />} />
-              <Route path="*" element={<Navigate to="/espace-enseignant" replace />} />
-            </Routes>
+            {routeParam === 'cours' ? <TeacherCoursesPage {...commonProps} /> :
+              routeParam === 'devoirs' ? <TeacherAssignmentsPage {...commonProps} /> :
+              routeParam === 'notes' ? <TeacherGradesPage {...commonProps} /> :
+              routeParam === '' ? <TeacherSpacePage {...commonProps} /> :
+              <Navigate to="/espace-enseignant" replace />}
           </RequireRole>
         );
       case 'admin':
         return (
           <RequireRole roles={['admin', 'super_admin']}>
-            <Routes>
-              <Route index element={<AdminPage {...commonProps} />} />
-              <Route path="utilisateurs" element={<AdminUsersPage {...commonProps} />} />
-              <Route path="formations" element={<AdminProgramsPage {...commonProps} />} />
-              <Route path="facultes" element={<AdminFacultiesPage {...commonProps} />} />
-              <Route path="candidatures" element={<AdminApplicationsPage {...commonProps} />} />
-              <Route path="rendez-vous" element={<AdminAppointmentsPage {...commonProps} />} />
-              <Route path="actualites" element={<AdminNewsPage {...commonProps} />} />
-              <Route path="bibliotheque" element={<AdminLibraryPage {...commonProps} />} />
-              <Route path="recherches" element={<AdminResearchPage {...commonProps} />} />
-              <Route path="parametres" element={<AdminSettingsPage {...commonProps} />} />
-              <Route path="contacts" element={<AdminContactPage {...commonProps} />} />
-              <Route path="advisory" element={<AdminAdvisoryPage {...commonProps} />} />
-              <Route path="*" element={<Navigate to="/admin" replace />} />
-            </Routes>
+            {routeParam === 'utilisateurs' ? <AdminUsersPage {...commonProps} /> :
+              routeParam === 'formations' ? <AdminProgramsPage {...commonProps} /> :
+              routeParam === 'facultes' ? <AdminFacultiesPage {...commonProps} /> :
+              routeParam === 'candidatures' ? <AdminApplicationsPage {...commonProps} /> :
+              routeParam === 'rendez-vous' ? <AdminAppointmentsPage {...commonProps} /> :
+              routeParam === 'actualites' ? <AdminNewsPage {...commonProps} /> :
+              routeParam === 'bibliotheque' ? <AdminLibraryPage {...commonProps} /> :
+              routeParam === 'recherches' ? <AdminResearchPage {...commonProps} /> :
+              routeParam === 'parametres' ? <AdminSettingsPage {...commonProps} /> :
+              routeParam === 'contacts' ? <AdminContactPage {...commonProps} /> :
+              routeParam === 'advisory' ? <AdminAdvisoryPage {...commonProps} /> :
+              routeParam === '' ? <AdminPage {...commonProps} /> :
+              <Navigate to="/admin" replace />}
           </RequireRole>
         );
       default:

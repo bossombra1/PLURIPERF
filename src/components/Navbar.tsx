@@ -79,7 +79,8 @@ export const Navbar: React.FC<NavbarProps> = ({
   const [mobileOpenGroup, setMobileOpenGroup] = useState<string | null>('universite');
   const navRef = useRef<HTMLDivElement>(null);
 
-  const t = getT(lang);\n  const activePage = String(currentPage).replace(/^\//, '').split('/')[0] || 'accueil';
+  const t = getT(lang);
+  const activePage = String(currentPage).replace(/^\//, '').split('/')[0] || 'accueil';
 
   // Close dropdown on click outside
   useEffect(() => {

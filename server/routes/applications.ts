@@ -145,6 +145,23 @@ router.get(
   }),
 );
 
+// Téléchargement sécurisé du CV : aucune exposition directe du dossier uploads.
+router.get(
+  '/:id/cv',
+  requireAuth,
+  asyncHandler(async (req: Request, res: Response) => {
+    const user = (req as any).user as AuthUser;
+    const row = db.prepare('SELECT user_id, email, cv_path, cv_original_name FROM applications WHERE id = ?').get(req.params.id) as
+      | { user_id: number | null; email: string; cv_path: string | null; cv_original_name: string | null }
+      | undefined;
+    if (!row || !row.cv_path) throw new HttpError(404, 'CV introuvable');
+    const staff = ['advisor', 'editor', 'admin', 'super_admin'].includes(user.role);
+    if (!staff && row.user_id !== user.id) throw new HttpError(403, 'Accès refusé');
+    if (!fs.existsSync(row.cv_path)) throw new HttpError(404, 'Fichier indisponible');
+    res.download(row.cv_path, row.cv_original_name || 'cv');
+  }),
+);
+
 // Mes candidatures (étudiant connecté)
 router.get(
   '/me',

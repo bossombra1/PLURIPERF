@@ -169,6 +169,8 @@ describe('Permissions et espaces protégés', () => {
 describe('Candidatures et CV', () => {
   it('accepte un CV PDF valide et le téléchargement reste protégé', async () => {
     const app = buildApp();
+    const login = await request(app).post('/api/auth/login').send({ email: 'sarah@pluriperf.com', password: 'Pluri2026!' });
+    const cookie = login.headers['set-cookie'][0];
     const pdf = Buffer.from('%PDF-1.4\n1 0 obj\n<<>>\nendobj\n%%EOF');
     const create = await request(app)
       .post('/api/applications')
@@ -179,12 +181,12 @@ describe('Candidatures et CV', () => {
       .field('phone', '+2250700000000')
       .field('country', 'Côte d’Ivoire')
       .field('currentDiploma', 'Licence')
+      .set('Cookie', cookie)
       .attach('cv', pdf, { filename: 'cv.pdf', contentType: 'application/pdf' });
     expect(create.status).toBe(201);
     const unauthorized = await request(app).get(`/api/applications/${create.body.id}/cv`);
     expect(unauthorized.status).toBe(401);
-    const login = await request(app).post('/api/auth/login').send({ email: 'sarah@pluriperf.com', password: 'Pluri2026!' });
-    const download = await request(app).get(`/api/applications/${create.body.id}/cv`).set('Cookie', login.headers['set-cookie'][0]);
+    const download = await request(app).get(`/api/applications/${create.body.id}/cv`).set('Cookie', cookie);
     expect(download.status).toBe(200);
     expect(download.headers['content-type']).toMatch(/application\/pdf/);
   });
@@ -207,11 +209,12 @@ describe('Rendez-vous', () => {
 
   it('permet au propriétaire d’annuler son rendez-vous', async () => {
     const app = buildApp();
-    const payload = { date: '2099-12-16', timeSlot: '11:00', reason: 'admissions', fullName: 'Sarah Kouassi', email: 'sarah@pluriperf.com', phone: '+2250700000000' };
-    const created = await request(app).post('/api/appointments').send(payload);
-    expect(created.status).toBe(201);
     const login = await request(app).post('/api/auth/login').send({ email: 'sarah@pluriperf.com', password: 'Pluri2026!' });
-    const cancelled = await request(app).patch(`/api/appointments/${created.body.id}`).set('Cookie', login.headers['set-cookie'][0]).send({ status: 'cancelled' });
+    const cookie = login.headers['set-cookie'][0];
+    const payload = { date: '2099-12-16', timeSlot: '11:00', reason: 'admissions', fullName: 'Sarah Kouassi', email: 'sarah@pluriperf.com', phone: '+2250700000000' };
+    const created = await request(app).post('/api/appointments').set('Cookie', cookie).send(payload);
+    expect(created.status).toBe(201);
+    const cancelled = await request(app).patch(`/api/appointments/${created.body.id}`).set('Cookie', cookie).send({ status: 'cancelled' });
     expect(cancelled.status).toBe(200);
   });
 });

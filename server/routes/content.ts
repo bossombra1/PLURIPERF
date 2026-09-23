@@ -22,6 +22,19 @@ router.get(
 );
 
 router.get(
+  '/faculties/:id',
+  asyncHandler(async (req: Request, res: Response) => {
+    const row = db.prepare('SELECT * FROM faculties WHERE id = ? OR slug = ?').get(req.params.id, req.params.id) as any;
+    if (!row) throw new HttpError(404, 'Faculté introuvable');
+    row.keyThemesFr = JSON.parse(row.key_themes_fr || '[]');
+    row.keyThemesEn = JSON.parse(row.key_themes_en || '[]');
+    delete row.key_themes_fr;
+    delete row.key_themes_en;
+    res.json(row);
+  }),
+);
+
+router.get(
   '/programs',
   asyncHandler(async (req: Request, res: Response) => {
     const { facultyId, q, level } = req.query;
@@ -38,6 +51,19 @@ router.get(
         careerOutcomesEn: JSON.parse(p.career_outcomes_en || '[]'),
       })),
     );
+  }),
+);
+
+router.get(
+  '/programs/:id',
+  asyncHandler(async (req: Request, res: Response) => {
+    const row = db.prepare('SELECT * FROM programs WHERE id = ?').get(req.params.id) as any;
+    if (!row) throw new HttpError(404, 'Formation introuvable');
+    row.careerOutcomesFr = JSON.parse(row.career_outcomes_fr || '[]');
+    row.careerOutcomesEn = JSON.parse(row.career_outcomes_en || '[]');
+    delete row.career_outcomes_fr;
+    delete row.career_outcomes_en;
+    res.json(row);
   }),
 );
 

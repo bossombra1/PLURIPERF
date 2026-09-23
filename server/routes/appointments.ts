@@ -77,6 +77,15 @@ router.get(
 
 export default router;
 
+// Ancien nom conservé pour compatibilité avec les clients déjà déployés.
+router.get('/mine', requireAuth, asyncHandler(async (req: Request, res: Response) => {
+  const user = (req as any).user as AuthUser;
+  const rows = db.prepare(
+    'SELECT id, date, time_slot, reason, status, created_at FROM appointments WHERE user_id = ? OR advisor_id = ? ORDER BY date DESC',
+  ).all(user.id, user.id);
+  res.json(rows);
+}));
+
 // Créneaux publics disponibles. La disponibilité explicite d'un conseiller peut être utilisée
 // par l'administration ; à défaut, les quatre créneaux institutionnels sont proposés.
 router.get('/availability', asyncHandler(async (req: Request, res: Response) => {

@@ -2,7 +2,7 @@ import { Router, Request, Response } from 'express';
 import { z } from 'zod';
 import { zodParse } from '../validate';
 import { db } from '../db';
-import { requireAuth, AuthUser } from '../auth';
+import { requireAuth, optionalAuth, AuthUser } from '../auth';
 import { HttpError, asyncHandler } from '../middleware';
 import { notifyStaff } from '../mailer';
 import { config } from '../config';
@@ -23,6 +23,7 @@ const appointmentSchema = z.object({
 
 router.post(
   '/',
+  optionalAuth,
   zodParse(appointmentSchema),
   asyncHandler(async (req: Request, res: Response) => {
     const data = req.body as z.infer<typeof appointmentSchema>;

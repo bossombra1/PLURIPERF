@@ -41,8 +41,8 @@ router.post(
     const advisorId = advisor?.id ?? null;
     const info = db
       .prepare(
-        `INSERT INTO appointments (user_id, advisor_id, date, time_slot, reason, full_name, email, phone)
-         VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+        `INSERT INTO appointments (user_id, advisor_id, date, time_slot, reason, full_name, email, phone, timezone)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       )
       .run(
         user?.id ?? null,

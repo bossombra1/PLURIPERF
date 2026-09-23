@@ -42,7 +42,11 @@ router.patch(
   asyncHandler(async (req: Request, res: Response) => {
     const info = db.prepare('UPDATE applications SET status = ? WHERE id = ?').run(req.body.status, req.params.id);
     if (info.changes === 0) throw new HttpError(404, 'Candidature introuvable');
+    const actor = (req as any).user as AuthUser;
     const app = db.prepare('SELECT user_id, reference FROM applications WHERE id = ?').get(req.params.id) as any;
+    db.prepare('INSERT INTO application_history (application_id, actor_user_id, status, comment) VALUES (?, ?, ?, ?)').run(
+      req.params.id, actor.id, req.body.status, 'Mise à jour administrative',
+    );
     if (app?.user_id) {
       const labels: Record<string, [string, string]> = {
         submitted: ['Candidature reçue', 'Application received'],

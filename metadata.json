@@ -1,0 +1,7 @@
+{
+  "name": "PLURIPERF International University",
+  "description": "1ère Université de Management Durable, d'Écologie responsable et de Leadership régénératif. Portail institutionnel, académique et commercial.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
+

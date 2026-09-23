@@ -31,18 +31,5 @@ router.post(
   }),
 );
 
-const newsletterSchema = z.object({ email: z.string().email().max(255) });
-
-router.post(
-  '/newsletter/subscribe',
-  zodParse(newsletterSchema),
-  asyncHandler(async (req: Request, res: Response) => {
-    const email = (req.body as z.infer<typeof newsletterSchema>).email.toLowerCase();
-    db.prepare(
-      "INSERT INTO newsletter_subscribers (email) VALUES (?) ON CONFLICT(email) DO UPDATE SET active = 1",
-    ).run(email);
-    res.status(201).json({ subscribed: true, message: 'Inscription confirmée.' });
-  }),
-);
 
 export default router;

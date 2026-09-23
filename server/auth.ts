@@ -52,6 +52,21 @@ function readToken(req: Request): string | null {
   return header?.startsWith('Bearer ') ? header.slice(7) : null;
 }
 
+export function optionalAuth(req: Request, _res: Response, next: NextFunction) {
+  const token = readToken(req);
+  if (!token) return next();
+  try {
+    const payload = jwt.verify(token, config.jwtSecret) as unknown as { sub: number };
+    const user = db
+      .prepare('SELECT id, email, full_name, role, student_ref FROM users WHERE id = ? AND is_active = 1')
+      .get(payload.sub) as AuthUser | undefined;
+    if (user) (req as any).user = user;
+  } catch {
+    // Une session invalide ne bloque pas les endpoints publics : elle est simplement ignorée.
+  }
+  next();
+}
+
 export function requireAuth(req: Request, _res: Response, next: NextFunction) {
   const token = readToken(req);
   if (!token) return next(new HttpError(401, 'Authentification requise'));

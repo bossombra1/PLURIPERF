@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Language } from '../types';
-import { X, Calendar, Clock, CheckCircle2, User, Phone, Mail } from 'lucide-react';
+import { X, Calendar, CheckCircle2, Loader2, AlertCircle } from 'lucide-react';
+import { api, ApiError } from '../api/client';
 
 interface AppointmentModalProps {
   isOpen: boolean;
@@ -13,19 +14,37 @@ export const AppointmentModal: React.FC<AppointmentModalProps> = ({
   onClose,
   lang,
 }) => {
-  const [date, setDate] = useState('2026-10-15');
+  const [date, setDate] = useState('');
   const [time, setTime] = useState('14:30');
   const [reason, setReason] = useState('admissions');
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
   const [booked, setBooked] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
 
   if (!isOpen) return null;
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setBooked(true);
+    setError('');
+    setLoading(true);
+    try {
+      await api.post('/appointments', {
+        date,
+        timeSlot: time,
+        reason,
+        fullName: name,
+        email,
+        phone,
+      });
+      setBooked(true);
+    } catch (err) {
+      setError(err instanceof ApiError ? err.message : 'Erreur réseau');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -47,24 +66,14 @@ export const AppointmentModal: React.FC<AppointmentModalProps> = ({
             </div>
             <h3 className="text-xl font-serif font-bold text-slate-900">
               {lang === 'fr'
-                ? 'Rendez-vous confirmé avec un conseiller'
-                : 'Appointment Confirmed with an Advisor'}
+                ? 'Demande de rendez-vous enregistrée'
+                : 'Appointment Request Received'}
             </h3>
             <p className="text-xs text-slate-600">
               {lang === 'fr'
-                ? `Votre entretien d’orientation est programmé le ${date} à ${time} GMT par visioconférence.`
-                : `Your guidance appointment is scheduled for ${date} at ${time} GMT via video conference.`}
+                ? `Votre créneau du ${date} à ${time} GMT a été réservé. Un conseiller confirmera par email.`
+                : `Your ${date} slot at ${time} GMT has been reserved. An advisor will confirm by email.`}
             </p>
-            <div className="p-3 bg-slate-50 border border-slate-200 rounded-lg text-xs text-left max-w-sm mx-auto space-y-1">
-              <div className="flex justify-between">
-                <span className="text-slate-400">{lang === 'fr' ? 'Participant :' : 'Attendee:'}</span>
-                <span className="font-semibold text-slate-800">{name || 'Candidat'}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-slate-400">{lang === 'fr' ? 'Lien d’invitation :' : 'Invite Link:'}</span>
-                <span className="text-amber-600 font-mono">meet.pluriperf.com/adv-902</span>
-              </div>
-            </div>
             <button
               type="button"
               onClick={onClose}
@@ -86,6 +95,12 @@ export const AppointmentModal: React.FC<AppointmentModalProps> = ({
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-3.5 text-xs">
+              {error && (
+                <div className="flex items-start gap-2 p-3 bg-red-50 border border-red-200 rounded-lg text-red-700">
+                  <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
+                  <span>{error}</span>
+                </div>
+              )}
               <div>
                 <label className="block text-slate-700 font-medium mb-1">
                   {lang === 'fr' ? 'Objet de l’entretien' : 'Meeting Topic'}
@@ -118,6 +133,7 @@ export const AppointmentModal: React.FC<AppointmentModalProps> = ({
                   <input
                     type="date"
                     required
+                    min={new Date().toISOString().slice(0, 10)}
                     value={date}
                     onChange={(e) => setDate(e.target.value)}
                     className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500"
@@ -186,8 +202,10 @@ export const AppointmentModal: React.FC<AppointmentModalProps> = ({
               <div className="pt-3">
                 <button
                   type="submit"
-                  className="w-full py-2.5 bg-amber-600 hover:bg-amber-500 text-white font-semibold rounded-lg shadow transition-colors"
+                  disabled={loading}
+                  className="w-full py-2.5 bg-amber-600 hover:bg-amber-500 text-white font-semibold rounded-lg shadow transition-colors flex items-center justify-center gap-2 disabled:opacity-60"
                 >
+                  {loading && <Loader2 className="w-4 h-4 animate-spin" />}
                   {lang === 'fr' ? 'Confirmer le rendez-vous' : 'Confirm Appointment'}
                 </button>
               </div>

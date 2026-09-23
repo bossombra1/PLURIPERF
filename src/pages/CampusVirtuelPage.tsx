@@ -1,6 +1,8 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Language, PageId } from '../types';
 import { VIRTUAL_CAMPUS_STUDENT } from '../data/universityData';
+import { api, ApiError } from '../api/client';
+import { useAuth } from '../context/AuthContext';
 import {
   LayoutDashboard,
   BookOpen,
@@ -51,6 +53,27 @@ export const CampusVirtuelPage: React.FC<CampusVirtuelPageProps> = ({
   const [activeMessageIndex, setActiveMessageIndex] = useState(0);
   const [replyText, setReplyText] = useState('');
   const [submittedAssignment, setSubmittedAssignment] = useState(false);
+  const { user } = useAuth();
+  const [serverTopics, setServerTopics] = useState<{ id: number; title: string; author: string; created_at: string }[]>([]);
+  const [serverMessages, setServerMessages] = useState<{ id: number; subject: string; body: string; sender: string; created_at: string }[]>([]);
+  const [forumError, setForumError] = useState('');
+
+  // Chargement du forum et de la messagerie persistés (si connecté)
+  useEffect(() => {
+    if (!user) return;
+    (async () => {
+      try {
+        const [topics, msgs] = await Promise.all([
+          api.get<{ id: number; title: string; author: string; created_at: string }[]>('/forum'),
+          api.get<{ id: number; subject: string; body: string; sender: string; created_at: string }[]>('/messages'),
+        ]);
+        setServerTopics(topics);
+        setServerMessages(msgs);
+      } catch (e) {
+        setForumError(e instanceof ApiError ? e.message : 'Erreur de chargement');
+      }
+    })();
+  }, [user]);
 
   const student = VIRTUAL_CAMPUS_STUDENT;
 
@@ -67,26 +90,41 @@ export const CampusVirtuelPage: React.FC<CampusVirtuelPageProps> = ({
     { id: 'forum', labelFr: 'Forum', labelEn: 'Community Forum', icon: MessagesSquare },
   ] as const;
 
-  const handlePostForum = (e: React.FormEvent) => {
+  const handlePostForum = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!newTopicTitle.trim()) return;
-    setForumPosts([
-      {
-        title: newTopicTitle,
-        author: student.name + ' (Vous)',
-        replies: 0,
-        lastActive: 'À l’instant',
-      },
-      ...forumPosts,
-    ]);
-    setNewTopicTitle('');
+    if (!user) {
+      setForumError(lang === 'fr' ? 'Connectez-vous pour publier sur le forum.' : 'Sign in to post on the forum.');
+      return;
+    }
+    try {
+      await api.post('/forum', { title: newTopicTitle });
+      const topics = await api.get<{ id: number; title: string; author: string; created_at: string }[]>('/forum');
+      setServerTopics(topics);
+      setNewTopicTitle('');
+      setForumError('');
+    } catch (err) {
+      setForumError(err instanceof ApiError ? err.message : 'Erreur réseau');
+    }
   };
 
-  const handleSendReply = (e: React.FormEvent) => {
+  const handleSendReply = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!replyText.trim()) return;
-    setReplyText('');
-    alert(lang === 'fr' ? 'Message envoyé avec succès.' : 'Message sent successfully.');
+    if (!replyText.trim() || !user) return;
+    try {
+      // Réponse = message adressé à l'expéditeur du fil courant
+      const current = serverMessages[activeMessageIndex];
+      await api.post('/messages', {
+        recipientEmail: user.role === 'student' ? 'teacher@pluriperf.com' : 'sarah@pluriperf.com',
+        subject: current ? `RE: ${current.subject}` : 'Réponse',
+        body: replyText,
+      });
+      const msgs = await api.get<{ id: number; subject: string; body: string; sender: string; created_at: string }[]>('/messages');
+      setServerMessages(msgs);
+      setReplyText('');
+    } catch (err) {
+      setForumError(err instanceof ApiError ? err.message : 'Erreur réseau');
+    }
   };
 
   return (
@@ -534,6 +572,24 @@ export const CampusVirtuelPage: React.FC<CampusVirtuelPageProps> = ({
             </form>
 
             <div className="space-y-3">
+              {serverTopics.length > 0 && (
+                <div className="space-y-2">
+                  {serverTopics.map((topic) => (
+                    <div key={topic.id} className="p-4 rounded-xl border border-emerald-200 bg-emerald-50/40 flex items-center justify-between gap-4">
+                      <div className="space-y-1 text-xs">
+                        <span className="font-semibold text-slate-900 block text-sm">{topic.title}</span>
+                        <span className="text-slate-500">
+                          {lang === 'fr' ? 'Par' : 'By'} {topic.author} ·{' '}
+                          {new Date(topic.created_at).toLocaleString(lang === 'fr' ? 'fr-FR' : 'en-US')}
+                        </span>
+                      </div>
+                      <span className="text-[9px] font-bold px-1.5 py-0.5 bg-emerald-100 text-emerald-700 rounded">
+                        {lang === 'fr' ? 'enregistré' : 'saved'}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              )}
               {forumPosts.map((topic, i) => (
                 <div key={i} className="p-4 rounded-xl border border-slate-200 bg-slate-50/60 flex items-center justify-between gap-4">
                   <div className="space-y-1 text-xs">

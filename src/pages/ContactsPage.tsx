@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Language, PageId } from '../types';
+import { api, ApiError } from '../api/client';
 import {
   Mail,
   Phone,
@@ -31,11 +32,22 @@ export const ContactsPage: React.FC<ContactsPageProps> = ({
   const [subject, setSubject] = useState('');
   const [message, setMessage] = useState('');
   const [submitted, setSubmitted] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
   const [selectedCampus, setSelectedCampus] = useState<'paris' | 'abidjan' | 'geneva'>('paris');
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setSubmitted(true);
+    setError('');
+    setLoading(true);
+    try {
+      await api.post('/contact', { name, email, subject, message, campus: selectedCampus });
+      setSubmitted(true);
+    } catch (err) {
+      setError(err instanceof ApiError ? err.message : 'Erreur réseau');
+    } finally {
+      setLoading(false);
+    }
   };
 
   const campuses = {
@@ -174,6 +186,11 @@ export const ContactsPage: React.FC<ContactsPageProps> = ({
             </div>
           ) : (
             <form onSubmit={handleSubmit} className="space-y-4 text-xs">
+              {error && (
+                <div className="p-3 bg-red-50 border border-red-200 rounded-lg text-red-700">
+                  {error}
+                </div>
+              )}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
                   <label className="block text-slate-700 font-medium mb-1">

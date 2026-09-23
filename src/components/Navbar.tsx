@@ -27,7 +27,9 @@ import {
 } from 'lucide-react';
 
 interface NavbarProps {
-  currentPage: PageId;
+  currentPage: PageId | string;
+  user?: { fullName: string; role: string } | null;
+  onLogout?: () => void;
   setCurrentPage?: (page: PageId) => void;
   onNavigate?: (page: PageId, sectionId?: string) => void;
   lang: Language;
@@ -61,6 +63,8 @@ interface DropdownGroup {
 
 export const Navbar: React.FC<NavbarProps> = ({
   currentPage,
+  user,
+  onLogout,
   setCurrentPage,
   onNavigate,
   lang,
@@ -290,7 +294,7 @@ export const Navbar: React.FC<NavbarProps> = ({
     },
   ];
 
-  const isGroupActive = (group: DropdownGroup) => group.activePages.includes(currentPage);
+  const isGroupActive = (group: DropdownGroup) => group.activePages.includes(currentPage as PageId);
 
   return (
     <header className="sticky top-0 z-40 bg-white shadow-xs" ref={navRef}>
@@ -502,6 +506,32 @@ export const Navbar: React.FC<NavbarProps> = ({
           </button>
 
           {/* Permanent Button 3: Espace Campus / Se connecter */}
+          {user ? (
+            <div className="flex items-center gap-2">
+              {['admin', 'super_admin', 'advisor', 'editor'].includes(user.role) && (
+                <button
+                  type="button"
+                  onClick={() => handleNavigate('contacts')}
+                  className="hidden lg:flex items-center gap-1.5 px-3 py-2 text-xs font-semibold text-slate-800 bg-white hover:bg-slate-50 border border-slate-300 rounded-lg transition-colors"
+                  title="Administration"
+                >
+                  <Shield className="w-3.5 h-3.5 text-emerald-600" />
+                  <span>Admin</span>
+                </button>
+              )}
+              <span className="hidden lg:block text-xs font-semibold text-slate-700 max-w-32 truncate">
+                {user.fullName}
+              </span>
+              <button
+                type="button"
+                onClick={onLogout}
+                className="flex items-center gap-1.5 px-3 py-2 text-xs font-semibold text-slate-600 hover:text-slate-900 bg-white hover:bg-slate-50 border border-slate-300 rounded-lg transition-colors"
+              >
+                <LogIn className="w-3.5 h-3.5 text-[#E85D1E] rotate-180" />
+                <span>{lang === 'fr' ? 'Quitter' : 'Logout'}</span>
+              </button>
+            </div>
+          ) : (
           <button
             type="button"
             onClick={onOpenLogin}
@@ -510,6 +540,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             <LogIn className="w-3.5 h-3.5 text-[#E85D1E]" />
             <span>{t.buttons.login}</span>
           </button>
+          )}
         </div>
 
         {/* Mobile menu trigger */}

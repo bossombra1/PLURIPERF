@@ -1,53 +1,102 @@
-import React, { useState, useEffect } from 'react';
+import React, { Suspense, lazy } from 'react';
+import { BrowserRouter, Routes, Route, useLocation, useNavigate, useParams, Navigate } from 'react-router-dom';
 import { PageId, Language } from './types';
+import { pageToPath } from './routes';
+import { AuthProvider, useAuth } from './context/AuthContext';
 import { Navbar } from './components/Navbar';
 import { Footer } from './components/Footer';
-import { HomePage } from './pages/HomePage';
-import { UniversityPage } from './pages/UniversityPage';
-import { FacultiesPage } from './pages/FacultiesPage';
-import { FormationsPage } from './pages/FormationsPage';
-import { CampusVirtuelPage } from './pages/CampusVirtuelPage';
-import { BibliothequePage } from './pages/BibliothequePage';
-import { CabinetPage } from './pages/CabinetPage';
-import { MereNaturePage } from './pages/MereNaturePage';
-import { RecherchesPage } from './pages/RecherchesPage';
-import { ActualitesPage } from './pages/ActualitesPage';
-import { AdmissionsPage } from './pages/AdmissionsPage';
-import { ContactsPage } from './pages/ContactsPage';
-
+import { LoadingState } from './components/ui/states';
 import { ApplicationModal } from './components/ApplicationModal';
 import { LoginModal } from './components/LoginModal';
 import { AppointmentModal } from './components/AppointmentModal';
 import { WhatsAppModal } from './components/WhatsAppModal';
 import { CabinetQuoteModal } from './components/CabinetQuoteModal';
 
-export const App: React.FC = () => {
-  const [lang, setLang] = useState<Language>('fr');
-  const [currentPage, setCurrentPage] = useState<PageId>('accueil');
+const HomePage = lazy(() => import('./pages/HomePage').then((m) => ({ default: m.HomePage })));
+const UniversityPage = lazy(() => import('./pages/UniversityPage').then((m) => ({ default: m.UniversityPage })));
+const FacultiesPage = lazy(() => import('./pages/FacultiesPage').then((m) => ({ default: m.FacultiesPage })));
+const FacultyDetailPage = lazy(() => import('./pages/FacultyDetailPage').then((m) => ({ default: m.FacultyDetailPage })));
+const FormationsPage = lazy(() => import('./pages/FormationsPage').then((m) => ({ default: m.FormationsPage })));
+const FormationDetailPage = lazy(() => import('./pages/FormationDetailPage').then((m) => ({ default: m.FormationDetailPage })));
+const CampusVirtuelPage = lazy(() => import('./pages/CampusVirtuelPage').then((m) => ({ default: m.CampusVirtuelPage })));
+const BibliothequePage = lazy(() => import('./pages/BibliothequePage').then((m) => ({ default: m.BibliothequePage })));
+const CabinetPage = lazy(() => import('./pages/CabinetPage').then((m) => ({ default: m.CabinetPage })));
+const MereNaturePage = lazy(() => import('./pages/MereNaturePage').then((m) => ({ default: m.MereNaturePage })));
+const RecherchesPage = lazy(() => import('./pages/RecherchesPage').then((m) => ({ default: m.RecherchesPage })));
+const ActualitesPage = lazy(() => import('./pages/ActualitesPage').then((m) => ({ default: m.ActualitesPage })));
+const ArticleDetailPage = lazy(() => import('./pages/ArticleDetailPage').then((m) => ({ default: m.ArticleDetailPage })));
+const AdmissionsPage = lazy(() => import('./pages/AdmissionsPage').then((m) => ({ default: m.AdmissionsPage })));
+const ContactsPage = lazy(() => import('./pages/ContactsPage').then((m) => ({ default: m.ContactsPage })));
+const CareerPage = lazy(() => import('./pages/CareerPage').then((m) => ({ default: m.CareerPage })));
+const LoginPage = lazy(() => import('./pages/LoginPage').then((m) => ({ default: m.LoginPage })));
+const RegisterPage = lazy(() => import('./pages/RegisterPage').then((m) => ({ default: m.RegisterPage })));
+const ForgotPasswordPage = lazy(() => import('./pages/ForgotPasswordPage').then((m) => ({ default: m.ForgotPasswordPage })));
+const ResetPasswordPage = lazy(() => import('./pages/ResetPasswordPage').then((m) => ({ default: m.ResetPasswordPage })));
+const StudentSpacePage = lazy(() => import('./pages/StudentSpacePage').then((m) => ({ default: m.StudentSpacePage })));
+const StudentCoursesPage = lazy(() => import('./pages/StudentCoursesPage').then((m) => ({ default: m.StudentCoursesPage })));
+const StudentAssignmentsPage = lazy(() => import('./pages/StudentAssignmentsPage').then((m) => ({ default: m.StudentAssignmentsPage })));
+const StudentGradesPage = lazy(() => import('./pages/StudentGradesPage').then((m) => ({ default: m.StudentGradesPage })));
+const StudentDiplomasPage = lazy(() => import('./pages/StudentDiplomasPage').then((m) => ({ default: m.StudentDiplomasPage })));
+const StudentMessagesPage = lazy(() => import('./pages/StudentMessagesPage').then((m) => ({ default: m.StudentMessagesPage })));
+const StudentForumPage = lazy(() => import('./pages/StudentForumPage').then((m) => ({ default: m.StudentForumPage })));
+const TeacherSpacePage = lazy(() => import('./pages/TeacherSpacePage').then((m) => ({ default: m.TeacherSpacePage })));
+const TeacherCoursesPage = lazy(() => import('./pages/TeacherCoursesPage').then((m) => ({ default: m.TeacherCoursesPage })));
+const TeacherAssignmentsPage = lazy(() => import('./pages/TeacherAssignmentsPage').then((m) => ({ default: m.TeacherAssignmentsPage })));
+const TeacherGradesPage = lazy(() => import('./pages/TeacherGradesPage').then((m) => ({ default: m.TeacherGradesPage })));
+const AdminPage = lazy(() => import('./pages/AdminPage').then((m) => ({ default: m.AdminPage })));
+const AdminUsersPage = lazy(() => import('./pages/admin/AdminUsersPage').then((m) => ({ default: m.AdminUsersPage })));
+const AdminProgramsPage = lazy(() => import('./pages/admin/AdminProgramsPage').then((m) => ({ default: m.AdminProgramsPage })));
+const AdminFacultiesPage = lazy(() => import('./pages/admin/AdminFacultiesPage').then((m) => ({ default: m.AdminFacultiesPage })));
+const AdminApplicationsPage = lazy(() => import('./pages/admin/AdminApplicationsPage').then((m) => ({ default: m.AdminApplicationsPage })));
+const AdminAppointmentsPage = lazy(() => import('./pages/admin/AdminAppointmentsPage').then((m) => ({ default: m.AdminAppointmentsPage })));
+const AdminNewsPage = lazy(() => import('./pages/admin/AdminNewsPage').then((m) => ({ default: m.AdminNewsPage })));
+const AdminLibraryPage = lazy(() => import('./pages/admin/AdminLibraryPage').then((m) => ({ default: m.AdminLibraryPage })));
+const AdminResearchPage = lazy(() => import('./pages/admin/AdminResearchPage').then((m) => ({ default: m.AdminResearchPage })));
+const AdminSettingsPage = lazy(() => import('./pages/admin/AdminSettingsPage').then((m) => ({ default: m.AdminSettingsPage })));
+const AdminContactPage = lazy(() => import('./pages/admin/AdminContactPage').then((m) => ({ default: m.AdminContactPage })));
+const AdminAdvisoryPage = lazy(() => import('./pages/admin/AdminAdvisoryPage').then((m) => ({ default: m.AdminAdvisoryPage })));
+const NotFoundPage = lazy(() => import('./pages/NotFoundPage').then((m) => ({ default: m.NotFoundPage })));
 
-  // Modals state
-  const [isApplyModalOpen, setIsApplyModalOpen] = useState(false);
-  const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
-  const [isAppointmentModalOpen, setIsAppointmentModalOpen] = useState(false);
-  const [isWhatsAppModalOpen, setIsWhatsAppModalOpen] = useState(false);
-  const [isCabinetModalOpen, setIsCabinetModalOpen] = useState(false);
-  const [preselectedProgram, setPreselectedProgram] = useState('');
-  const [activePersona, setActivePersona] = useState<'student' | 'faculty'>('student');
+const RequireAuth: React.FC<{ children: React.ReactElement }> = ({ children }) => {
+  const { user, loading } = useAuth();
+  const location = useLocation();
+  if (loading) return <LoadingState />;
+  if (!user) return <Navigate to="/login" state={{ from: location.pathname }} replace />;
+  return children;
+};
 
-  const [targetUniversitySection, setTargetUniversitySection] = useState<string | undefined>(undefined);
+const RequireRole: React.FC<{ children: React.ReactElement; roles: string[] }> = ({ children, roles }) => {
+  const { user, loading } = useAuth();
+  const location = useLocation();
+  if (loading) return <LoadingState />;
+  if (!user) return <Navigate to="/login" state={{ from: location.pathname }} replace />;
+  if (!roles.includes(user.role)) return <Navigate to="/" replace />;
+  return children;
+};
 
-  const handleNavigate = (page: PageId, sectionId?: string) => {
-    setCurrentPage(page);
+const Shell: React.FC = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const { user, logout } = useAuth();
+  const params = useParams();
+
+  const [lang, setLang] = React.useState<Language>('fr');
+  const [isApplyModalOpen, setIsApplyModalOpen] = React.useState(false);
+  const [isLoginModalOpen, setIsLoginModalOpen] = React.useState(false);
+  const [isAppointmentModalOpen, setIsAppointmentModalOpen] = React.useState(false);
+  const [isWhatsAppModalOpen, setIsWhatsAppModalOpen] = React.useState(false);
+  const [isCabinetModalOpen, setIsCabinetModalOpen] = React.useState(false);
+  const [preselectedProgram, setPreselectedProgram] = React.useState('');
+
+  const handleNavigate = (page: PageId, sectionId?: string, routeParams?: Record<string, string>) => {
+    const path = pageToPath(page, routeParams);
+    navigate(path);
     if (page === 'universite' && sectionId) {
-      setTargetUniversitySection(sectionId);
       setTimeout(() => {
         const el = document.getElementById(sectionId);
-        if (el) {
-          el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }
+        if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
       }, 120);
     } else {
-      setTargetUniversitySection(undefined);
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   };
@@ -57,191 +106,154 @@ export const App: React.FC = () => {
     setIsApplyModalOpen(true);
   };
 
-  const handleSuccessLogin = (persona: 'student' | 'faculty') => {
-    setActivePersona(persona);
-    setCurrentPage('campus_virtuel');
+  const handleSuccessLogin = (_persona: 'student' | 'faculty') => {
+    const from = (location.state as { from?: string })?.from;
+    if (from) navigate(from);
+    else if (user?.role === 'teacher') navigate('/espace-enseignant');
+    else if (['admin', 'super_admin'].includes(user?.role ?? '')) navigate('/admin');
+    else navigate('/espace-etudiant');
   };
 
   const renderCurrentPage = () => {
-    switch (currentPage) {
-      case 'accueil':
-        return (
-          <HomePage
-            lang={lang}
-            onNavigate={handleNavigate}
-            onOpenApply={() => {
-              setPreselectedProgram('');
-              setIsApplyModalOpen(true);
-            }}
-            onOpenSearch={() => setCurrentPage('formations')}
-            onOpenConsulting={() => setIsCabinetModalOpen(true)}
-            onApplyForProgram={handleApplyForProgram}
-          />
-        );
+    const commonProps = { lang, onNavigate: handleNavigate };
+    switch (location.pathname.split('/')[1]) {
+      case '':
+        return <HomePage {...commonProps} onOpenApply={() => setIsApplyModalOpen(true)} onOpenSearch={() => handleNavigate('formations')} onOpenConsulting={() => setIsCabinetModalOpen(true)} onApplyForProgram={handleApplyForProgram} />;
+
       case 'universite':
-        return (
-          <UniversityPage
-            lang={lang}
-            onNavigate={handleNavigate}
-            onOpenApply={() => {
-              setPreselectedProgram('');
-              setIsApplyModalOpen(true);
-            }}
-            initialSection={targetUniversitySection}
-          />
-        );
+        return <UniversityPage {...commonProps} onOpenApply={() => setIsApplyModalOpen(true)} initialSection={location.hash.slice(1)} />;
       case 'facultes':
-        return (
-          <FacultiesPage
-            lang={lang}
-            onNavigate={handleNavigate}
-            onApplyForProgram={handleApplyForProgram}
-          />
-        );
-      case 'formations':
-        return (
-          <FormationsPage
-            lang={lang}
-            onNavigate={setCurrentPage}
-            onApplyForProgram={handleApplyForProgram}
-          />
-        );
-      case 'campus_virtuel':
-        return (
-          <CampusVirtuelPage
-            lang={lang}
-            onNavigate={setCurrentPage}
-            activePersona={activePersona}
-          />
-        );
-      case 'bibliotheque':
-        return <BibliothequePage lang={lang} />;
-      case 'cabinet':
-        return (
-          <CabinetPage
-            lang={lang}
-            onNavigate={setCurrentPage}
-            onOpenConsulting={() => setIsCabinetModalOpen(true)}
-          />
-        );
-      case 'mere_nature':
-        return (
-          <MereNaturePage
-            lang={lang}
-            onNavigate={setCurrentPage}
-          />
-        );
-      case 'recherches':
-        return (
-          <RecherchesPage
-            lang={lang}
-            onNavigate={setCurrentPage}
-          />
-        );
-      case 'actualites':
-        return <ActualitesPage lang={lang} />;
+        if (params.facultyId) return <FacultyDetailPage {...commonProps} facultyId={params.facultyId} onApplyForProgram={handleApplyForProgram} />;
+        return <FacultiesPage {...commonProps} onApplyForProgram={handleApplyForProgram} />;
       case 'admissions':
-        return (
-          <AdmissionsPage
-            lang={lang}
-            onNavigate={setCurrentPage}
-            onOpenApply={() => {
-              setPreselectedProgram('');
-              setIsApplyModalOpen(true);
-            }}
-            onOpenAppointment={() => setIsAppointmentModalOpen(true)}
-          />
-        );
+        return <AdmissionsPage {...commonProps} onOpenApply={() => setIsApplyModalOpen(true)} onOpenAppointment={() => setIsAppointmentModalOpen(true)} />;
+      case 'formations':
+        if (params.programId) return <FormationDetailPage {...commonProps} programId={params.programId} onApplyForProgram={handleApplyForProgram} />;
+        return <FormationsPage {...commonProps} onApplyForProgram={handleApplyForProgram} />;
+      case 'campus-virtuel':
+        return <RequireAuth><CampusVirtuelPage {...commonProps} /></RequireAuth>;
+      case 'bibliotheque':
+        return <BibliothequePage {...commonProps} />;
+      case 'cabinet':
+        return <CabinetPage {...commonProps} onOpenConsulting={() => setIsCabinetModalOpen(true)} />;
+      case 'mere-nature':
+        return <MereNaturePage {...commonProps} />;
+      case 'recherches':
+        return <RecherchesPage {...commonProps} />;
+      case 'actualites':
+        if (params.articleId) return <ArticleDetailPage {...commonProps} articleId={params.articleId} />;
+        return <ActualitesPage {...commonProps} />;
+      case 'carrieres':
+        return <CareerPage {...commonProps} />;
       case 'contacts':
+        return <ContactsPage {...commonProps} onOpenAppointment={() => setIsAppointmentModalOpen(true)} onOpenWhatsApp={() => setIsWhatsAppModalOpen(true)} />;
+      case 'login':
+        return <LoginPage onSuccessLogin={handleSuccessLogin} />;
+      case 'register':
+        return <RegisterPage onSuccessLogin={handleSuccessLogin} />;
+      case 'forgot-password':
+        return <ForgotPasswordPage />;
+      case 'reset-password':
+        return <ResetPasswordPage />;
+      case 'espace-etudiant':
         return (
-          <ContactsPage
-            lang={lang}
-            onNavigate={setCurrentPage}
-            onOpenAppointment={() => setIsAppointmentModalOpen(true)}
-            onOpenWhatsApp={() => setIsWhatsAppModalOpen(true)}
-          />
+          <RequireAuth>
+            <Routes>
+              <Route index element={<StudentSpacePage {...commonProps} />} />
+              <Route path="cours" element={<StudentCoursesPage {...commonProps} />} />
+              <Route path="devoirs" element={<StudentAssignmentsPage {...commonProps} />} />
+              <Route path="notes" element={<StudentGradesPage {...commonProps} />} />
+              <Route path="diplomes" element={<StudentDiplomasPage {...commonProps} />} />
+              <Route path="messages" element={<StudentMessagesPage {...commonProps} />} />
+              <Route path="forum" element={<StudentForumPage {...commonProps} />} />
+              <Route path="*" element={<Navigate to="/espace-etudiant" replace />} />
+            </Routes>
+          </RequireAuth>
+        );
+      case 'espace-enseignant':
+        return (
+          <RequireRole roles={['teacher']}>
+            <Routes>
+              <Route index element={<TeacherSpacePage {...commonProps} />} />
+              <Route path="cours" element={<TeacherCoursesPage {...commonProps} />} />
+              <Route path="devoirs" element={<TeacherAssignmentsPage {...commonProps} />} />
+              <Route path="notes" element={<TeacherGradesPage {...commonProps} />} />
+              <Route path="*" element={<Navigate to="/espace-enseignant" replace />} />
+            </Routes>
+          </RequireRole>
+        );
+      case 'admin':
+        return (
+          <RequireRole roles={['admin', 'super_admin']}>
+            <Routes>
+              <Route index element={<AdminPage {...commonProps} />} />
+              <Route path="utilisateurs" element={<AdminUsersPage {...commonProps} />} />
+              <Route path="formations" element={<AdminProgramsPage {...commonProps} />} />
+              <Route path="facultes" element={<AdminFacultiesPage {...commonProps} />} />
+              <Route path="candidatures" element={<AdminApplicationsPage {...commonProps} />} />
+              <Route path="rendez-vous" element={<AdminAppointmentsPage {...commonProps} />} />
+              <Route path="actualites" element={<AdminNewsPage {...commonProps} />} />
+              <Route path="bibliotheque" element={<AdminLibraryPage {...commonProps} />} />
+              <Route path="recherches" element={<AdminResearchPage {...commonProps} />} />
+              <Route path="parametres" element={<AdminSettingsPage {...commonProps} />} />
+              <Route path="contacts" element={<AdminContactPage {...commonProps} />} />
+              <Route path="advisory" element={<AdminAdvisoryPage {...commonProps} />} />
+              <Route path="*" element={<Navigate to="/admin" replace />} />
+            </Routes>
+          </RequireRole>
         );
       default:
-        return (
-          <HomePage
-            lang={lang}
-            onNavigate={setCurrentPage}
-            onOpenApply={() => setIsApplyModalOpen(true)}
-            onOpenSearch={() => setCurrentPage('formations')}
-            onOpenConsulting={() => setIsCabinetModalOpen(true)}
-            onApplyForProgram={handleApplyForProgram}
-          />
-        );
+        return <NotFoundPage {...commonProps} />;
     }
   };
 
+  const isAdminOrStudent = ['/admin', '/espace-etudiant', '/espace-enseignant'].some((p) => location.pathname.startsWith(p));
+
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-900 flex flex-col font-sans selection:bg-amber-100 selection:text-amber-900">
-      {/* 3-zone Header strictly compliant with top bar contract */}
+    <div className="min-h-screen bg-background text-text-primary flex flex-col font-sans">
       <Navbar
-        currentPage={currentPage}
+
+        currentPage={location.pathname}
         onNavigate={handleNavigate}
         lang={lang}
         onLanguageChange={setLang}
-        onOpenApply={() => {
-          setPreselectedProgram('');
-          setIsApplyModalOpen(true);
-        }}
+        user={user}
+        onLogout={logout}
+        onOpenApply={() => { setPreselectedProgram(''); setIsApplyModalOpen(true); }}
         onOpenLogin={() => setIsLoginModalOpen(true)}
         onOpenAppointment={() => setIsAppointmentModalOpen(true)}
         onOpenWhatsApp={() => setIsWhatsAppModalOpen(true)}
       />
 
-      {/* Main Content Area */}
-      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 pt-4">
-        {renderCurrentPage()}
+      <main className={isAdminOrStudent ? 'flex-1' : 'flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 pt-4'}>
+        <Suspense fallback={<LoadingState />}>{renderCurrentPage()}</Suspense>
       </main>
 
-      {/* Institutional Footer */}
-      <Footer
-        lang={lang}
-        onNavigate={handleNavigate}
-        onOpenApply={() => {
-          setPreselectedProgram('');
-          setIsApplyModalOpen(true);
-        }}
-        onOpenAppointment={() => setIsAppointmentModalOpen(true)}
-      />
+      {!isAdminOrStudent && (
+        <Footer
+          lang={lang}
+          onNavigate={handleNavigate}
+          onOpenApply={() => { setPreselectedProgram(''); setIsApplyModalOpen(true); }}
+          onOpenAppointment={() => setIsAppointmentModalOpen(true)}
+        />
+      )}
 
-      {/* Modals & Dialogs */}
-      <ApplicationModal
-        isOpen={isApplyModalOpen}
-        onClose={() => setIsApplyModalOpen(false)}
-        lang={lang}
-        preselectedProgram={preselectedProgram}
-      />
-
-      <LoginModal
-        isOpen={isLoginModalOpen}
-        onClose={() => setIsLoginModalOpen(false)}
-        lang={lang}
-        onSuccessLogin={handleSuccessLogin}
-      />
-
-      <AppointmentModal
-        isOpen={isAppointmentModalOpen}
-        onClose={() => setIsAppointmentModalOpen(false)}
-        lang={lang}
-      />
-
-      <WhatsAppModal
-        isOpen={isWhatsAppModalOpen}
-        onClose={() => setIsWhatsAppModalOpen(false)}
-        lang={lang}
-      />
-
-      <CabinetQuoteModal
-        isOpen={isCabinetModalOpen}
-        onClose={() => setIsCabinetModalOpen(false)}
-        lang={lang}
-      />
+      <ApplicationModal isOpen={isApplyModalOpen} onClose={() => setIsApplyModalOpen(false)} lang={lang} preselectedProgram={preselectedProgram} />
+      <LoginModal isOpen={isLoginModalOpen} onClose={() => setIsLoginModalOpen(false)} lang={lang} onSuccessLogin={handleSuccessLogin} />
+      <AppointmentModal isOpen={isAppointmentModalOpen} onClose={() => setIsAppointmentModalOpen(false)} lang={lang} />
+      <WhatsAppModal isOpen={isWhatsAppModalOpen} onClose={() => setIsWhatsAppModalOpen(false)} lang={lang} />
+      <CabinetQuoteModal isOpen={isCabinetModalOpen} onClose={() => setIsCabinetModalOpen(false)} lang={lang} />
     </div>
   );
 };
 
+export const App: React.FC = () => (
+  <BrowserRouter>
+    <AuthProvider>
+      <Shell />
+    </AuthProvider>
+  </BrowserRouter>
+);
+
 export default App;
+

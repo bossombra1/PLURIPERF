@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { Language } from '../types';
 import { PROGRAMS_DATA, FACULTIES_DATA } from '../data/universityData';
-import { X, CheckCircle2, Upload, ArrowRight, ArrowLeft, GraduationCap } from 'lucide-react';
+import { X, CheckCircle2, Upload, ArrowRight, ArrowLeft, GraduationCap, Loader2, AlertCircle } from 'lucide-react';
 import { Logo } from './Logo';
+import { api, ApiError } from '../api/client';
 
 interface ApplicationModalProps {
   isOpen: boolean;
@@ -30,17 +31,37 @@ export const ApplicationModal: React.FC<ApplicationModalProps> = ({
     needScholarship: false,
     cvFileName: '',
   });
+  const [cvFile, setCvFile] = useState<File | null>(null);
   const [submittedId, setSubmittedId] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
 
   if (!isOpen) return null;
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const generatedId = `PLU-APP-${new Date().getFullYear()}-${Math.floor(
-      1000 + Math.random() * 9000,
-    )}`;
-    setSubmittedId(generatedId);
-    setStep(3);
+    setError('');
+    setLoading(true);
+    try {
+      const fd = new FormData();
+      fd.append('program', formData.program);
+      fd.append('level', formData.level);
+      fd.append('fullName', formData.fullName);
+      fd.append('email', formData.email);
+      fd.append('phone', formData.phone);
+      fd.append('country', formData.country);
+      fd.append('currentDiploma', formData.currentDiploma);
+      fd.append('motivation', formData.motivation);
+      fd.append('needScholarship', String(formData.needScholarship));
+      if (cvFile) fd.append('cv', cvFile);
+      const res = await api.post<{ reference: string }>('/applications', fd);
+      setSubmittedId(res.reference);
+      setStep(3);
+    } catch (err) {
+      setError(err instanceof ApiError ? err.message : 'Erreur réseau');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -54,6 +75,13 @@ export const ApplicationModal: React.FC<ApplicationModalProps> = ({
         >
           <X className="w-5 h-5" />
         </button>
+
+        {error && step === 2 && (
+          <div className="mb-4 flex items-start gap-2 p-3 bg-red-50 border border-red-200 rounded-lg text-xs text-red-700">
+            <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
+            <span>{error}</span>
+          </div>
+        )}
 
         {submittedId ? (
           /* Step 3: Success Screen */
@@ -305,12 +333,12 @@ export const ApplicationModal: React.FC<ApplicationModalProps> = ({
                         className="hidden"
                         id="cv-upload"
                         onChange={(e) => {
-                          if (e.target.files && e.target.files[0]) {
-                            setFormData({
-                              ...formData,
-                              cvFileName: e.target.files[0].name,
-                            });
-                          }
+                          const f = e.target.files?.[0] ?? null;
+                          setCvFile(f);
+                          setFormData({
+                            ...formData,
+                            cvFileName: f ? f.name : '',
+                          });
                         }}
                       />
                       <label
@@ -356,8 +384,10 @@ export const ApplicationModal: React.FC<ApplicationModalProps> = ({
 
                     <button
                       type="submit"
-                      className="px-6 py-2.5 bg-gradient-to-r from-amber-600 to-amber-700 hover:from-amber-500 hover:to-amber-600 text-white font-semibold rounded-lg shadow transition-all"
+                      disabled={loading}
+                      className="px-6 py-2.5 bg-gradient-to-r from-amber-600 to-amber-700 hover:from-amber-500 hover:to-amber-600 text-white font-semibold rounded-lg shadow transition-all disabled:opacity-60 flex items-center gap-2"
                     >
+                      {loading && <Loader2 className="w-4 h-4 animate-spin" />}
                       {lang === 'fr' ? 'Confirmer et envoyer' : 'Confirm & Submit'}
                     </button>
                   </div>

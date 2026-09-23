@@ -4,6 +4,72 @@ Portail institutionnel, académique et commercial de **PLURIPERF International U
 
 > **Promesse institutionnelle :** *We build new leaders for a sustainable World.*
 
+## Application full-stack fonctionnelle
+
+Le projet est désormais **full-stack** : un backend Express + SQLite (fichier `data/pluriperf.db`) fournit une persistance réelle, une authentification JWT complète et des routes protégées. Le frontend React y est connecté via `/api` (proxy Vite en développement).
+
+| Domaine | État |
+|---|---|
+| Authentification (inscription, connexion, déconnexion, mot de passe oublié) | ✅ Backend + frontend |
+| Rôles `student` `teacher` `advisor` `editor` `admin` `super_admin` | ✅ Contrôles serveur (`requireAuth` / `requireRole`) |
+| Candidatures avec upload sécurisé de CV (PDF/DOC, 10 Mo max) + suivi par référence | ✅ Persistant |
+| Rendez-vous conseillers (créneau unique, conseillers réels) | ✅ Persistant |
+| Contact & demandes cabinet | ✅ Persistant + e-mails |
+| Facultés, formations, actualités, bibliothèque, recherche | ✅ Servis par l’API (seedés depuis les données historiques) |
+| Campus virtuel : forum et messagerie persistés | ✅ Base de données |
+| Espace administrateur (`/admin`) : statistiques, gestion des candidatures | ✅ Protégé par rôle |
+| URLs partageables (react-router) + page 404 | ✅ |
+| Notifications en base + e-mails SMTP configurables | ✅ |
+| Tests (Vitest + Supertest), seeds de dev, `.env.example` | ✅ |
+
+### Installation
+
+```bash
+npm install
+cp .env.example .env          # puis renseigner JWT_SECRET
+npm run seed                  # crée la base + comptes de démonstration
+npm run dev:all               # API (port 4000) + frontend (port 3000)
+```
+
+Comptes de démonstration (mot de passe `Pluri2026!`) :
+`admin@pluriperf.com` (super_admin), `advisor@pluriperf.com`, `teacher@pluriperf.com` (matricule `PR-NGUESSAN-001`), `sarah@pluriperf.com` (étudiante, matricule `PLU-2025-8842`), `editor@pluriperf.com`.
+
+### Commandes
+
+```bash
+npm run dev        # frontend seul
+npm run dev:server # API seule (tsx watch)
+npm run dev:all    # les deux
+npm run seed       # base de données de développement
+npm run lint       # tsc --noEmit (frontend + config)
+npm run build      # vérification TS + build de production
+npm test           # tests d'intégration API (Vitest + Supertest)
+```
+
+En production (`NODE_ENV=production`), le serveur Express sert le build `dist/` avec fallback SPA et applique les vérifications renforcées (`JWT_SECRET` obligatoire).
+
+### Architecture
+
+```
+server/            API Express
+  index.ts         point d'entrée (helmet, CORS, rate-limit, routes)
+  db.ts            SQLite (better-sqlite3) + migrations (schema.sql)
+  auth.ts          JWT, requireAuth, requireRole
+  routes/          auth, applications (upload CV), appointments, contact,
+                   advisory, content (facultés/programmes/news/bibliothèque/
+                   recherche/forum/messagerie/notifications), admin
+  seed.ts          données de développement
+  schema.sql       schéma de la base
+src/               Frontend React 19 + Vite + Tailwind 4
+  api/client.ts    client HTTP (JWT, gestion d'erreurs uniforme)
+  context/         AuthContext (session, login/register/logout)
+  routes.ts        mapping URLs partageables ↔ pages
+  pages/           13 pages institutionnelles + 404 + admin
+  components/      navbar, footer, modales connectées à l'API
+tests/             tests d'intégration API
+```
+
+
 Le projet fournit actuellement une expérience frontend riche et responsive. Il présente les programmes, les facultés, les admissions, le campus virtuel, la bibliothèque numérique, le cabinet d’expertise, la recherche, les actualités et les contacts. Les données et plusieurs parcours interactifs sont encore simulés localement et doivent être reliés à des services persistants avant une mise en production.
 
 ## Sommaire

@@ -18,8 +18,8 @@ export const EmblemSvg: React.FC<{ className?: string }> = ({ className = 'w-10 
     >
       <defs>
         <linearGradient id="emblemOrangeGrad" x1="0%" y1="0%" x2="0%" y2="100%">
-          <stop offset="0%" stopColor="#E85D1E" />
-          <stop offset="100%" stopColor="#D44910" />
+          <stop offset="0%" stopColor="#7896bc" />
+          <stop offset="100%" stopColor="#5e827d" />
         </linearGradient>
 
         <linearGradient id="emblemNavyGrad" x1="0%" y1="0%" x2="0%" y2="100%">

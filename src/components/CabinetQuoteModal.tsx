@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { Language } from '../types';
 import { CABINET_SERVICES } from '../data/universityData';
-import { X, CheckCircle2, Building2, Send, FileCheck } from 'lucide-react';
+import { X, CheckCircle2, Send, Loader2, AlertCircle, FileCheck } from 'lucide-react';
+import { api, ApiError } from '../api/client';
 
 interface CabinetQuoteModalProps {
   isOpen: boolean;
@@ -22,12 +23,34 @@ export const CabinetQuoteModal: React.FC<CabinetQuoteModalProps> = ({
   const [employees, setEmployees] = useState('50-250');
   const [message, setMessage] = useState('');
   const [submitted, setSubmitted] = useState(false);
+  const [reference, setReference] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
 
   if (!isOpen) return null;
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setSubmitted(true);
+    setError('');
+    setLoading(true);
+    try {
+      const serviceLabel = CABINET_SERVICES.find((s) => s.id === selectedService)?.titleFr ?? selectedService;
+      const res = await api.post<{ reference: string }>('/advisory', {
+        service: serviceLabel,
+        company,
+        contactName,
+        email,
+        phone,
+        employees,
+        message,
+      });
+      setReference(res.reference);
+      setSubmitted(true);
+    } catch (err) {
+      setError(err instanceof ApiError ? err.message : 'Erreur réseau');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -64,7 +87,7 @@ export const CabinetQuoteModal: React.FC<CabinetQuoteModalProps> = ({
               </div>
               <div className="flex justify-between">
                 <span className="text-slate-400">{lang === 'fr' ? 'Réf dossier :' : 'Case Ref:'}</span>
-                <span className="font-mono text-amber-600">AUDIT-{Math.floor(1000 + Math.random() * 9000)}</span>
+                <span className="font-mono text-amber-600">{reference}</span>
               </div>
             </div>
             <button
@@ -208,14 +231,27 @@ export const CabinetQuoteModal: React.FC<CabinetQuoteModalProps> = ({
               </div>
 
               <div className="pt-2">
+                {error && (
+                  <div className="mb-3 flex items-start gap-2 p-3 bg-red-50 border border-red-200 rounded-lg text-xs text-red-700">
+                    <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
+                    <span>{error}</span>
+                  </div>
+                )}
                 <button
                   type="submit"
-                  className="w-full py-2.5 bg-slate-900 hover:bg-slate-800 text-white font-semibold rounded-lg shadow flex items-center justify-center gap-2 transition-colors"
+                  disabled={loading}
+                  className="w-full py-2.5 bg-slate-900 hover:bg-slate-800 text-white font-semibold rounded-lg shadow flex items-center justify-center gap-2 transition-colors disabled:opacity-60"
                 >
-                  <Send className="w-4 h-4 text-amber-500" />
-                  <span>
-                    {lang === 'fr' ? 'Envoyer la demande d’intervention' : 'Submit Advisory Request'}
-                  </span>
+                  {loading ? (
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                  ) : (
+                    <>
+                      <Send className="w-4 h-4 text-amber-500" />
+                      <span>
+                        {lang === 'fr' ? 'Envoyer la demande d’intervention' : 'Submit Advisory Request'}
+                      </span>
+                    </>
+                  )}
                 </button>
               </div>
             </form>

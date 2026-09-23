@@ -1,5 +1,5 @@
 import React, { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
-import { api, setToken } from '../api/client';
+import { api } from '../api/client';
 
 export type Role = 'student' | 'teacher' | 'advisor' | 'editor' | 'admin' | 'super_admin';
 
@@ -16,7 +16,7 @@ interface AuthContextValue {
   loading: boolean;
   login: (email: string, password: string, studentRef?: string) => Promise<AuthUser>;
   register: (email: string, password: string, fullName: string) => Promise<AuthUser>;
-  logout: () => void;
+  logout: () => Promise<void>;
   refresh: () => Promise<void>;
 }
 
@@ -27,51 +27,32 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [loading, setLoading] = useState(true);
 
   const refresh = useCallback(async () => {
-    if (!localStorage.getItem('pluriperf_token')) {
-      setUser(null);
-      setLoading(false);
-      return;
-    }
     try {
       const { user: u } = await api.get<{ user: AuthUser }>('/auth/me');
       setUser(u);
     } catch {
-      setToken(null);
       setUser(null);
     } finally {
       setLoading(false);
     }
   }, []);
 
-  useEffect(() => {
-    refresh();
-  }, [refresh]);
+  useEffect(() => { refresh(); }, [refresh]);
 
   const login = useCallback(async (email: string, password: string, studentRef?: string) => {
-    const res = await api.post<{ token: string; user: AuthUser }>('/auth/login', {
-      email,
-      password,
-      studentRef,
-    });
-    setToken(res.token);
+    const res = await api.post<{ user: AuthUser }>('/auth/login', { email, password, studentRef });
     setUser(res.user);
     return res.user;
   }, []);
 
   const register = useCallback(async (email: string, password: string, fullName: string) => {
-    const res = await api.post<{ token: string; user: AuthUser }>('/auth/register', {
-      email,
-      password,
-      fullName,
-    });
-    setToken(res.token);
+    const res = await api.post<{ user: AuthUser }>('/auth/register', { email, password, fullName });
     setUser(res.user);
     return res.user;
   }, []);
 
-  const logout = useCallback(() => {
-    setToken(null);
-    setUser(null);
+  const logout = useCallback(async () => {
+    try { await api.post('/auth/logout'); } finally { setUser(null); }
   }, []);
 
   const value = useMemo(

@@ -46,10 +46,17 @@ router.post('/register', zodParse(registerSchema), asyncHandler(async (req: Requ
     `Bienvenue à PLURIPERF, ${user.full_name} ! Votre matricule est ${studentRef}.`,
     `Welcome to PLURIPERF, ${user.full_name}! Your student ID is ${studentRef}.`,
   );
+  const verificationToken = crypto.randomBytes(32).toString('hex');
+  const verificationHash = crypto.createHash('sha256').update(verificationToken).digest('hex');
+  const verificationExpires = new Date(Date.now() + 24 * 60 * 60_000).toISOString();
+  db.prepare(
+    'INSERT INTO email_verifications (user_id, token_hash, expires_at) VALUES (?, ?, ?)',
+  ).run(user.id, verificationHash, verificationExpires);
+  const verificationLink = `${config.appUrl}/verify-email?token=${verificationToken}`;
   await sendMail(
     user.email,
     'Bienvenue à PLURIPERF International University',
-    `Bonjour ${user.full_name},\n\nVotre compte a été créé. Votre matricule est ${studentRef}.\n\nL'équipe PLURIPERF`,
+    `Bonjour ${user.full_name},\n\nVotre compte a été créé. Votre matricule est ${studentRef}.\n\nVérifiez votre adresse e-mail : ${verificationLink}\n\nL'équipe PLURIPERF`,
   );
   setAuthCookie(res, signToken(user));
   res.status(201).json({ user: publicUser(user) });

@@ -299,10 +299,10 @@ export const Navbar: React.FC<NavbarProps> = ({
   return (
     <header className="sticky top-0 z-40 bg-white shadow-xs" ref={navRef}>
       {/* Top Academic Ribbon with Official Motto */}
-      <div className="bg-[#091224] text-white text-xs py-1.5 px-4 sm:px-8 border-b border-[#E85D1E]/40">
+      <div className="bg-[#173f38] text-white text-xs py-1.5 px-4 sm:px-8 border-b border-[#b56f45]/50">
         <div className="max-w-7xl mx-auto flex items-center justify-between gap-4">
           <div className="flex items-center gap-2 overflow-hidden text-slate-300">
-            <span className="font-bold text-[#E85D1E] tracking-wider text-[11px] uppercase">
+            <span className="font-bold text-[#b56f45] tracking-wider text-[11px] uppercase">
               PLURIPERF
             </span>
             <span className="text-slate-600 hidden sm:inline">|</span>
@@ -315,13 +315,13 @@ export const Navbar: React.FC<NavbarProps> = ({
 
           <div className="flex items-center gap-3 shrink-0">
             {/* Language toggle */}
-            <div className="flex items-center bg-slate-800/90 rounded border border-slate-700/80 p-0.5 text-[11px]">
+            <div className="flex items-center bg-[#12332e] rounded border border-[#2a5048] p-0.5 text-[11px]">
               <button
                 type="button"
                 onClick={() => handleSetLang('fr')}
                 className={`px-2 py-0.5 font-bold rounded transition-colors ${
                   lang === 'fr'
-                    ? 'bg-[#E85D1E] text-white'
+                    ? 'bg-[#b56f45] text-white'
                     : 'text-slate-400 hover:text-white'
                 }`}
               >
@@ -332,7 +332,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                 onClick={() => handleSetLang('en')}
                 className={`px-2 py-0.5 font-bold rounded transition-colors ${
                   lang === 'en'
-                    ? 'bg-[#E85D1E] text-white'
+                    ? 'bg-[#b56f45] text-white'
                     : 'text-slate-400 hover:text-white'
                 }`}
               >
@@ -341,7 +341,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             </div>
 
             <span className="text-slate-600 hidden md:inline">·</span>
-            <span className="text-[11px] text-amber-400/95 hidden md:inline italic font-serif">
+            <span className="text-[11px] text-[#d0ad72] hidden md:inline italic font-serif">
               {t.institutionalPromiseEnglish}
             </span>
           </div>
@@ -368,8 +368,8 @@ export const Navbar: React.FC<NavbarProps> = ({
             onClick={() => handleNavigate('accueil')}
             className={`px-2 xl:px-3 py-2 rounded-lg transition-colors whitespace-nowrap ${
               currentPage === 'accueil'
-                ? 'text-[#0E192D] font-bold bg-slate-100/90 text-[#E85D1E]'
-                : 'text-slate-700 hover:text-[#E85D1E] hover:bg-slate-50'
+                ? 'text-[#173f38] font-bold bg-slate-100/90 text-[#b56f45]'
+                : 'text-slate-700 hover:text-[#b56f45] hover:bg-slate-50'
             }`}
           >
             {t.nav.accueil}
@@ -391,15 +391,15 @@ export const Navbar: React.FC<NavbarProps> = ({
                   onClick={() => setActiveDropdown(isOpen ? null : group.key)}
                   className={`flex items-center gap-1 px-2 xl:px-3 py-2 rounded-lg transition-all whitespace-nowrap ${
                     active || isOpen
-                      ? 'text-[#0E192D] font-bold bg-slate-100/80 text-[#E85D1E]'
-                      : 'text-slate-700 hover:text-[#E85D1E] hover:bg-slate-50'
+                      ? 'text-[#173f38] font-bold bg-slate-100/80 text-[#b56f45]'
+                      : 'text-slate-700 hover:text-[#b56f45] hover:bg-slate-50'
                   }`}
                   aria-expanded={isOpen}
                 >
                   <span>{lang === 'fr' ? group.titleFr : group.titleEn}</span>
                   <ChevronDown
                     className={`w-3.5 h-3.5 transition-transform duration-200 ${
-                      isOpen ? 'rotate-180 text-[#E85D1E]' : 'text-slate-400'
+                      isOpen ? 'rotate-180 text-[#b56f45]' : 'text-slate-400'
                     }`}
                   />
                 </button>
@@ -409,7 +409,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                   <div className="absolute left-0 top-full mt-1 w-80 sm:w-96 bg-white border border-slate-200 rounded-2xl shadow-xl py-2 z-50 animate-in fade-in slide-in-from-top-1 duration-150">
                     <div className="px-4 py-2 border-b border-slate-100 flex items-center justify-between text-[11px] font-bold text-slate-400 uppercase tracking-wider">
                       <span>{lang === 'fr' ? group.titleFr : group.titleEn}</span>
-                      <span className="text-[#E85D1E] font-normal normal-case">
+                      <span className="text-[#b56f45] font-normal normal-case">
                         {group.items.length} {lang === 'fr' ? 'sections' : 'items'}
                       </span>
                     </div>
@@ -429,26 +429,26 @@ export const Navbar: React.FC<NavbarProps> = ({
                             onClick={() => handleNavigate(item.id, item.sectionId)}
                             className={`w-full text-left px-4 py-2.5 transition-colors flex items-start gap-3 group/item ${
                               isCurrent
-                                ? 'bg-orange-50/90 text-[#E85D1E]'
+                                ? 'bg-[#f5ebe4] text-[#b56f45]'
                                 : 'hover:bg-slate-50 text-slate-800'
                             }`}
                           >
                             <div
                               className={`p-2 rounded-xl shrink-0 transition-colors ${
                                 isCurrent
-                                  ? 'bg-[#E85D1E] text-white'
-                                  : 'bg-slate-100 text-slate-600 group-hover/item:bg-orange-100 group-hover/item:text-[#E85D1E]'
+                                  ? 'bg-[#b56f45] text-white'
+                                  : 'bg-slate-100 text-slate-600 group-hover/item:bg-[#f1e1d6] group-hover/item:text-[#b56f45]'
                               }`}
                             >
                               <Icon className="w-4 h-4" />
                             </div>
                             <div className="min-w-0 flex-1">
                               <div className="flex items-center gap-2">
-                                <span className="font-bold text-xs text-slate-900 group-hover/item:text-[#E85D1E] leading-snug">
+                                <span className="font-bold text-xs text-slate-900 group-hover/item:text-[#b56f45] leading-snug">
                                   {lang === 'fr' ? item.labelFr : item.labelEn}
                                 </span>
                                 {item.badge && (
-                                  <span className="px-1.5 py-0.5 rounded text-[9px] font-bold bg-orange-100 text-[#E85D1E] uppercase tracking-wide">
+                                  <span className="px-1.5 py-0.5 rounded text-[9px] font-bold bg-[#f1e1d6] text-[#b56f45] uppercase tracking-wide">
                                     {item.badge}
                                   </span>
                                 )}
@@ -473,8 +473,8 @@ export const Navbar: React.FC<NavbarProps> = ({
             onClick={() => handleNavigate('contacts')}
             className={`px-3 py-2 rounded-lg transition-colors whitespace-nowrap ${
               currentPage === 'contacts'
-                ? 'text-[#0E192D] font-bold bg-slate-100/90 text-[#E85D1E]'
-                : 'text-slate-700 hover:text-[#E85D1E] hover:bg-slate-50'
+                ? 'text-[#173f38] font-bold bg-slate-100/90 text-[#b56f45]'
+                : 'text-slate-700 hover:text-[#b56f45] hover:bg-slate-50'
             }`}
           >
             {t.nav.contacts}
@@ -499,7 +499,7 @@ export const Navbar: React.FC<NavbarProps> = ({
           <button
             type="button"
             onClick={onOpenApply}
-            className="flex items-center gap-1.5 px-4 py-2 text-xs font-bold text-white bg-[#E85D1E] hover:bg-[#D44910] active:scale-[0.98] rounded-lg shadow-xs transition-all whitespace-nowrap"
+            className="flex items-center gap-1.5 px-4 py-2 text-xs font-bold text-white bg-[#b56f45] hover:bg-[#995938] active:scale-[0.98] rounded-lg shadow-xs transition-all whitespace-nowrap"
           >
             <GraduationCap className="w-4 h-4" />
             <span>{t.buttons.apply}</span>
@@ -527,7 +527,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                 onClick={onLogout}
                 className="flex items-center gap-1.5 px-3 py-2 text-xs font-semibold text-slate-600 hover:text-slate-900 bg-white hover:bg-slate-50 border border-slate-300 rounded-lg transition-colors"
               >
-                <LogIn className="w-3.5 h-3.5 text-[#E85D1E] rotate-180" />
+                <LogIn className="w-3.5 h-3.5 text-[#b56f45] rotate-180" />
                 <span>{lang === 'fr' ? 'Quitter' : 'Logout'}</span>
               </button>
             </div>
@@ -537,7 +537,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             onClick={onOpenLogin}
             className="flex items-center gap-1.5 px-3 py-2 text-xs font-semibold text-slate-800 bg-white hover:bg-slate-50 border border-slate-300 rounded-lg transition-colors whitespace-nowrap shadow-2xs"
           >
-            <LogIn className="w-3.5 h-3.5 text-[#E85D1E]" />
+            <LogIn className="w-3.5 h-3.5 text-[#b56f45]" />
             <span>{t.buttons.login}</span>
           </button>
           )}
@@ -548,7 +548,7 @@ export const Navbar: React.FC<NavbarProps> = ({
           <button
             type="button"
             onClick={onOpenApply}
-            className="sm:hidden px-3 py-1.5 text-xs font-bold bg-[#E85D1E] text-white rounded-lg"
+            className="sm:hidden px-3 py-1.5 text-xs font-bold bg-[#b56f45] text-white rounded-lg"
           >
             {t.buttons.apply}
           </button>
@@ -592,7 +592,7 @@ export const Navbar: React.FC<NavbarProps> = ({
               }}
               className="flex items-center justify-center gap-2 p-2.5 text-xs font-semibold bg-slate-100 text-slate-800 rounded-lg border border-slate-200"
             >
-              <LogIn className="w-4 h-4 text-[#E85D1E]" />
+              <LogIn className="w-4 h-4 text-[#b56f45]" />
               <span>{t.buttons.login}</span>
             </button>
           </div>
@@ -603,7 +603,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             onClick={() => handleNavigate('accueil')}
             className={`w-full text-left px-3 py-2 rounded-lg font-bold text-sm transition-colors ${
               currentPage === 'accueil'
-                ? 'bg-orange-50 text-[#E85D1E]'
+                ? 'bg-[#f5ebe4] text-[#b56f45]'
                 : 'text-slate-800 hover:bg-slate-100'
             }`}
           >
@@ -622,14 +622,14 @@ export const Navbar: React.FC<NavbarProps> = ({
                     onClick={() => setMobileOpenGroup(isOpen ? null : group.key)}
                     className={`w-full flex items-center justify-between px-3.5 py-2.5 text-xs font-bold text-left transition-colors ${
                       active
-                        ? 'bg-orange-50/70 text-[#E85D1E]'
+                        ? 'bg-[#f5ebe4]/70 text-[#b56f45]'
                         : 'bg-slate-50 text-slate-800 hover:bg-slate-100'
                     }`}
                   >
                     <span>{lang === 'fr' ? group.titleFr : group.titleEn}</span>
                     <ChevronDown
                       className={`w-4 h-4 text-slate-400 transition-transform ${
-                        isOpen ? 'rotate-180 text-[#E85D1E]' : ''
+                        isOpen ? 'rotate-180 text-[#b56f45]' : ''
                       }`}
                     />
                   </button>
@@ -646,7 +646,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                             onClick={() => handleNavigate(item.id, item.sectionId)}
                             className={`w-full text-left px-2.5 py-2 rounded-lg text-xs flex items-center gap-2.5 transition-colors ${
                               isCurrent
-                                ? 'bg-orange-50 text-[#E85D1E] font-bold'
+                                ? 'bg-[#f5ebe4] text-[#b56f45] font-bold'
                                 : 'text-slate-700 hover:bg-slate-50'
                             }`}
                           >
@@ -673,7 +673,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             onClick={() => handleNavigate('contacts')}
             className={`w-full text-left px-3 py-2 rounded-lg font-bold text-sm transition-colors ${
               currentPage === 'contacts'
-                ? 'bg-orange-50 text-[#E85D1E]'
+                ? 'bg-[#f5ebe4] text-[#b56f45]'
                 : 'text-slate-800 hover:bg-slate-100'
             }`}
           >
@@ -688,7 +688,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                 onOpenApply();
                 setMobileMenuOpen(false);
               }}
-              className="w-full py-2.5 bg-[#E85D1E] hover:bg-[#D44910] font-bold text-white rounded-lg text-sm flex items-center justify-center gap-2 shadow"
+              className="w-full py-2.5 bg-[#b56f45] hover:bg-[#995938] font-bold text-white rounded-lg text-sm flex items-center justify-center gap-2 shadow"
             >
               <GraduationCap className="w-4 h-4" />
               <span>{t.buttons.apply}</span>

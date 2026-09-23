@@ -96,6 +96,13 @@ router.patch(
   ),
   asyncHandler(async (req: Request, res: Response) => {
     const { role, isActive } = req.body;
+    const actor = (req as any).user as AuthUser;
+    if (role === 'super_admin' && actor.role !== 'super_admin') {
+      throw new HttpError(403, 'Seul un super administrateur peut attribuer ce rôle');
+    }
+    if (Number(req.params.id) === actor.id && isActive === false) {
+      throw new HttpError(400, 'Vous ne pouvez pas désactiver votre propre compte');
+    }
     const current = db.prepare('SELECT id FROM users WHERE id = ?').get(req.params.id);
     if (!current) throw new HttpError(404, 'Utilisateur introuvable');
     if (role !== undefined) db.prepare('UPDATE users SET role = ?, updated_at = datetime("now") WHERE id = ?').run(role, req.params.id);

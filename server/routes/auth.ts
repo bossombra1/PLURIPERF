@@ -62,7 +62,6 @@ router.post('/register', zodParse(registerSchema), asyncHandler(async (req: Requ
   res.status(201).json({ user: publicUser(user) });
 }));
 
-
 router.get('/verify-email', asyncHandler(async (req: Request, res: Response) => {
   const token = String(req.query.token || '');
   if (token.length < 10) throw new HttpError(400, 'Jeton de vérification invalide');
@@ -71,7 +70,7 @@ router.get('/verify-email', asyncHandler(async (req: Request, res: Response) => 
     "SELECT id, user_id FROM email_verifications WHERE token_hash = ? AND verified_at IS NULL AND expires_at > datetime('now')",
   ).get(hash) as { id: number; user_id: number } | undefined;
   if (!row) throw new HttpError(400, 'Jeton invalide ou expiré');
-  db.prepare('UPDATE email_verifications SET verified_at = datetime('now') WHERE id = ?').run(row.id);
+  db.prepare("UPDATE email_verifications SET verified_at = datetime('now') WHERE id = ?").run(row.id);
   res.json({ verified: true, message: 'Adresse e-mail vérifiée.' });
 }));
 

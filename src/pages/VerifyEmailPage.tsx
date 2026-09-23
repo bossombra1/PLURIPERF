@@ -30,7 +30,7 @@ export const VerifyEmailPage: React.FC<{ lang: Language; onNavigate: (page: Page
         <h1 className="mt-5 text-2xl font-semibold">{lang === 'fr' ? 'Vérification de l’adresse e-mail' : 'Email verification'}</h1>
         <p className="mt-3 text-text-secondary">{state === 'loading' ? (lang === 'fr' ? 'Vérification en cours…' : 'Verifying…') : message}</p>
         {state !== 'loading' && (
-          <button type="button" className="mt-6 border border-border-ui px-4 py-2 text-sm font-medium hover:bg-surface-muted" onClick={() => onNavigate('login')}>
+          <button type="button" className="mt-6 border border-border-ui px-4 py-2 text-sm font-medium hover:bg-surface-muted" onClick={() => { window.location.assign('/login'); }}>
             {lang === 'fr' ? 'Se connecter' : 'Sign in'}
           </button>
         )}

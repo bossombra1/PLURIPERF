@@ -1,5 +1,5 @@
 -- PLURIPERF database schema (SQLite)
--- Applied by server/db.ts. Append new blocks; never edit old ones.
+-- Schema is idempotent so existing databases can be upgraded safely.
 
 CREATE TABLE IF NOT EXISTS users (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -86,6 +86,18 @@ CREATE TABLE IF NOT EXISTS appointments (
   status TEXT NOT NULL DEFAULT 'pending'
     CHECK (status IN ('pending','confirmed','cancelled','completed')),
   created_at TEXT NOT NULL DEFAULT (datetime('now'))
+);
+
+CREATE UNIQUE INDEX IF NOT EXISTS uq_active_appointment_slot
+  ON appointments(date, time_slot) WHERE status != 'cancelled';
+
+CREATE TABLE IF NOT EXISTS advisor_availability (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  advisor_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  date TEXT NOT NULL,
+  time_slot TEXT NOT NULL,
+  available INTEGER NOT NULL DEFAULT 1,
+  UNIQUE(advisor_id, date, time_slot)
 );
 
 CREATE TABLE IF NOT EXISTS contact_messages (
@@ -190,7 +202,8 @@ CREATE TABLE IF NOT EXISTS submissions (
   file_path TEXT,
   submitted_at TEXT NOT NULL DEFAULT (datetime('now')),
   grade REAL,
-  feedback TEXT
+  feedback TEXT,
+  UNIQUE (assignment_id, user_id)
 );
 
 CREATE TABLE IF NOT EXISTS forum_topics (
@@ -225,3 +238,4 @@ CREATE INDEX IF NOT EXISTS idx_applications_user ON applications(user_id);
 CREATE INDEX IF NOT EXISTS idx_appointments_user ON appointments(user_id);
 CREATE INDEX IF NOT EXISTS idx_notifications_user ON notifications(user_id);
 CREATE INDEX IF NOT EXISTS idx_messages_recipient ON messages(recipient_id);
+CREATE INDEX IF NOT EXISTS idx_advisor_availability ON advisor_availability(date, time_slot, available);

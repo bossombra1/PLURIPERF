@@ -568,6 +568,8 @@ export const Navbar: React.FC<NavbarProps> = ({
               >
                 <User className="h-4 w-4" />
                 <span className="hidden max-w-[90px] truncate sm:inline">{user.fullName}</span>
+                <span className="hidden lg:inline">·</span>
+                <span className="hidden lg:inline text-[11px] uppercase">{user.role.replace('_', ' ')}</span>
               </button>
             ) : (
               <button
@@ -578,6 +580,18 @@ export const Navbar: React.FC<NavbarProps> = ({
               >
                 <LogIn className="h-4 w-4 text-primary" />
                 <span className="hidden sm:inline">{tr('Connexion', 'Sign in')}</span>
+              </button>
+            )}
+
+            {user && onLogout && (
+              <button
+                type="button"
+                onClick={async () => { await onLogout(); handleNavigate('login'); }}
+                aria-label={tr('Se déconnecter', 'Sign out')}
+                className="hidden h-9 items-center gap-1.5 rounded border border-border-ui px-2.5 text-xs font-semibold text-text-primary transition-colors hover:border-primary hover:text-primary lg:flex"
+              >
+                <LogIn className="h-4 w-4 text-primary" />
+                <span>{tr('Déconnexion', 'Sign out')}</span>
               </button>
             )}
 
@@ -696,6 +710,13 @@ export const Navbar: React.FC<NavbarProps> = ({
                 >
                   <User className="h-4 w-4 text-primary" />
                   <span className="truncate">{user.fullName}</span>
+                </button>
+                <button
+                  onClick={async () => { setMobileMenuOpen(false); if (onLogout) await onLogout(); handleNavigate('login'); }}
+                  className="flex w-full items-center justify-center gap-2 rounded border border-border-ui py-3 text-sm font-semibold text-text-primary hover:bg-surface-muted"
+                >
+                  <LogIn className="h-4 w-4 text-primary" />
+                  <span>{tr('Se déconnecter', 'Sign out')}</span>
                 </button>
               ) : (
                 <button

@@ -275,6 +275,7 @@ const BTN_OUTLINE =
 export const Navbar: React.FC<NavbarProps> = ({
   currentPage,
   user,
+  onLogout,
   setCurrentPage,
   onNavigate,
   lang,

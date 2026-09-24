@@ -704,20 +704,22 @@ export const Navbar: React.FC<NavbarProps> = ({
               </button>
 
               {user ? (
-                <button
-                  onClick={() => handleNavigate('campus_virtuel')}
-                  className="flex w-full items-center justify-center gap-2 rounded border border-border-ui py-3 text-sm font-semibold text-text-primary hover:bg-surface-muted"
-                >
-                  <User className="h-4 w-4 text-primary" />
-                  <span className="truncate">{user.fullName}</span>
-                </button>
-                <button
-                  onClick={async () => { setMobileMenuOpen(false); if (onLogout) await onLogout(); handleNavigate('login'); }}
-                  className="flex w-full items-center justify-center gap-2 rounded border border-border-ui py-3 text-sm font-semibold text-text-primary hover:bg-surface-muted"
-                >
-                  <LogIn className="h-4 w-4 text-primary" />
-                  <span>{tr('Se déconnecter', 'Sign out')}</span>
-                </button>
+                <>
+                  <button
+                    onClick={() => handleNavigate('campus_virtuel')}
+                    className="flex w-full items-center justify-center gap-2 rounded border border-border-ui py-3 text-sm font-semibold text-text-primary hover:bg-surface-muted"
+                  >
+                    <User className="h-4 w-4 text-primary" />
+                    <span className="truncate">{user.fullName}</span>
+                  </button>
+                  <button
+                    onClick={async () => { setMobileMenuOpen(false); if (onLogout) await onLogout(); handleNavigate('login'); }}
+                    className="flex w-full items-center justify-center gap-2 rounded border border-border-ui py-3 text-sm font-semibold text-text-primary hover:bg-surface-muted"
+                  >
+                    <LogIn className="h-4 w-4 text-primary" />
+                    <span>{tr('Se déconnecter', 'Sign out')}</span>
+                  </button>
+                </>
               ) : (
                 <button
                   onClick={() => {

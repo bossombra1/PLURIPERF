@@ -163,7 +163,13 @@ const Shell: React.FC = () => {
         if (routeParam) return <FormationDetailPage {...commonProps} programId={routeParam} onApplyForProgram={handleApplyForProgram} />;
         return <FormationsPage {...commonProps} onApplyForProgram={handleApplyForProgram} />;
       case 'campus-virtuel':
-        return <RequireAuth><CampusVirtuelPage {...commonProps} /></RequireAuth>;
+        return (
+          <RequireAuth>
+            {user?.role === 'teacher' ? <TeacherSpacePage {...commonProps} /> :
+              ['admin', 'super_admin'].includes(user?.role ?? '') ? <AdminPage {...commonProps} /> :
+              <CampusVirtuelPage {...commonProps} />}
+          </RequireAuth>
+        );
       case 'bibliotheque':
         return <BibliothequePage {...commonProps} />;
       case 'cabinet':

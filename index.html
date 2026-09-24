@@ -2,19 +2,43 @@
 <html lang="fr">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
+    <meta name="color-scheme" content="light" />
+    <meta name="theme-color" content="#08783f" />
+
     <title>PLURIPERF International University</title>
+    <meta
+      name="description"
+      content="1ère Université de Management Durable, d'Écologie responsable et de Leadership régénératif. Portail institutionnel, académique et international de PLURIPERF."
+    />
     <link rel="icon" type="image/svg+xml" href="/logo-pluriperf.svg" />
-    <meta name="description" content="PLURIPERF International University — formation, recherche et innovation au service des transitions durables." />
+
+    <!-- Open Graph / Twitter -->
+    <meta property="og:site_name" content="PLURIPERF International University" />
     <meta property="og:title" content="PLURIPERF International University" />
-    <meta property="og:description" content="Portail institutionnel, académique et international de PLURIPERF." />
+    <meta
+      property="og:description"
+      content="Portail institutionnel, académique et international de PLURIPERF."
+    />
     <meta property="og:type" content="website" />
+    <meta property="og:locale" content="fr_FR" />
+    <meta property="og:locale:alternate" content="en_US" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <!-- À ajouter au déploiement (URL absolue) : og:url et og:image -->
+
+    <!-- Polices -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Manrope:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
   </head>
-  <body>
+  <body class="bg-background text-text-primary font-sans antialiased selection:bg-primary selection:text-primary-foreground">
     <div id="root"></div>
+    <noscript>
+      Ce site nécessite JavaScript pour fonctionner. / This site requires JavaScript.
+    </noscript>
     <script type="module" src="/src/main.tsx"></script>
   </body>
-</html> 
+</html>

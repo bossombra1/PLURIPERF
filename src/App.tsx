@@ -2,7 +2,7 @@ import React, { Suspense, lazy } from 'react';
 import { BrowserRouter, useLocation, useNavigate, Navigate } from 'react-router-dom';
 import { PageId, Language } from './types';
 import { pageToPath } from './routes';
-import { AuthProvider, useAuth } from './context/AuthContext';
+import { AuthProvider, useAuth, AuthUser } from './context/AuthContext';
 import { Navbar } from './components/Navbar';
 import { Footer } from './components/Footer';
 import { LoadingState } from './components/ui/states';
@@ -114,11 +114,11 @@ const Shell: React.FC = () => {
     setIsApplyModalOpen(true);
   };
 
-  const handleSuccessLogin = (_persona: 'student' | 'faculty') => {
+  const handleSuccessLogin = (loggedInUser: AuthUser) => {
     const from = (location.state as { from?: string })?.from;
     if (from) navigate(from);
-    else if (user?.role === 'teacher') navigate('/espace-enseignant');
-    else if (['admin', 'super_admin'].includes(user?.role ?? '')) navigate('/admin');
+    else if (loggedInUser.role === 'teacher') navigate('/espace-enseignant');
+    else if (['admin', 'super_admin'].includes(loggedInUser.role)) navigate('/admin');
     else navigate('/espace-etudiant');
   };
 
@@ -163,7 +163,13 @@ const Shell: React.FC = () => {
         if (routeParam) return <FormationDetailPage {...commonProps} programId={routeParam} onApplyForProgram={handleApplyForProgram} />;
         return <FormationsPage {...commonProps} onApplyForProgram={handleApplyForProgram} />;
       case 'campus-virtuel':
-        return <RequireAuth><CampusVirtuelPage {...commonProps} /></RequireAuth>;
+        return (
+          <RequireAuth>
+            {user?.role === 'teacher' ? <TeacherSpacePage {...commonProps} /> :
+              ['admin', 'super_admin'].includes(user?.role ?? '') ? <AdminPage {...commonProps} /> :
+              <CampusVirtuelPage {...commonProps} />}
+          </RequireAuth>
+        );
       case 'bibliotheque':
         return <BibliothequePage {...commonProps} />;
       case 'cabinet':

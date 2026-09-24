@@ -1,42 +1,7 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
-import { Logo } from '../components/Logo';
-import { Alert, AlertDescription } from '../components/ui/alert';
-import { Mail, ArrowLeft } from 'lucide-react';
-
-export const StudentMessagesPage: React.FC<{ lang?: 'fr' | 'en' }> = ({ lang = 'fr' }) => {
-  const { user } = useAuth();
-
-  if (!user) {
-    return (
-      <div className="min-h-[70vh] flex items-center justify-center py-12 px-4">
-        <Alert variant="destructive" className="max-w-md">
-          <AlertDescription>Authentification requise.</AlertDescription>
-        </Alert>
-      </div>
-    );
-  }
-
-  return (
-    <div className="min-h-[70vh] py-12 px-4">
-      <div className="max-w-4xl mx-auto space-y-8">
-        <div className="flex items-center justify-between">
-          <div className="space-y-2">
-            <Link to="/espace-etudiant" className="text-sm text-primary hover:text-primary-hover flex items-center gap-1">
-              <ArrowLeft className="h-4 w-4" />
-              Retour au tableau de bord
-            </Link>
-            <h1 className="text-3xl font-bold text-text-primary">Messages</h1>
-          </div>
-          <Logo variant="emblem-only" size="sm" />
-        </div>
-
-        <div className="p-8 bg-surface border border-border-subtle rounded-[calc(var(--radius)+4px)] text-center">
-          <Mail className="h-12 w-12 text-text-muted mx-auto mb-4" />
-          <p className="text-text-muted">Aucun message pour le moment.</p>
-        </div>
-      </div>
-    </div>
-  );
-};
+import React,{useEffect,useState}from'react';import{Link}from'react-router-dom';import{useAuth}from'../context/AuthContext';import{api}from'../api/client';import{Logo}from'../components/Logo';import{Alert,AlertDescription}from'../components/ui/alert';import{Mail,ArrowLeft,Loader2,Send}from'lucide-react';
+type Msg={id:number;subject:string;body:string;sender:string;created_at:string};
+export const StudentMessagesPage:React.FC<{lang?:'fr'|'en'}>=()=>{const{user}=useAuth();const[messages,setMessages]=useState<Msg[]>([]);const[loading,setLoading]=useState(true);const[error,setError]=useState('');const[recipientEmail,setRecipientEmail]=useState('teacher@pluriperf.com');const[subject,setSubject]=useState('');const[body,setBody]=useState('');const[sending,setSending]=useState(false);const[success,setSuccess]=useState('');
+ const load=()=>{if(!user)return;setLoading(true);api.get<Msg[]>('/messages').then(setMessages).catch(e=>setError(e.message||'Erreur de chargement')).finally(()=>setLoading(false))};useEffect(load,[user]);
+ const send=async(e:React.FormEvent)=>{e.preventDefault();setSending(true);setError('');setSuccess('');try{await api.post('/messages',{recipientEmail,subject,body});setSubject('');setBody('');setSuccess('Message envoyé.');load()}catch(e:any){setError(e.message||'Erreur')}finally{setSending(false)}};
+ if(!user)return <div className="min-h-[70vh] flex items-center justify-center py-12 px-4"><Alert variant="destructive" className="max-w-md"><AlertDescription>Authentification requise.</AlertDescription></Alert></div>;
+ return <div className="min-h-[70vh] py-12 px-4"><div className="max-w-4xl mx-auto space-y-8"><div className="flex items-center justify-between"><div className="space-y-2"><Link to="/espace-etudiant" className="text-sm text-primary hover:text-primary-hover flex items-center gap-1"><ArrowLeft className="h-4 w-4"/>Retour au tableau de bord</Link><h1 className="text-3xl font-bold text-text-primary">Messages</h1></div><Logo variant="emblem-only" size="sm"/></div>{error&&<Alert variant="destructive"><AlertDescription>{error}</AlertDescription></Alert>}{success&&<Alert><AlertDescription>{success}</AlertDescription></Alert>}<div className="grid grid-cols-1 md:grid-cols-2 gap-6"><div className="bg-surface border border-border-subtle rounded-[calc(var(--radius)+4px)] p-6"><h2 className="font-semibold mb-4 flex items-center gap-2"><Mail className="h-5 w-5 text-primary"/>Messages reçus</h2>{loading?<Loader2 className="h-6 w-6 animate-spin text-primary"/>:messages.length===0?<p className="text-text-muted text-sm">Aucun message.</p>:<div className="space-y-3">{messages.map(m=><div key={m.id} className="border-b border-border-subtle pb-3"><p className="font-semibold">{m.subject}</p><p className="text-xs text-text-muted">De {m.sender} · {new Date(m.created_at).toLocaleString('fr-FR')}</p><p className="text-sm text-text-secondary mt-1">{m.body}</p></div>)}</div>}</div><form onSubmit={send} className="bg-surface border border-border-subtle rounded-[calc(var(--radius)+4px)] p-6 space-y-4"><h2 className="font-semibold flex items-center gap-2"><Send className="h-5 w-5 text-primary"/>Nouveau message</h2><input className="w-full border border-border-subtle rounded-md p-3 bg-background" value={recipientEmail} onChange={e=>setRecipientEmail(e.target.value)} placeholder="Email du destinataire"/><input required className="w-full border border-border-subtle rounded-md p-3 bg-background" value={subject} onChange={e=>setSubject(e.target.value)} placeholder="Objet"/><textarea required className="w-full border border-border-subtle rounded-md p-3 bg-background min-h-32" value={body} onChange={e=>setBody(e.target.value)} placeholder="Votre message"/><button disabled={sending} className="px-4 py-2 bg-primary text-white rounded-md flex items-center gap-2">{sending&&<Loader2 className="h-4 w-4 animate-spin"/>}Envoyer</button></form></div></div></div>};

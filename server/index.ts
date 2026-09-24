@@ -49,13 +49,15 @@ app.use('/api', notFound);
 app.use(errorHandler);
 
 if (config.env === 'production') {
-  const dist = path.resolve('dist');
-  app.use(express.static(dist));
-  app.get(/^(?!\/api).*/, (_req, res) => res.sendFile(path.join(dist, 'index.html')));
+  const staticDir = process.env.VERCEL ? path.resolve('public') : path.resolve('dist');
+  app.use(express.static(staticDir));
+  app.get(/^(?!\/api).*/, (_req, res) => res.sendFile(path.join(staticDir, 'index.html')));
 }
 
-app.listen(config.port, () => {
-  console.log(`PLURIPERF API prête sur http://localhost:${config.port} (${config.env})`);
-});
+if (!process.env.VERCEL) {
+  app.listen(config.port, () => {
+    console.log(`PLURIPERF API prête sur http://localhost:${config.port} (${config.env})`);
+  });
+}
 
 export default app;

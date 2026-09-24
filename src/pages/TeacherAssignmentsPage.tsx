@@ -1,42 +1,4 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
-import { Logo } from '../components/Logo';
-import { Alert, AlertDescription } from '../components/ui/alert';
-import { ClipboardList, ArrowLeft } from 'lucide-react';
-
-export const TeacherAssignmentsPage: React.FC<{ lang?: 'fr' | 'en' }> = ({ lang = 'fr' }) => {
-  const { user } = useAuth();
-
-  if (!user) {
-    return (
-      <div className="min-h-[70vh] flex items-center justify-center py-12 px-4">
-        <Alert variant="destructive" className="max-w-md">
-          <AlertDescription>Authentification requise.</AlertDescription>
-        </Alert>
-      </div>
-    );
-  }
-
-  return (
-    <div className="min-h-[70vh] py-12 px-4">
-      <div className="max-w-4xl mx-auto space-y-8">
-        <div className="flex items-center justify-between">
-          <div className="space-y-2">
-            <Link to="/espace-enseignant" className="text-sm text-primary hover:text-primary-hover flex items-center gap-1">
-              <ArrowLeft className="h-4 w-4" />
-              Retour au tableau de bord
-            </Link>
-            <h1 className="text-3xl font-bold text-text-primary">Devoirs</h1>
-          </div>
-          <Logo variant="emblem-only" size="sm" />
-        </div>
-
-        <div className="p-8 bg-surface border border-border-subtle rounded-[calc(var(--radius)+4px)] text-center">
-          <ClipboardList className="h-12 w-12 text-text-muted mx-auto mb-4" />
-          <p className="text-text-muted">Aucun devoir pour le moment.</p>
-        </div>
-      </div>
-    </div>
-  );
-};
+import React,{useEffect,useState}from'react';import{Link}from'react-router-dom';import{useAuth}from'../context/AuthContext';import{api}from'../api/client';import{Logo}from'../components/Logo';import{Alert,AlertDescription}from'../components/ui/alert';import{ClipboardList,ArrowLeft,Loader2}from'lucide-react';
+type A={id:number;title_fr:string;title_en:string;due_date:string;course_title:string;submissions:number;to_grade:number};
+type C={id:number;code:string;title_fr:string};
+export const TeacherAssignmentsPage:React.FC<{lang?:'fr'|'en'}>=({lang='fr'})=>{const{user}=useAuth();const[a,setA]=useState<A[]>([]);const[courses,setCourses]=useState<C[]>([]);const[courseId,setCourseId]=useState('');const[titleFr,setTitleFr]=useState('');const[titleEn,setTitleEn]=useState('');const[dueDate,setDueDate]=useState('');const[description,setDescription]=useState('');const[loading,setLoading]=useState(true);const[sending,setSending]=useState(false);const[error,setError]=useState('');const[success,setSuccess]=useState('');const load=()=>{if(!user)return;Promise.all([api.get<A[]>('/teacher/assignments'),api.get<C[]>('/teacher/courses')]).then(([x,y])=>{setA(x);setCourses(y)}).catch(e=>setError(e.message||'Erreur')).finally(()=>setLoading(false))};useEffect(load,[user]);const create=async(e:React.FormEvent)=>{e.preventDefault();setSending(true);setError('');setSuccess('');try{await api.post('/teacher/assignments',{courseId:Number(courseId),titleFr,titleEn,dueDate,description});setTitleFr('');setTitleEn('');setDescription('');setSuccess('Devoir créé.');load()}catch(e:any){setError(e.message||'Erreur')}finally{setSending(false)}};if(!user)return null;return <div className="min-h-[70vh] py-12 px-4"><div className="max-w-4xl mx-auto space-y-8"><div className="flex items-center justify-between"><div className="space-y-2"><Link to="/espace-enseignant" className="text-sm text-primary flex items-center gap-1"><ArrowLeft className="h-4 w-4"/>Retour au tableau de bord</Link><h1 className="text-3xl font-bold text-text-primary">Devoirs</h1></div><Logo variant="emblem-only" size="sm"/></div>{error&&<Alert variant="destructive"><AlertDescription>{error}</AlertDescription></Alert>}{success&&<Alert><AlertDescription>{success}</AlertDescription></Alert>}<form onSubmit={create} className="p-6 bg-surface border border-border-subtle rounded-[calc(var(--radius)+4px)] space-y-4"><h2 className="font-semibold">Créer un devoir</h2><select required value={courseId} onChange={e=>setCourseId(e.target.value)} className="w-full border border-border-subtle rounded-md p-3 bg-background"><option value="">Choisir un cours</option>{courses.map(c=><option key={c.id} value={c.id}>{c.code} — {c.title_fr}</option>)}</select><input required minLength={3} value={titleFr} onChange={e=>setTitleFr(e.target.value)} className="w-full border border-border-subtle rounded-md p-3 bg-background" placeholder="Titre (FR)"/><input required minLength={3} value={titleEn} onChange={e=>setTitleEn(e.target.value)} className="w-full border border-border-subtle rounded-md p-3 bg-background" placeholder="Titre (EN)"/><input required type="date" value={dueDate} onChange={e=>setDueDate(e.target.value)} className="border border-border-subtle rounded-md p-3 bg-background"/><textarea value={description} onChange={e=>setDescription(e.target.value)} className="w-full border border-border-subtle rounded-md p-3 bg-background min-h-24" placeholder="Description"/><button disabled={sending} className="px-4 py-2 bg-primary text-white rounded-md">{sending?'Création...':'Créer le devoir'}</button></form><div className="space-y-3">{loading?<Loader2 className="h-8 w-8 animate-spin text-primary mx-auto"/>:a.map(x=><div key={x.id} className="p-5 bg-surface border border-border-subtle rounded-[calc(var(--radius)+4px)]"><div className="flex justify-between gap-4"><div><h3 className="font-semibold">{lang==='fr'?x.title_fr:x.title_en}</h3><p className="text-sm text-text-muted">{x.course_title} · échéance {x.due_date}</p></div><span className="text-sm text-text-muted">{x.submissions} dépôt(s), {x.to_grade} à corriger</span></div></div>)}</div></div></div>};

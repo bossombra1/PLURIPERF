@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { Logo } from '../components/Logo';
-import { useAuth } from '../context/AuthContext';
+import { useAuth, AuthUser } from '../context/AuthContext';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { Alert, AlertDescription } from '../components/ui/alert';
@@ -9,7 +9,7 @@ import { ApiError } from '../api/client';
 import { Loader2, UserPlus } from 'lucide-react';
 
 interface RegisterPageProps {
-  onSuccessLogin: (persona: 'student' | 'faculty') => void;
+  onSuccessLogin: (user: AuthUser) => void;
 }
 
 export const RegisterPage: React.FC<RegisterPageProps> = ({ onSuccessLogin }) => {
@@ -25,8 +25,8 @@ export const RegisterPage: React.FC<RegisterPageProps> = ({ onSuccessLogin }) =>
     setError('');
     setLoading(true);
     try {
-      await register(email, password, fullName);
-      onSuccessLogin('student');
+      const u = await register(email, password, fullName);
+      onSuccessLogin(u);
     } catch (err) {
       setError(err instanceof ApiError ? err.message : 'Erreur réseau');
     } finally {

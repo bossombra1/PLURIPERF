@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { Language } from '../types';
 import { Logo } from '../components/Logo';
-import { useAuth } from '../context/AuthContext';
+import { useAuth, AuthUser } from '../context/AuthContext';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { Alert, AlertDescription } from '../components/ui/alert';
@@ -10,7 +10,7 @@ import { ApiError } from '../api/client';
 import { Loader2, Shield, UserPlus, LogIn } from 'lucide-react';
 
 interface LoginPageProps {
-  onSuccessLogin: (persona: 'student' | 'faculty') => void;
+  onSuccessLogin: (user: AuthUser) => void;
 }
 
 export const LoginPage: React.FC<LoginPageProps> = ({ onSuccessLogin }) => {
@@ -35,10 +35,10 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onSuccessLogin }) => {
         const u = /@/.test(identifiant)
           ? await login(identifiant, password)
           : await login('', password, identifiant);
-        onSuccessLogin(u.role === 'teacher' ? 'faculty' : 'student');
+        onSuccessLogin(u);
       } else {
-        await register(email, password, fullName);
-        onSuccessLogin('student');
+        const u = await register(email, password, fullName);
+        onSuccessLogin(u);
       }
     } catch (err) {
       setError(err instanceof ApiError ? err.message : 'Erreur réseau');

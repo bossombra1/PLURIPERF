@@ -2,14 +2,14 @@ import React, { useState } from 'react';
 import { Language } from '../types';
 import { X, LogIn, Shield, Loader2, AlertCircle, UserPlus } from 'lucide-react';
 import { Logo } from './Logo';
-import { useAuth } from '../context/AuthContext';
+import { useAuth, AuthUser } from '../context/AuthContext';
 import { api, ApiError } from '../api/client';
 
 interface LoginModalProps {
   isOpen: boolean;
   onClose: () => void;
   lang: Language;
-  onSuccessLogin: (persona: 'student' | 'faculty') => void;
+  onSuccessLogin: (user: AuthUser) => void;
 }
 
 export const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose, lang, onSuccessLogin }) => {
@@ -35,11 +35,11 @@ export const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose, lang, o
         const u = /@/.test(identifiant)
           ? await login(identifiant, password)
           : await login('', password, identifiant);
-        onSuccessLogin(u.role === 'teacher' ? 'faculty' : 'student');
+        onSuccessLogin(u);
         onClose();
       } else if (mode === 'register') {
-        await register(email, password, fullName);
-        onSuccessLogin('student');
+        const u = await register(email, password, fullName);
+        onSuccessLogin(u);
         onClose();
       } else {
         const res = await api.post<{ message: string }>('/auth/forgot-password', { email });

@@ -1,0 +1,11 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "framework": "express",
+  "installCommand": "npm ci",
+  "buildCommand": "npm run build:vercel",
+  "functions": {
+    "server.ts": {
+      "includeFiles": ["server/schema.sql", "data/pluriperf.db"]
+    }
+  }
+}

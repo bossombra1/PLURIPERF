@@ -52,6 +52,23 @@ router.get(
   }),
 );
 
+// Notes des étudiants des cours gérés
+router.get(
+  '/grades',
+  asyncHandler(async (req: Request, res: Response) => {
+    const user = (req as any).user as AuthUser;
+    res.json(db.prepare(
+      `SELECT e.user_id, u.full_name AS student, u.student_ref, c.id AS course_id, c.code, c.title_fr, e.grade
+       FROM enrollments e
+       JOIN users u ON u.id = e.user_id
+       JOIN courses c ON c.id = e.course_id
+       JOIN teacher_courses tc ON tc.course_id = c.id
+       WHERE tc.teacher_id = ?
+       ORDER BY c.code, u.full_name`
+    ).all(user.id));
+  }),
+);
+
 // Créer un devoir
 router.post(
   '/assignments',

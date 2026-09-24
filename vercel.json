@@ -1,11 +1,9 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "framework": "express",
   "installCommand": "npm ci",
-  "buildCommand": "npm run build:vercel",
-  "functions": {
-    "server.ts": {
-      "includeFiles": "data/**"
-    }
-  }
+  "buildCommand": "npm run build",
+  "outputDirectory": "dist",
+  "rewrites": [
+    { "source": "/(.*)", "destination": "/index.html" }
+  ]
 }

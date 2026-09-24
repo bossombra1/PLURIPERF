@@ -5,7 +5,7 @@
   "buildCommand": "npm run build:vercel",
   "functions": {
     "server.ts": {
-      "includeFiles": ["server/schema.sql", "data/pluriperf.db"]
+      "includeFiles": "server/schema.sql"
     }
   }
 }

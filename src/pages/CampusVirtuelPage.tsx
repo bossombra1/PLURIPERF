@@ -75,7 +75,11 @@ export const CampusVirtuelPage: React.FC<CampusVirtuelPageProps> = ({
     })();
   }, [user]);
 
-  const student = VIRTUAL_CAMPUS_STUDENT;
+  const student = {
+    ...VIRTUAL_CAMPUS_STUDENT,
+    name: user?.fullName || VIRTUAL_CAMPUS_STUDENT.name,
+    matricule: user?.studentRef || user?.email || VIRTUAL_CAMPUS_STUDENT.matricule,
+  };
 
   const subTabs = [
     { id: 'tableau_de_bord', labelFr: 'Tableau de bord', labelEn: 'Dashboard', icon: LayoutDashboard },
@@ -148,7 +152,7 @@ export const CampusVirtuelPage: React.FC<CampusVirtuelPageProps> = ({
 
           <div className="flex items-center gap-3 bg-slate-800/90 p-3 rounded-xl border border-slate-700/80">
             <div className="w-10 h-10 rounded-full bg-amber-600 text-white font-bold flex items-center justify-center text-sm shadow">
-              SA
+              {(user?.fullName || student.name).split(/\\s+/).map((part) => part[0]).join('').slice(0, 2).toUpperCase()}
             </div>
             <div className="text-xs">
               <span className="font-semibold text-white block">{student.name}</span>

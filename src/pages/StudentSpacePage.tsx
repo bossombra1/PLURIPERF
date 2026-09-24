@@ -3,6 +3,8 @@ import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { Logo } from '../components/Logo';
 import { Button } from '../components/ui/button';
+import { api } from '../api/client';
+import { Loader2 } from 'lucide-react';
 import { Alert, AlertDescription } from '../components/ui/alert';
 import { LayoutDashboard, LogOut } from 'lucide-react';
 
@@ -10,6 +12,9 @@ export const StudentSpacePage: React.FC<{ lang?: 'fr' | 'en' }> = ({ lang = 'fr'
   const { user, logout } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
+  const [dashboard, setDashboard] = React.useState<any>(null);
+  const [loadingDashboard, setLoadingDashboard] = React.useState(true);
+  React.useEffect(() => { if (user) api.get<any>('/student/dashboard').then(setDashboard).finally(() => setLoadingDashboard(false)); }, [user]);
 
   if (!user) {
     return (
@@ -37,7 +42,7 @@ export const StudentSpacePage: React.FC<{ lang?: 'fr' | 'en' }> = ({ lang = 'fr'
           <div className="space-y-2">
             <Logo variant="full-horizontal" size="md" />
             <h1 className="text-3xl font-bold text-text-primary">Espace Étudiant</h1>
-            <p className="text-text-muted">Bienvenue, {user.fullName}</p>
+            <p className="text-text-muted">Bienvenue, {dashboard?.student?.fullName || user.fullName}</p>
           </div>
           <Button variant="outline" onClick={() => { logout(); navigate('/'); }}>
             <LogOut className="h-4 w-4" />
@@ -63,7 +68,7 @@ export const StudentSpacePage: React.FC<{ lang?: 'fr' | 'en' }> = ({ lang = 'fr'
             <LayoutDashboard className="h-5 w-5 text-primary" />
             <h2 className="text-xl font-semibold text-text-primary">Tableau de bord</h2>
           </div>
-          <p className="text-text-muted">Consultez vos cours, devoirs et notes depuis les sections ci-dessus.</p>
+          {loadingDashboard ? <Loader2 className="h-5 w-5 animate-spin text-primary" /> : <div className="grid grid-cols-3 gap-4 text-sm"><div><span className="text-text-muted block">Cours</span><b>{dashboard?.stats?.enrolled ?? 0}</b></div><div><span className="text-text-muted block">Devoirs à rendre</span><b>{dashboard?.stats?.pendingAssignments ?? 0}</b></div><div><span className="text-text-muted block">Moyenne</span><b>{dashboard?.stats?.averageGrade ?? '—'}/20</b></div></div>}
         </div>
       </div>
     </div>

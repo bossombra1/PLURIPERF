@@ -571,9 +571,6 @@ export const Navbar: React.FC<NavbarProps> = ({
               >
                 <User className="h-4 w-4 shrink-0" />
                 <span className="hidden min-w-0 truncate text-xs font-semibold sm:inline">{user.fullName}</span>
-                <span className="hidden shrink-0 rounded bg-primary/10 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide lg:inline">
-                  {user.role.replace(/_/g, ' ')}
-                </span>
               </button>
             ) : (
               <button

@@ -60,10 +60,10 @@ export const AdminUsersPage: React.FC<{ lang?: 'fr' | 'en' }> = ({ lang = 'fr' }
               Retour à l'administration
             </Link>
             <h1 className="text-3xl font-bold text-text-primary">Utilisateurs</h1>
-            <p className="text-sm text-text-muted">Les comptes sont créés exclusivement par le super administrateur.</p>
+            <p className="text-sm text-text-muted">Les comptes sont créés exclusivement depuis cet espace par un administrateur autorisé.</p>
           </div>
           <div className="flex items-center gap-3">
-            {user?.role === 'super_admin' && (
+            {['admin', 'super_admin'].includes(user?.role ?? '') && (
               <Button onClick={() => setShowCreate((v) => !v)}>
                 <UserPlus className="h-4 w-4" />
                 {showCreate ? 'Fermer' : 'Créer un compte'}
@@ -73,7 +73,7 @@ export const AdminUsersPage: React.FC<{ lang?: 'fr' | 'en' }> = ({ lang = 'fr' }
           </div>
         </div>
 
-        {showCreate && user?.role === 'super_admin' && (
+        {showCreate && ['admin', 'super_admin'].includes(user?.role ?? '') && (
           <form
             className="bg-surface border border-border-subtle rounded-[calc(var(--radius)+4px)] p-5 space-y-4"
             onSubmit={async (e) => {
@@ -95,7 +95,7 @@ export const AdminUsersPage: React.FC<{ lang?: 'fr' | 'en' }> = ({ lang = 'fr' }
           >
             <div>
               <h2 className="text-lg font-semibold text-text-primary">Créer un compte</h2>
-              <p className="text-sm text-text-muted">Le super administrateur définit le rôle et le mot de passe initial.</p>
+              <p className="text-sm text-text-muted">L’administrateur définit le rôle et le mot de passe initial. Le rôle super administrateur reste réservé au super administrateur.</p>
             </div>
             <div className="grid gap-4 sm:grid-cols-2">
               <Input required minLength={2} placeholder="Nom complet" value={form.fullName} onChange={(e) => setForm({ ...form, fullName: e.target.value })} />

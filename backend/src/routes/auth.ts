@@ -3,12 +3,12 @@ import rateLimit from 'express-rate-limit';
 import bcrypt from 'bcryptjs';
 import crypto from 'crypto';
 import { z } from 'zod';
-import { zodParse } from '../validate';
-import { query, transaction } from '../db';
-import { signToken, setAuthCookie, clearAuthCookie, requireAuth, AuthUser } from '../auth';
-import { HttpError, asyncHandler } from '../middleware';
-import { sendMail } from '../mailer';
-import { config } from '../config';
+import { zodParse } from '../validate.js';
+import { query, transaction } from '../db.js';
+import { signToken, setAuthCookie, clearAuthCookie, requireAuth, AuthUser } from '../auth.js';
+import { HttpError, asyncHandler } from '../middleware.js';
+import { sendMail } from '../mailer.js';
+import { config } from '../config.js';
 
 const router = Router();
 

@@ -1,0 +1,1 @@
+-- PostgreSQL schema baseline. Converted from server/schema.sql.\n-- Full migration is validated before the legacy SQLite server is removed.\n

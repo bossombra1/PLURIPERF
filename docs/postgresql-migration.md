@@ -1,0 +1,1 @@
+# Migration PostgreSQL — PLURIPERF International\n\nArchitecture cible : `frontend/` React/Vite + `backend/` Node/Express + PostgreSQL.\n\nLe dossier `server/` est conservé temporairement comme sauvegarde pendant la migration. Ne pas le supprimer avant validation des tests.\n

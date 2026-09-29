@@ -1,0 +1,1 @@
+# PostgreSQL database\n\nSchema PostgreSQL de PLURIPERF. Les requêtes backend SQLite seront migrées avant suppression du dossier `server/`.\n

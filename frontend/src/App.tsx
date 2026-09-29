@@ -4,6 +4,7 @@ import { PageId, Language } from './types';
 import { pageToPath } from './routes';
 import { AuthProvider, useAuth, AuthUser } from './context/AuthContext';
 import { Navbar } from './components/Navbar';
+import { RoleLayout, getRoleHome, isPrivatePath } from './components/RoleLayout';
 import { Footer } from './components/Footer';
 import { LoadingState } from './components/ui/states';
 import { ApplicationModal } from './components/ApplicationModal';
@@ -63,6 +64,7 @@ const AdminSettingsPage = lazy(() => import('./pages/admin/AdminSettingsPage').t
 const AdminContactPage = lazy(() => import('./pages/admin/AdminContactPage').then((m) => ({ default: m.AdminContactPage })));
 const AdminAdvisoryPage = lazy(() => import('./pages/admin/AdminAdvisoryPage').then((m) => ({ default: m.AdminAdvisoryPage })));
 const NotFoundPage = lazy(() => import('./pages/NotFoundPage').then((m) => ({ default: m.NotFoundPage })));
+const RoleDashboardPage = lazy(() => import('./pages/RoleDashboardPage').then((m) => ({ default: m.RoleDashboardPage })));
 
 const RequireAuth: React.FC<{ children: React.ReactElement }> = ({ children }) => {
   const { user, loading } = useAuth();
@@ -115,11 +117,7 @@ const Shell: React.FC = () => {
   };
 
   const handleSuccessLogin = (loggedInUser: AuthUser) => {
-    const from = (location.state as { from?: string })?.from;
-    if (from) navigate(from);
-    else if (loggedInUser.role === 'teacher') navigate('/espace-enseignant');
-    else if (['admin', 'super_admin'].includes(loggedInUser.role)) navigate('/admin');
-    else navigate('/espace-etudiant');
+    navigate(getRoleHome(loggedInUser.role), { replace: true });
   };
 
   const renderCurrentPage = () => {
@@ -208,6 +206,18 @@ const Shell: React.FC = () => {
               <Navigate to="/espace-etudiant" replace />}
           </RequireAuth>
         );
+      case 'espace-conseiller':
+        return (
+          <RequireRole roles={['advisor']}>
+            {routeParam === '' ? <RoleDashboardPage role="advisor" lang={lang} /> : <RoleDashboardPage role="advisor" lang={lang} section={routeParam} />}
+          </RequireRole>
+        );
+      case 'espace-editeur':
+        return (
+          <RequireRole roles={['editor']}>
+            {routeParam === '' ? <RoleDashboardPage role="editor" lang={lang} /> : <RoleDashboardPage role="editor" lang={lang} section={routeParam} />}
+          </RequireRole>
+        );
       case 'espace-enseignant':
         return (
           <RequireRole roles={['teacher']}>
@@ -241,11 +251,11 @@ const Shell: React.FC = () => {
     }
   };
 
-  const isAdminOrStudent = ['/admin', '/espace-etudiant', '/espace-enseignant'].some((p) => location.pathname.startsWith(p));
+  const privateArea = isPrivatePath(location.pathname);
 
-  return (
+  const pageContent = (
     <div className="min-h-screen bg-background text-text-primary flex flex-col font-sans">
-      <Navbar
+      {!privateArea && <Navbar
 
         currentPage={location.pathname}
         onNavigate={handleNavigate}
@@ -257,13 +267,13 @@ const Shell: React.FC = () => {
         onOpenLogin={() => setIsLoginModalOpen(true)}
         onOpenAppointment={() => setIsAppointmentModalOpen(true)}
         onOpenWhatsApp={() => setIsWhatsAppModalOpen(true)}
-      />
+      />}
 
-      <main className={isAdminOrStudent ? 'app-main flex-1' : 'app-main flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 pt-4'}>
+      <main className={privateArea ? 'flex-1' : 'app-main flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 pt-4'}>
         <Suspense fallback={<LoadingState />}>{renderCurrentPage()}</Suspense>
       </main>
 
-      {!isAdminOrStudent && (
+      {!privateArea && (
         <Footer
           lang={lang}
           onNavigate={handleNavigate}
@@ -279,6 +289,8 @@ const Shell: React.FC = () => {
       <CabinetQuoteModal isOpen={isCabinetModalOpen} onClose={() => setIsCabinetModalOpen(false)} lang={lang} />
     </div>
   );
+
+  return privateArea ? <RoleLayout>{pageContent}</RoleLayout> : pageContent;
 };
 
 export const App: React.FC = () => (

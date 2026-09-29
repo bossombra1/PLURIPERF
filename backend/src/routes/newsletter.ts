@@ -1,8 +1,8 @@
 import { Router, Request, Response } from 'express';
 import { z } from 'zod';
-import { zodParse } from '../validate';
-import { query } from '../db';
-import { asyncHandler } from '../middleware';
+import { zodParse } from '../validate.js';
+import { query } from '../db.js';
+import { asyncHandler } from '../middleware.js';
 
 const router = Router();
 const schema = z.object({ email: z.string().email().max(255) });

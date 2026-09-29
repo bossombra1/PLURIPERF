@@ -195,7 +195,7 @@ const Shell: React.FC = () => {
         return <VerifyEmailPage lang={lang} onNavigate={handleNavigate} />;
       case 'espace-etudiant':
         return (
-          <RequireAuth>
+          <RequireRole roles={['student']}>
             {routeParam === 'cours' ? <StudentCoursesPage {...commonProps} /> :
               routeParam === 'devoirs' ? <StudentAssignmentsPage {...commonProps} /> :
               routeParam === 'notes' ? <StudentGradesPage {...commonProps} /> :

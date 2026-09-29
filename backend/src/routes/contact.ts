@@ -1,9 +1,9 @@
 import { Router, Request, Response } from 'express';
 import { z } from 'zod';
-import { zodParse } from '../validate';
-import { query } from '../db';
-import { asyncHandler } from '../middleware';
-import { notifyStaff } from '../mailer';
+import { zodParse } from '../validate.js';
+import { query } from '../db.js';
+import { asyncHandler } from '../middleware.js';
+import { notifyStaff } from '../mailer.js';
 
 const router = Router();
 const contactSchema = z.object({

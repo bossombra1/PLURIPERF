@@ -4,11 +4,16 @@ Portail universitaire institutionnel bilingue (français/anglais) avec site publ
 
 ## État technique
 
-PLURIPERF est une application full-stack :
+PLURIPERF est une application full-stack organisée en monorepo :
+
+- `frontend/` : application web React/Vite.
+- `backend/` : API Node.js/Express.
+
+
 
 - Frontend : React 19, TypeScript, Vite 8, Tailwind CSS 4, Radix UI, Lucide React.
 - Backend : Node.js, Express 4, TypeScript.
-- Base : SQLite avec better-sqlite3, contraintes et migrations additives.
+- Base : PostgreSQL via `pg`, avec schéma versionné dans `backend/database/schema.sql`.
 - Validation : Zod.
 - Authentification : JWT dans cookie HttpOnly, Secure en production, SameSite=Lax.
 - Sécurité : Helmet, CORS explicite, rate limiting, bcrypt, validation serveur, uploads hors dossier public.
@@ -95,17 +100,21 @@ Voir docs/api.md.
 
 ## Installation
 
-Prérequis : Node.js 20+ et npm 10+.
+Prérequis : Node.js 20+, npm 10+ et PostgreSQL 15+.
 
     git clone https://github.com/bossombra1/PLURIPERF.git
     cd PLURIPERF
     npm install
-    cp .env.example .env
-    npm run seed
+    Copy-Item backend/.env.example backend/.env
+    Copy-Item frontend/.env.example frontend/.env
+    npm install
+    npm run db:init --workspace=backend
+    npm run seed --workspace=backend
 
 Windows PowerShell :
 
-    Copy-Item .env.example .env
+    Copy-Item backend/.env.example backend/.env
+    Copy-Item frontend/.env.example frontend/.env
 
 Renseigner au minimum un JWT_SECRET long et aléatoire en environnement de production.
 
@@ -115,15 +124,15 @@ Ne pas utiliser npm install --legacy-peer-deps. Les versions Vite/plugin React/T
 
 Terminal 1 :
 
-    npm run dev:server
+    npm run dev:backend
 
 Terminal 2 :
 
+    npm run dev:frontend
+
+Ou, depuis la racine :
+
     npm run dev
-
-Ou :
-
-    npm run dev:all
 
 Frontend : http://localhost:3000
 API : http://localhost:4000
@@ -131,11 +140,10 @@ API : http://localhost:4000
 ## Validation
 
     npm install
-    npm run lint
     npm run build
     npm test
-    npm run build:server
-    npm run seed
+    npm run db:init --workspace=backend
+    npm run seed --workspace=backend
 
 Health :
 
@@ -165,7 +173,9 @@ Principales variables :
 - NODE_ENV
 - APP_URL
 - CORS_ORIGIN
-- DB_PATH
+- DATABASE_URL
+- DB_SSL
+- DB_POOL_MAX
 - JWT_SECRET
 - JWT_EXPIRES_IN
 - PASSWORD_RESET_TTL_MINUTES
@@ -183,7 +193,7 @@ Principales variables :
 
 ## Architecture
 
-    src/
+    frontend/src/
       api/
       components/
         ui/
@@ -194,7 +204,7 @@ Principales variables :
       App.tsx
       index.css
 
-    server/
+    backend/src/
       auth.ts
       config.ts
       db.ts

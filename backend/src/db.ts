@@ -1,4 +1,4 @@
-import { Pool, types, type QueryResult, type QueryResultRow } from 'pg';
+import { Pool, types, type PoolClient, type QueryResult, type QueryResultRow } from 'pg';
 
 types.setTypeParser(20, (value) => Number.parseInt(value, 10));
 import { config } from './config.js';
@@ -17,7 +17,7 @@ export async function query<T extends QueryResultRow = QueryResultRow>(text: str
   return pool.query<T>(text, values);
 }
 
-export async function transaction<T>(work: (client: import('pg').PoolClient) => Promise<T>): Promise<T> {
+export async function transaction<T>(work: (client: PoolClient) => Promise<T>): Promise<T> {
   const client = await pool.connect();
   try {
     await client.query('BEGIN');

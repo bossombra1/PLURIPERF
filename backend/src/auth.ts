@@ -26,8 +26,8 @@ export function setAuthCookie(res: Response, token: string) {
 }
 
 export function clearAuthCookie(res: Response) {
-  const secure = config.env === 'production' ? '; Secure' : '';
-  res.setHeader('Set-Cookie', SESSION_COOKIE + '=; Path=/; HttpOnly; SameSite=Lax; Max-Age=0' + secure);
+  const cookiePolicy = config.env === 'production' ? '; Secure; SameSite=None' : '; SameSite=Lax';
+  res.setHeader('Set-Cookie', SESSION_COOKIE + '=; Path=/; HttpOnly; Max-Age=0' + cookiePolicy);
 }
 
 function readCookie(req: Request, name: string): string | null {

@@ -1,7 +1,7 @@
 import { Pool, types, type QueryResult, type QueryResultRow } from 'pg';
 
 types.setTypeParser(20, (value) => Number.parseInt(value, 10));
-import { config } from './config';
+import { config } from './config.js';
 
 if (!process.env.DATABASE_URL) throw new Error('DATABASE_URL must be set');
 

@@ -1,27 +1,33 @@
-import path from 'path';
-import fs from 'fs';
-import Database from 'better-sqlite3';
+import { Pool, type QueryResult, type QueryResultRow } from 'pg';
+import { config } from './config';
 
-const isVercelRuntime = process.env.VERCEL === '1';
-const DB_PATH = process.env.DB_PATH || './data/pluriperf.db';
+if (!process.env.DATABASE_URL) throw new Error('DATABASE_URL must be set');
 
-fs.mkdirSync(path.dirname(path.resolve(DB_PATH)), { recursive: true });
+export const pool = new Pool({
+  connectionString: process.env.DATABASE_URL,
+  max: Number(process.env.DB_POOL_MAX || 10),
+  idleTimeoutMillis: Number(process.env.DB_IDLE_TIMEOUT_MS || 30_000),
+  connectionTimeoutMillis: Number(process.env.DB_CONNECTION_TIMEOUT_MS || 10_000),
+  ssl: config.env === 'production' && process.env.DB_SSL !== 'false' ? { rejectUnauthorized: false } : undefined,
+});
 
-export const db = new Database(DB_PATH, { readonly: isVercelRuntime });
-if (!isVercelRuntime) db.pragma('journal_mode = WAL');
-db.pragma('foreign_keys = ON');
-
-if (!isVercelRuntime) {
-  const schema = fs.readFileSync(path.resolve('server/schema.sql'), 'utf-8');
-  db.exec(schema);
+export async function query<T extends QueryResultRow = QueryResultRow>(text: string, values: unknown[] = []): Promise<QueryResult<T>> {
+  return pool.query<T>(text, values);
 }
 
-// Migrations additives nécessaires aux bases SQLite déjà existantes.
-if (!isVercelRuntime) {
-  const appointmentColumns = db.prepare('PRAGMA table_info(appointments)').all() as { name: string }[];
-  if (!appointmentColumns.some((column) => column.name === 'timezone')) {
-    db.exec("ALTER TABLE appointments ADD COLUMN timezone TEXT NOT NULL DEFAULT 'Africa/Abidjan'");
+export async function transaction<T>(work: (client: import('pg').PoolClient) => Promise<T>): Promise<T> {
+  const client = await pool.connect();
+  try {
+    await client.query('BEGIN');
+    const result = await work(client);
+    await client.query('COMMIT');
+    return result;
+  } catch (error) {
+    await client.query('ROLLBACK');
+    throw error;
+  } finally {
+    client.release();
   }
 }
 
-export default db;
+export default pool;

@@ -1,6 +1,6 @@
 import bcrypt from 'bcryptjs';
-import { query } from './db';
-import { FACULTIES_DATA, PROGRAMS_DATA, NEWS_DATA, LIBRARY_DATA, RESEARCH_DATA } from '../../frontend/src/data/universityData';
+import { query } from './db.js';
+import { FACULTIES_DATA, PROGRAMS_DATA, NEWS_DATA, LIBRARY_DATA, RESEARCH_DATA } from '../../frontend/src/data/universityData.js';
 
 async function main() {
   const hash = await bcrypt.hash('Pluri2026!', 12);

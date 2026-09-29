@@ -45,7 +45,7 @@ router.post('/users',zodParse(createUserSchema),asyncHandler(async(req:Request,r
  if((await query('SELECT id FROM users WHERE email=$1',[normalizedEmail])).rowCount) throw new HttpError(409,'Un compte existe déjà avec cet email');
  const passwordHash=await bcrypt.hash(password,12);
  const created=await query<{id:number;email:string;full_name:string;role:string;student_ref:string|null}>(
-  "INSERT INTO users (email,password_hash,full_name,role,student_ref,email_verified) VALUES ($1,$2,$3,$4,NULL,TRUE) RETURNING id,email,full_name,role,student_ref",
+  "INSERT INTO users (email,password_hash,full_name,role,student_ref) VALUES ($1,$2,$3,$4,NULL) RETURNING id,email,full_name,role,student_ref",
   [normalizedEmail,passwordHash,fullName,role]
  );
  const user=created.rows[0];

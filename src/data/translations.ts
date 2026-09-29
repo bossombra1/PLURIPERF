@@ -2,13 +2,13 @@ import { Language } from '../types';
 
 export const translations = {
   fr: {
-    siteTitle: 'PLURIPERF INTERNATIONAL UNIVERSITY',
+    siteTitle: 'PLURIPERF INTERNATIONAL',
     shortName: 'PLURIPERF',
     internationalSignature: "1ère Université de Management Durable, d'Écologie responsable et de Leadership régénératif",
     institutionalPromise: 'Construire les leaders du monde durable',
     institutionalPromiseEnglish: '“We build new leaders for a sustainable World”',
     heroSubtitle:
-      'PLURIPERF International University forme les professionnels, entrepreneurs et dirigeants capables de régénérer les organisations, les territoires et la planète.',
+      'PLURIPERF International forme les professionnels, entrepreneurs et dirigeants capables de régénérer les organisations, les territoires et la planète.',
     nav: {
       accueil: 'Accueil',
       universite: "L'Université",
@@ -60,14 +60,14 @@ export const translations = {
     },
   },
   en: {
-    siteTitle: 'PLURIPERF INTERNATIONAL UNIVERSITY',
+    siteTitle: 'PLURIPERF INTERNATIONAL',
     shortName: 'PLURIPERF',
     internationalSignature:
       '1st University of Sustainable Management - Responsible Ecology & Regenerative Leadership',
     institutionalPromise: 'Building Leaders for a Sustainable World',
     institutionalPromiseEnglish: '“We build new leaders for a sustainable World”',
     heroSubtitle:
-      'PLURIPERF International University trains professionals, entrepreneurs, and leaders capable of regenerating organizations, territories, and the planet.',
+      'PLURIPERF International trains professionals, entrepreneurs, and leaders capable of regenerating organizations, territories, and the planet.',
     nav: {
       accueil: 'Home',
       universite: 'The University',

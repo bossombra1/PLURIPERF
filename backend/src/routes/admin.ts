@@ -39,7 +39,7 @@ const createUserSchema = z.object({
 
 router.post('/users',zodParse(createUserSchema),asyncHandler(async(req:Request,res:Response)=>{
  const actor=(req as any).user as AuthUser;
- if(actor.role!=='super_admin') throw new HttpError(403,'Seul le super administrateur peut créer un compte');
+ if(!['admin','super_admin'].includes(actor.role)) throw new HttpError(403,'Création de compte réservée aux administrateurs');
  const {email,fullName,password,role}=req.body as z.infer<typeof createUserSchema>;
  const normalizedEmail=email.toLowerCase();
  if((await query('SELECT id FROM users WHERE email=$1',[normalizedEmail])).rowCount) throw new HttpError(409,'Un compte existe déjà avec cet email');

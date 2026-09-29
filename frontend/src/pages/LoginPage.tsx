@@ -31,7 +31,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onSuccessLogin }) => {
     <div className="min-h-[70vh] flex items-center justify-center py-12 px-4">
       <div className="w-full max-w-md space-y-6">
         <div className="text-center space-y-2">
-          <Logo variant="full-stacked" size="md" className="mb-4" />
+          <Logo variant="emblem-only" size="lg" className="mx-auto mb-4 h-28 w-28" />
           <h1 className="text-2xl font-bold text-text-primary">Connexion à votre espace</h1>
           <p className="text-sm text-text-muted">Accédez à votre tableau de bord personnel</p>
         </div>

@@ -46,13 +46,7 @@ app.get('/api/v1/health', (_req, res) => res.json({ status: 'ok', env: config.en
 app.use('/api', notFound);
 app.use(errorHandler);
 
-if (config.env === 'production') {
-  const staticDir = process.env.VERCEL ? path.resolve('public') : path.resolve('dist');
-  app.use(express.static(staticDir));
-  app.get(/^(?!\/api).*/, (_req, res) => res.sendFile(path.join(staticDir, 'index.html')));
-}
-
-if (!process.env.VERCEL && config.env !== 'test') {
+if (config.env !== 'test') {
   app.listen(config.port, () => console.log('PLURIPERF API prête sur http://localhost:' + config.port + ' (' + config.env + ')'));
 }
 

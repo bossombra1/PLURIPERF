@@ -260,6 +260,7 @@ const Shell: React.FC = () => {
         onLogout={logout}
         onOpenApply={() => { setPreselectedProgram(''); setIsApplyModalOpen(true); }}
         onOpenLogin={() => navigate('/login')}
+        onOpenWorkspace={user ? () => navigate(getRoleHome(user.role), { replace: true }) : undefined}
         onOpenAppointment={() => setIsAppointmentModalOpen(true)}
         onOpenWhatsApp={() => setIsWhatsAppModalOpen(true)}
       />}

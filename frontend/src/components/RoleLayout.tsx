@@ -5,6 +5,7 @@ import {
   GraduationCap, Home, LayoutDashboard, Library, LogOut, Menu, MessageSquare,
   Newspaper, Settings, Shield, Users, X
 } from 'lucide-react';
+import { Logo } from './Logo';
 import { useAuth, Role } from '../context/AuthContext';
 
 interface RoleLayoutProps {
@@ -134,8 +135,8 @@ export const RoleLayout: React.FC<RoleLayoutProps> = ({ children }) => {
       >
         <div className="flex h-20 items-center justify-between border-b border-border-subtle px-4">
           <Link to={getRoleHome(user.role)} className="flex min-w-0 items-center gap-3" onClick={() => setOpen(false)}>
-            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary text-primary-foreground">
-              <Shield className="h-5 w-5" />
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-white">
+              <Logo variant="emblem-only" size="sm" className="h-10 w-10" />
             </div>
             {!collapsed && (
               <div className="min-w-0">

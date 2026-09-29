@@ -125,7 +125,7 @@ export const HomePage: React.FC<HomePageProps> = ({
         <div className="grid lg:grid-cols-12 gap-10 items-center">
           <div className="lg:col-span-4 space-y-3">
             <span className="text-xs font-bold uppercase tracking-widest text-[#008629] block">
-              PLURIPERF INTERNATIONAL UNIVERSITY
+              PLURIPERF INTERNATIONAL
             </span>
             <h2 className="text-2xl sm:text-3xl font-extrabold text-[#111827] inphb-heading-accent">
               {lang === 'fr' ? 'Une Université Tournée vers l’Avenir' : 'A University Built for the Future'}

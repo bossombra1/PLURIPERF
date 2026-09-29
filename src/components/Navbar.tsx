@@ -442,8 +442,8 @@ export const Navbar: React.FC<NavbarProps> = ({
           <button
             onClick={() => handleNavigate('accueil')}
             className="flex min-w-0 shrink items-center text-left"
-            title="PLURIPERF International University"
-            aria-label="PLURIPERF International University"
+            title="PLURIPERF International"
+            aria-label="PLURIPERF International"
           >
             <Logo size="md" variant="full-horizontal" />
           </button>

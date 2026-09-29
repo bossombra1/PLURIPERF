@@ -53,7 +53,7 @@ if (config.env === 'production') {
   app.get(/^(?!\/api).*/, (_req, res) => res.sendFile(path.join(staticDir, 'index.html')));
 }
 
-if (!process.env.VERCEL) {
+if (!process.env.VERCEL && config.env !== 'test') {
   app.listen(config.port, () => console.log('PLURIPERF API prête sur http://localhost:' + config.port + ' (' + config.env + ')'));
 }
 

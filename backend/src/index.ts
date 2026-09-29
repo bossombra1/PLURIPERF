@@ -2,7 +2,6 @@ import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
 import rateLimit from 'express-rate-limit';
-import path from 'path';
 import { config } from './config.js';
 import { notFound, errorHandler } from './middleware.js';
 import authRoutes from './routes/auth.js';

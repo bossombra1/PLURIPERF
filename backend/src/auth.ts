@@ -53,7 +53,7 @@ export function optionalAuth(req: Request, _res: Response, next: NextFunction) {
   const token = readToken(req);
   if (!token) return next();
   try {
-    const payload = jwt.verify(token, config.jwtSecret) as { sub: number };
+    const payload = jwt.verify(token, config.jwtSecret) as unknown as { sub: number };
     void findUser(Number(payload.sub)).then((user) => {
       if (user) (req as any).user = user;
       next();

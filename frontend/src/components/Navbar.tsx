@@ -39,6 +39,7 @@ interface NavbarProps {
   onOpenApply: () => void;
   onOpenSearch?: () => void;
   onOpenLogin: () => void;
+  onOpenWorkspace?: () => void;
   onOpenAppointment?: () => void;
   onOpenWhatsApp?: () => void;
 }
@@ -284,6 +285,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   onOpenApply,
   onOpenSearch,
   onOpenLogin,
+  onOpenWorkspace,
   onOpenAppointment,
 }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -563,7 +565,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             {user ? (
               <button
                 type="button"
-                onClick={() => handleNavigate('campus_virtuel')}
+                onClick={() => onOpenWorkspace?.()}
                 aria-label={tr('Mon espace', 'My space')}
                 className="flex h-9 min-w-0 max-w-[190px] items-center gap-1.5 rounded border border-primary px-2 sm:px-2.5 lg:max-w-[210px]"
               >

@@ -1,4 +1,4 @@
-# PLURIPERF International University
+# PLURIPERF International
 
 Portail universitaire institutionnel bilingue (français/anglais) avec site public, admissions, candidatures, rendez-vous, campus virtuel et administration.
 

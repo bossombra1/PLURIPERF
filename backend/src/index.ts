@@ -23,14 +23,9 @@ app.use(cors({ origin: config.corsOrigin, credentials: true }));
 app.use(express.json({ limit: '1mb' }));
 
 const apiLimiter = rateLimit({ windowMs: 15 * 60_000, limit: 300, standardHeaders: true });
-const loginLimiter = rateLimit({ windowMs: 15 * 60_000, limit: 20, standardHeaders: true, message: { error: 'RATE_LIMITED', message: 'Trop de tentatives. Réessayez plus tard.' } });
 
 const mountApi = (prefix: string) => {
   app.use(prefix + '/auth', authRoutes);
-  app.use(prefix + '/auth/login', loginLimiter);
-  app.use(prefix + '/auth/register', loginLimiter);
-  app.use(prefix + '/auth/forgot-password', loginLimiter);
-  app.use(prefix + '/auth/reset-password', loginLimiter);
   app.use(prefix + '/applications', apiLimiter, applicationRoutes);
   app.use(prefix + '/appointments', apiLimiter, appointmentRoutes);
   app.use(prefix + '/contact', apiLimiter, contactRoutes);

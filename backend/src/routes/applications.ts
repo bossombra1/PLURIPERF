@@ -4,12 +4,12 @@ import fs from 'fs';
 import multer from 'multer';
 import crypto from 'crypto';
 import { z } from 'zod';
-import { zodParse } from '../validate';
-import { query, transaction } from '../db';
-import { requireAuth, optionalAuth, AuthUser } from '../auth';
-import { HttpError, asyncHandler } from '../middleware';
-import { config } from '../config';
-import { notifyStaff } from '../mailer';
+import { zodParse } from '../validate.js';
+import { query, transaction } from '../db.js';
+import { requireAuth, optionalAuth, AuthUser } from '../auth.js';
+import { HttpError, asyncHandler } from '../middleware.js';
+import { config } from '../config.js';
+import { notifyStaff } from '../mailer.js';
 
 const router=Router();
 fs.mkdirSync(config.uploadDir,{recursive:true});

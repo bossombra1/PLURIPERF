@@ -1,4 +1,5 @@
 import { Router, Request, Response } from 'express';
+import bcrypt from 'bcryptjs';
 import { z } from 'zod';
 import { zodParse } from '../validate.js';
 import { query } from '../db.js';
@@ -28,6 +29,37 @@ router.patch('/applications/:id/status',zodParse(z.object({status:z.enum(STATUSE
 }));
 router.get('/appointments',asyncHandler(async(_req,res:Response)=>res.json((await query('SELECT * FROM appointments ORDER BY date DESC LIMIT 200')).rows)));
 router.patch('/appointments/:id/status',zodParse(z.object({status:z.enum(['pending','confirmed','cancelled','completed'])})),asyncHandler(async(req:Request,res:Response)=>{const r=await query('UPDATE appointments SET status=$1 WHERE id=$2',[req.body.status,req.params.id]);if(!r.rowCount)throw new HttpError(404,'Rendez-vous introuvable');res.json({ok:true});}));
+
+const createUserSchema = z.object({
+ email: z.string().email().max(255),
+ fullName: z.string().min(2).max(120),
+ password: z.string().min(8, '8 caractères minimum').max(128),
+ role: z.enum(['student','teacher','advisor','editor','admin']),
+});
+
+router.post('/users',zodParse(createUserSchema),asyncHandler(async(req:Request,res:Response)=>{
+ const actor=(req as any).user as AuthUser;
+ if(actor.role!=='super_admin') throw new HttpError(403,'Seul le super administrateur peut créer un compte');
+ const {email,fullName,password,role}=req.body as z.infer<typeof createUserSchema>;
+ const normalizedEmail=email.toLowerCase();
+ if((await query('SELECT id FROM users WHERE email=$1',[normalizedEmail])).rowCount) throw new HttpError(409,'Un compte existe déjà avec cet email');
+ const passwordHash=await bcrypt.hash(password,12);
+ const created=await query<{id:number;email:string;full_name:string;role:string;student_ref:string|null}>(
+  "INSERT INTO users (email,password_hash,full_name,role,student_ref,email_verified) VALUES ($1,$2,$3,$4,NULL,TRUE) RETURNING id,email,full_name,role,student_ref",
+  [normalizedEmail,passwordHash,fullName,role]
+ );
+ const user=created.rows[0];
+ if(role==='student'){
+  await query("UPDATE users SET student_ref='PLU-' || EXTRACT(YEAR FROM CURRENT_DATE)::int || '-' || LPAD(id::text,4,'0'),updated_at=CURRENT_TIMESTAMP WHERE id=$1",[user.id]);
+  user.student_ref=(await query<{student_ref:string}>('SELECT student_ref FROM users WHERE id=$1',[user.id])).rows[0]?.student_ref ?? null;
+ }
+ await query("INSERT INTO notifications (user_id,type,payload_fr,payload_en) VALUES ($1,'welcome',$2,$3)",[
+  user.id,
+  'Votre compte PLURIPERF International a été créé par l’administration. Vous pouvez maintenant vous connecter avec votre adresse e-mail.',
+  'Your PLURIPERF International account was created by the administration. You can now sign in with your email address.'
+ ]);
+ res.status(201).json({user});
+}));
 router.get('/users',asyncHandler(async(_req,res:Response)=>res.json((await query('SELECT id,email,full_name,role,student_ref,is_active,created_at FROM users ORDER BY id DESC LIMIT 500')).rows)));
 router.patch('/users/:id',zodParse(z.object({role:z.enum(['student','teacher','advisor','editor','admin','super_admin']).optional(),isActive:z.boolean().optional()})),asyncHandler(async(req:Request,res:Response)=>{
  const {role,isActive}=req.body;const actor=(req as any).user as AuthUser;

@@ -8,7 +8,6 @@ import { RoleLayout, getRoleHome, isPrivatePath } from './components/RoleLayout'
 import { Footer } from './components/Footer';
 import { LoadingState } from './components/ui/states';
 import { ApplicationModal } from './components/ApplicationModal';
-import { LoginModal } from './components/LoginModal';
 import { AppointmentModal } from './components/AppointmentModal';
 import { WhatsAppModal } from './components/WhatsAppModal';
 import { CabinetQuoteModal } from './components/CabinetQuoteModal';
@@ -91,7 +90,6 @@ const Shell: React.FC = () => {
 
   const [lang, setLang] = React.useState<Language>('fr');
   const [isApplyModalOpen, setIsApplyModalOpen] = React.useState(false);
-  const [isLoginModalOpen, setIsLoginModalOpen] = React.useState(false);
   const [isAppointmentModalOpen, setIsAppointmentModalOpen] = React.useState(false);
   const [isWhatsAppModalOpen, setIsWhatsAppModalOpen] = React.useState(false);
   const [isCabinetModalOpen, setIsCabinetModalOpen] = React.useState(false);
@@ -261,7 +259,7 @@ const Shell: React.FC = () => {
         user={user}
         onLogout={logout}
         onOpenApply={() => { setPreselectedProgram(''); setIsApplyModalOpen(true); }}
-        onOpenLogin={() => setIsLoginModalOpen(true)}
+        onOpenLogin={() => navigate('/login')}
         onOpenAppointment={() => setIsAppointmentModalOpen(true)}
         onOpenWhatsApp={() => setIsWhatsAppModalOpen(true)}
       />}
@@ -280,7 +278,6 @@ const Shell: React.FC = () => {
       )}
 
       <ApplicationModal isOpen={isApplyModalOpen} onClose={() => setIsApplyModalOpen(false)} lang={lang} preselectedProgram={preselectedProgram} />
-      <LoginModal isOpen={isLoginModalOpen} onClose={() => setIsLoginModalOpen(false)} lang={lang} onSuccessLogin={handleSuccessLogin} />
       <AppointmentModal isOpen={isAppointmentModalOpen} onClose={() => setIsAppointmentModalOpen(false)} lang={lang} />
       <WhatsAppModal isOpen={isWhatsAppModalOpen} onClose={() => setIsWhatsAppModalOpen(false)} lang={lang} />
       <CabinetQuoteModal isOpen={isCabinetModalOpen} onClose={() => setIsCabinetModalOpen(false)} lang={lang} />

@@ -2,7 +2,7 @@ name: PLURIPERF CI
 
 on:
   push:
-    branches: [main, migration/postgresql-monorepo]
+    branches: [main]
   pull_request:
     branches: [main]
 

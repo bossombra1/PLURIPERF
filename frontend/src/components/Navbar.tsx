@@ -451,7 +451,7 @@ export const Navbar: React.FC<NavbarProps> = ({
           {/* Navigation desktop (à partir de 1280 px) */}
           <nav
             aria-label={tr('Navigation principale', 'Main navigation')}
-            className="hidden min-w-0 flex-1 items-center justify-center gap-0.5 2xl:flex"
+            className="hidden min-w-0 flex-1 items-center justify-center gap-1 xl:flex"
           >
             <button
               onClick={() => handleNavigate('accueil')}
@@ -612,7 +612,7 @@ export const Navbar: React.FC<NavbarProps> = ({
               }
               aria-expanded={mobileMenuOpen}
               aria-controls="mobile-menu"
-              className="rounded p-2 text-text-primary transition-colors hover:text-primary 2xl:hidden"
+              className="rounded p-2 text-text-primary transition-colors hover:text-primary xl:hidden"
             >
               {mobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
             </button>
@@ -624,7 +624,7 @@ export const Navbar: React.FC<NavbarProps> = ({
       {mobileMenuOpen && (
         <div
           id="mobile-menu"
-          className="absolute inset-x-0 top-full z-50 max-h-[calc(100dvh-7.5rem)] overflow-y-auto border-t border-border-ui bg-white p-4 pb-6 shadow-2xl 2xl:hidden"
+          className="absolute inset-x-0 top-full z-50 max-h-[calc(100dvh-7.5rem)] overflow-y-auto border-t border-border-ui bg-white p-4 pb-6 shadow-2xl xl:hidden"
         >
           <div className="space-y-3">
             <button

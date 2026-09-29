@@ -36,7 +36,6 @@ const AdmissionsPage = lazy(() => import('./pages/AdmissionsPage').then((m) => (
 const ContactsPage = lazy(() => import('./pages/ContactsPage').then((m) => ({ default: m.ContactsPage })));
 const CareerPage = lazy(() => import('./pages/CareerPage').then((m) => ({ default: m.CareerPage })));
 const LoginPage = lazy(() => import('./pages/LoginPage').then((m) => ({ default: m.LoginPage })));
-const RegisterPage = lazy(() => import('./pages/RegisterPage').then((m) => ({ default: m.RegisterPage })));
 const ForgotPasswordPage = lazy(() => import('./pages/ForgotPasswordPage').then((m) => ({ default: m.ForgotPasswordPage })));
 const ResetPasswordPage = lazy(() => import('./pages/ResetPasswordPage').then((m) => ({ default: m.ResetPasswordPage })));
 const VerifyEmailPage = lazy(() => import('./pages/VerifyEmailPage').then((m) => ({ default: m.VerifyEmailPage })));
@@ -185,8 +184,6 @@ const Shell: React.FC = () => {
         return <ContactsPage {...commonProps} onOpenAppointment={() => setIsAppointmentModalOpen(true)} onOpenWhatsApp={() => setIsWhatsAppModalOpen(true)} />;
       case 'login':
         return <LoginPage onSuccessLogin={handleSuccessLogin} />;
-      case 'register':
-        return <RegisterPage onSuccessLogin={handleSuccessLogin} />;
       case 'forgot-password':
         return <ForgotPasswordPage />;
       case 'reset-password':

@@ -278,7 +278,7 @@ export const UNIVERSITY_SECTIONS = {
     presentation: {
       title: 'Présentation générale',
       content:
-        'PLURIPERF International University est la 1ère Université de Management Durable, d’Écologie responsable et de Leadership régénératif au monde. Fondée pour répondre à l’urgence planétaire, elle associe l’excellence académique, la recherche fondamentale bio-inspirée et l’action concrète de terrain. Avec plus de 45 pays représentés parmi ses étudiants et chercheurs, PLURIPERF forme les pionniers des nouveaux modèles de prospérité collective.',
+        'PLURIPERF International est la 1ère Université de Management Durable, d’Écologie responsable et de Leadership régénératif au monde. Fondée pour répondre à l’urgence planétaire, elle associe l’excellence académique, la recherche fondamentale bio-inspirée et l’action concrète de terrain. Avec plus de 45 pays représentés parmi ses étudiants et chercheurs, PLURIPERF forme les pionniers des nouveaux modèles de prospérité collective.',
     },
     histoire: {
       title: 'Histoire de PLURIPERF',
@@ -293,7 +293,7 @@ export const UNIVERSITY_SECTIONS = {
     motPresident: {
       title: 'Mot du Président-Fondateur',
       content:
-        '« Le XXIe siècle ne peut plus se contenter d’un management prédateur ou d’un développement durable de façade. La planète n’attend pas un ralentissement de sa destruction, mais la régénération active de ses cycles vitaux. À PLURIPERF International University, nous formons une génération audacieuse qui conçoit chaque décision économique comme un acte de fertilisation du monde. Bienvenue dans l’université du Vivant. »',
+        '« Le XXIe siècle ne peut plus se contenter d’un management prédateur ou d’un développement durable de façade. La planète n’attend pas un ralentissement de sa destruction, mais la régénération active de ses cycles vitaux. À PLURIPERF International, nous formons une génération audacieuse qui conçoit chaque décision économique comme un acte de fertilisation du monde. Bienvenue dans l’université du Vivant. »',
       author: 'Pr. Koffi Emmanuel N’Guessan, Président-Fondateur',
     },
     gouvernance: {
@@ -314,7 +314,7 @@ export const UNIVERSITY_SECTIONS = {
     reconnaissances: {
       title: 'Reconnaissances et agréments',
       content:
-        'PLURIPERF International University est accréditée par les instances internationales d’enseignement supérieur, membre de l’Alliance Mondiale des Universités Durables, signataire des Principes pour un Management Responsable des Nations Unies (PRME) et certifiée ISO 9001 (Qualité d’Enseignement) et ISO 14001 (Management Environnemental).',
+        'PLURIPERF International est accréditée par les instances internationales d’enseignement supérieur, membre de l’Alliance Mondiale des Universités Durables, signataire des Principes pour un Management Responsable des Nations Unies (PRME) et certifiée ISO 9001 (Qualité d’Enseignement) et ISO 14001 (Management Environnemental).',
     },
     mereNatureRef: {
       title: 'Mère Nature Global Initiative',
@@ -331,7 +331,7 @@ export const UNIVERSITY_SECTIONS = {
     presentation: {
       title: 'General Overview',
       content:
-        'PLURIPERF International University is the world’s 1st University of Sustainable Management, Responsible Ecology, and Regenerative Leadership. Founded to answer the global planetary imperative, it combines academic rigor, nature-inspired research, and tangible field action. With over 45 countries represented among our student body and faculty, PLURIPERF educates the architects of regenerative prosperity.',
+        'PLURIPERF International is the world’s 1st University of Sustainable Management, Responsible Ecology, and Regenerative Leadership. Founded to answer the global planetary imperative, it combines academic rigor, nature-inspired research, and tangible field action. With over 45 countries represented among our student body and faculty, PLURIPERF educates the architects of regenerative prosperity.',
     },
     histoire: {
       title: 'History of PLURIPERF',
@@ -346,7 +346,7 @@ export const UNIVERSITY_SECTIONS = {
     motPresident: {
       title: 'Message from the Founder & President',
       content:
-        '“The 21st century can no longer settle for extractive management or superficial sustainability. The living Earth does not seek merely a slower pace of harm, but active regeneration of its vital cycles. At PLURIPERF International University, we prepare courageous leaders who perceive every economic decision as an act of planetary stewardship. Welcome to the University of Living Systems.”',
+        '“The 21st century can no longer settle for extractive management or superficial sustainability. The living Earth does not seek merely a slower pace of harm, but active regeneration of its vital cycles. At PLURIPERF International, we prepare courageous leaders who perceive every economic decision as an act of planetary stewardship. Welcome to the University of Living Systems.”',
       author: 'Prof. Koffi Emmanuel N’Guessan, Founder & President',
     },
     gouvernance: {
@@ -367,7 +367,7 @@ export const UNIVERSITY_SECTIONS = {
     reconnaissances: {
       title: 'Accreditations and Recognitions',
       content:
-        'PLURIPERF International University is internationally accredited, a signatory of the UN Principles for Responsible Management Education (PRME), member of the Global Sustainable Universities Alliance, and ISO 9001 / ISO 14001 dual-certified.',
+        'PLURIPERF International is internationally accredited, a signatory of the UN Principles for Responsible Management Education (PRME), member of the Global Sustainable Universities Alliance, and ISO 9001 / ISO 14001 dual-certified.',
     },
     mereNatureRef: {
       title: 'Mother Nature Global Initiative',
@@ -810,7 +810,7 @@ export const VIRTUAL_CAMPUS_STUDENT = {
 export const ADMISSIONS_CONTENT = {
   fr: {
     requirements:
-      'L’admission à PLURIPERF International University est sélective et s’effectue sur dossier de candidature (relevés de notes, projet professionnel, CV) suivi d’un entretien d’orientation avec la commission pédagogique. Les candidats doivent démontrer un intérêt manifeste pour la transition écologique et le développement durable.',
+      'L’admission à PLURIPERF International est sélective et s’effectue sur dossier de candidature (relevés de notes, projet professionnel, CV) suivi d’un entretien d’orientation avec la commission pédagogique. Les candidats doivent démontrer un intérêt manifeste pour la transition écologique et le développement durable.',
     scholarships:
       'La fondation Mère Nature Global octroie des bourses d’excellence couvrant de 25% à 70% des frais de scolarité pour les étudiants à fort potentiel et les candidats issus de pays du Sud engagés dans des projets à fort impact environnemental.',
     tuition:
@@ -844,7 +844,7 @@ export const ADMISSIONS_CONTENT = {
   },
   en: {
     requirements:
-      'Admission to PLURIPERF International University is competitive and based on an academic dossier (transcripts, statement of purpose, CV) followed by an admissions interview. Applicants must demonstrate strong motivation toward ecological resilience and sustainability.',
+      'Admission to PLURIPERF International is competitive and based on an academic dossier (transcripts, statement of purpose, CV) followed by an admissions interview. Applicants must demonstrate strong motivation toward ecological resilience and sustainability.',
     scholarships:
       'The Mother Nature Global Foundation awards merit scholarships covering 25% to 70% of tuition costs for high-potential applicants and students leading impactful environmental initiatives.',
     tuition:

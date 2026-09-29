@@ -1,8 +1,8 @@
 import jwt from 'jsonwebtoken';
 import type { Request, Response, NextFunction } from 'express';
-import { query } from './db';
-import { config } from './config';
-import { HttpError } from './middleware';
+import { query } from './db.js';
+import { config } from './config.js';
+import { HttpError } from './middleware.js';
 
 export type Role = 'student' | 'teacher' | 'advisor' | 'editor' | 'admin' | 'super_admin';
 

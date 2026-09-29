@@ -83,6 +83,7 @@ CREATE TABLE IF NOT EXISTS appointments (
   full_name TEXT NOT NULL,
   email TEXT NOT NULL,
   phone TEXT NOT NULL,
+  timezone TEXT NOT NULL DEFAULT 'Africa/Abidjan',
   status VARCHAR(20) NOT NULL DEFAULT 'pending'
     CHECK (status IN ('pending','confirmed','cancelled','completed')),
   created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP

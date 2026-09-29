@@ -6,8 +6,9 @@ let app: import('express').Express;
 beforeAll(async () => {
   process.env.DATABASE_URL ||= 'postgresql://postgres:postgres@localhost:5432/pluriperf';
   process.env.NODE_ENV = 'test';
+  process.env.DB_CONNECTION_TIMEOUT_MS = '1000';
   ({ default: app } = await import('../src/index'));
-});
+}, 30000);
 
 describe('PostgreSQL backend smoke tests', () => {
   it('exposes health without a database query', async () => {

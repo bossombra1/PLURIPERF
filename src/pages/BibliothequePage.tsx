@@ -195,8 +195,8 @@ export const BibliothequePage: React.FC<BibliothequePageProps> = ({ lang }) => {
             <div className="py-4 space-y-4 text-xs sm:text-sm text-slate-700 leading-relaxed font-serif">
               <p className="first-letter:text-4xl first-letter:font-bold first-letter:mr-2 first-letter:float-left first-letter:text-amber-600">
                 {lang === 'fr'
-                  ? 'Ce document fait partie intégrante du corpus académique ouvert de PLURIPERF International University. Il analyse les leviers fondamentaux de la transition écologique, de la résilience systémique et de l’intégration des limites planétaires au sein des prises de décision stratégiques.'
-                  : 'This publication is part of the open academic repository of PLURIPERF International University. It details foundational frameworks for systemic ecological transition and multi-capital organizational accounting.'}
+                  ? 'Ce document fait partie intégrante du corpus académique ouvert de PLURIPERF International. Il analyse les leviers fondamentaux de la transition écologique, de la résilience systémique et de l’intégration des limites planétaires au sein des prises de décision stratégiques.'
+                  : 'This publication is part of the open academic repository of PLURIPERF International. It details foundational frameworks for systemic ecological transition and multi-capital organizational accounting.'}
               </p>
               <p>
                 {lang === 'fr'

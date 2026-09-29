@@ -137,7 +137,7 @@ export const UniversityLayout: React.FC<UniversityLayoutProps> = ({
   const nextPage = activeIndex < UNIVERSITY_NAV_PAGES.length - 1 ? UNIVERSITY_NAV_PAGES[activeIndex + 1] : null;
 
   const handleDownloadBrochure = () => {
-    const dummyContent = `PLURIPERF INTERNATIONAL UNIVERSITY\nPlaquette Institutionnelle & Guide des Études 2026-2027\n\n1ère Université de Management Durable, d'Écologie Responsable et de Leadership Régénératif.\nCampus : Abidjan - Yamoussoukro - Paris - Genève\nContact admissions : admissions@pluriperf.com`;
+    const dummyContent = `PLURIPERF INTERNATIONAL\nPlaquette Institutionnelle & Guide des Études 2026-2027\n\n1ère Université de Management Durable, d'Écologie Responsable et de Leadership Régénératif.\nCampus : Abidjan - Yamoussoukro - Paris - Genève\nContact admissions : admissions@pluriperf.com`;
     const blob = new Blob([dummyContent], { type: 'text/plain;charset=utf-8' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');

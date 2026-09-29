@@ -24,7 +24,7 @@ export const Logo: React.FC<LogoProps> = ({ className = '', variant = 'full-hori
       {variant !== 'emblem-only' && (
         <span className="hidden min-w-0 leading-tight sm:block">
           <span className="block text-sm font-bold tracking-wide text-[var(--text-primary)]">PLURIPERF</span>
-          <span className="block text-[11px] font-medium uppercase tracking-[0.12em] text-[var(--text-secondary)]">International University</span>
+          <span className="block text-[11px] font-medium uppercase tracking-[0.12em] text-[var(--text-secondary)]">International</span>
         </span>
       )}
     </span>

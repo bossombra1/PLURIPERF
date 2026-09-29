@@ -19,7 +19,7 @@ export const CareerPage: React.FC<CareerPageProps> = ({ lang }) => {
       <div className="max-w-6xl mx-auto space-y-8">
         <div className="space-y-4">
           <h1 className="text-3xl font-bold text-text-primary">Carrières & Opportunités</h1>
-          <p className="text-text-muted">Découvrez les opportunités de carrière et de stage au sein de PLURIPERF International University.</p>
+          <p className="text-text-muted">Découvrez les opportunités de carrière et de stage au sein de PLURIPERF International.</p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

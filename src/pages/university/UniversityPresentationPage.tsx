@@ -109,8 +109,8 @@ export const UniversityPresentationPage: React.FC<UniversityPageProps> = ({
               </p>
               <p>
                 {lang === 'fr'
-                  ? "PLURIPERF International University a été créée pour répondre à l'urgence de notre siècle : doter le continent et le monde d'une élite managériale capable de conjuguer prospérité économique durable, régénération des écosystèmes et justice sociale."
-                  : "PLURIPERF International University was founded to address this century's defining challenge: preparing leaders capable of reconciling economic growth, ecological stewardship, and social equity."}
+                  ? "PLURIPERF International a été créée pour répondre à l'urgence de notre siècle : doter le continent et le monde d'une élite managériale capable de conjuguer prospérité économique durable, régénération des écosystèmes et justice sociale."
+                  : "PLURIPERF International was founded to address this century's defining challenge: preparing leaders capable of reconciling economic growth, ecological stewardship, and social equity."}
               </p>
               <p>
                 {lang === 'fr'

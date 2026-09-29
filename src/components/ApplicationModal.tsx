@@ -162,8 +162,8 @@ export const ApplicationModal: React.FC<ApplicationModalProps> = ({
                 </div>
                 <h3 className="text-xl font-serif font-bold text-slate-900 mt-1">
                   {lang === 'fr'
-                    ? 'Candidater à PLURIPERF International University'
-                    : 'Apply to PLURIPERF International University'}
+                    ? 'Candidater à PLURIPERF International'
+                    : 'Apply to PLURIPERF International'}
                 </h3>
                 <p className="text-xs text-slate-500 mt-0.5">
                   {lang === 'fr'

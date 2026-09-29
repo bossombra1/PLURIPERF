@@ -288,7 +288,7 @@ export const UniversityPage: React.FC<UniversityPageProps> = ({
 
   const handleDownloadBrochure = () => {
     // Generate institutional brochure download prompt or simulated download
-    const dummyContent = `PLURIPERF INTERNATIONAL UNIVERSITY\nPlaquette Institutionnelle & Guide des Études 2026-2027\n\n1ère Université de Management Durable, d'Écologie Responsable et de Leadership Régénératif.\nCampus : Abidjan - Yamoussoukro - Paris - Genève\nContact admissions : admissions@pluriperf.com`;
+    const dummyContent = `PLURIPERF INTERNATIONAL\nPlaquette Institutionnelle & Guide des Études 2026-2027\n\n1ère Université de Management Durable, d'Écologie Responsable et de Leadership Régénératif.\nCampus : Abidjan - Yamoussoukro - Paris - Genève\nContact admissions : admissions@pluriperf.com`;
     const blob = new Blob([dummyContent], { type: 'text/plain;charset=utf-8' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
@@ -661,8 +661,8 @@ export const UniversityPage: React.FC<UniversityPageProps> = ({
                   </p>
                   <p>
                     {lang === 'fr'
-                      ? "PLURIPERF International University a été créée pour répondre à l'urgence de notre siècle : doter le continent et le monde d'une élite managériale capable de conjuguer prospérité économique durable, régénération des écosystèmes et justice sociale."
-                      : "PLURIPERF International University was founded to address this century's defining challenge: preparing leaders capable of reconciling economic growth, ecological stewardship, and social equity."}
+                      ? "PLURIPERF International a été créée pour répondre à l'urgence de notre siècle : doter le continent et le monde d'une élite managériale capable de conjuguer prospérité économique durable, régénération des écosystèmes et justice sociale."
+                      : "PLURIPERF International was founded to address this century's defining challenge: preparing leaders capable of reconciling economic growth, ecological stewardship, and social equity."}
                   </p>
                   <p>
                     {lang === 'fr'
@@ -722,7 +722,7 @@ export const UniversityPage: React.FC<UniversityPageProps> = ({
                       {lang === 'fr' ? 'Présidence & Conseil d’Administration' : 'President & Board of Regents'}
                     </span>
                     <span className="text-[11px] text-[#888888] block mt-0.5">
-                      PLURIPERF International University
+                      PLURIPERF International
                     </span>
                   </div>
                 </div>

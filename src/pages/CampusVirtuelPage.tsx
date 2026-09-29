@@ -460,7 +460,7 @@ export const CampusVirtuelPage: React.FC<CampusVirtuelPageProps> = ({
                     <span className="font-semibold text-slate-900 text-sm block">
                       Certificat Exécutif : Audit Carbone & Norme ISO 14001
                     </span>
-                    <span className="text-xs text-slate-500">Délivré par PLURIPERF International University · 2025</span>
+                    <span className="text-xs text-slate-500">Délivré par PLURIPERF International · 2025</span>
                   </div>
                 </div>
                 <button

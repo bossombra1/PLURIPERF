@@ -98,8 +98,8 @@ export const UniversityMotPresidentPage: React.FC<UniversityPageProps> = ({
 
               <p>
                 {lang === 'fr'
-                  ? "Lorsque nous avons fondé PLURIPERF International University, notre ambition n'était pas d'ajouter une institution de plus au paysage académique, mais de provoquer un saut qualitatif fondamental. Pendant trop longtemps, les écoles de commerce et les facultés traditionnelles ont enseigné l'économie comme un système fermé, détaché des lois élémentaires de la thermodynamique et des limites planétaires."
-                  : "When we founded PLURIPERF International University, our aspiration was not merely to add another institution to the academic landscape, but to catalyze an indispensable qualitative breakthrough. For too long, traditional business schools and faculties have treated economic systems as detached from fundamental thermodynamic laws and planetary limits."}
+                  ? "Lorsque nous avons fondé PLURIPERF International, notre ambition n'était pas d'ajouter une institution de plus au paysage académique, mais de provoquer un saut qualitatif fondamental. Pendant trop longtemps, les écoles de commerce et les facultés traditionnelles ont enseigné l'économie comme un système fermé, détaché des lois élémentaires de la thermodynamique et des limites planétaires."
+                  : "When we founded PLURIPERF International, our aspiration was not merely to add another institution to the academic landscape, but to catalyze an indispensable qualitative breakthrough. For too long, traditional business schools and faculties have treated economic systems as detached from fundamental thermodynamic laws and planetary limits."}
               </p>
 
               <p>
@@ -139,8 +139,8 @@ export const UniversityMotPresidentPage: React.FC<UniversityPageProps> = ({
           </div>
           <p className="text-xs sm:text-sm text-[#14532d] leading-relaxed italic">
             « {lang === 'fr'
-              ? "En intégrant PLURIPERF International University, chaque étudiant, enseignant et chercheur prend solennellement l'engagement de mettre ses compétences au service de la régénération du vivant, de la vérité scientifique, de la justice climatique et du respect des équilibres écosystémiques de la Terre."
-              : "Upon matriculation at PLURIPERF International University, every student, faculty member, and researcher pledges to dedicate their expertise to ecosystem regeneration, scientific truth, climate justice, and the living equilibrium of our planet."} »
+              ? "En intégrant PLURIPERF International, chaque étudiant, enseignant et chercheur prend solennellement l'engagement de mettre ses compétences au service de la régénération du vivant, de la vérité scientifique, de la justice climatique et du respect des équilibres écosystémiques de la Terre."
+              : "Upon matriculation at PLURIPERF International, every student, faculty member, and researcher pledges to dedicate their expertise to ecosystem regeneration, scientific truth, climate justice, and the living equilibrium of our planet."} »
           </p>
 
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2">

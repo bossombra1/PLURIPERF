@@ -55,7 +55,7 @@ router.post('/register', zodParse(registerSchema), asyncHandler(async (req: Requ
   const verificationLink = `${config.appUrl}/verify-email?token=${verificationToken}`;
   await sendMail(
     user.email,
-    'Bienvenue à PLURIPERF International University',
+    'Bienvenue à PLURIPERF International',
     `Bonjour ${user.full_name},\n\nVotre compte a été créé. Votre matricule est ${studentRef}.\n\nVérifiez votre adresse e-mail : ${verificationLink}\n\nL'équipe PLURIPERF`,
   );
   setAuthCookie(res, signToken(user));

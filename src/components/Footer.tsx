@@ -91,8 +91,8 @@ export const Footer: React.FC<FooterProps> = ({
             <Logo variant="full-horizontal" theme="dark" size="md" />
             <p className="mt-4 text-xs leading-relaxed text-[#aaaaaa]">
               {lang === 'fr'
-                ? 'PLURIPERF International University est la première institution universitaire d’excellence dédiée au Management Durable, à l’Écologie Responsable et au Leadership Régénératif.'
-                : 'PLURIPERF International University is the pioneer academic institution dedicated to Regenerative Leadership, Sustainable Management, and Applied Ecology.'}
+                ? 'PLURIPERF International est la première institution universitaire d’excellence dédiée au Management Durable, à l’Écologie Responsable et au Leadership Régénératif.'
+                : 'PLURIPERF International is the pioneer academic institution dedicated to Regenerative Leadership, Sustainable Management, and Applied Ecology.'}
             </p>
             <div className="mt-5 flex items-center gap-2">
               <a
@@ -296,7 +296,7 @@ export const Footer: React.FC<FooterProps> = ({
       <div className="bg-[#222222] border-t border-[#333333] text-xs text-[#777777] py-4">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-3 text-center sm:text-left">
           <div>
-            © {new Date().getFullYear()} PLURIPERF International University. {lang === 'fr' ? 'Tous droits réservés.' : 'All rights reserved.'}
+            © {new Date().getFullYear()} PLURIPERF International. {lang === 'fr' ? 'Tous droits réservés.' : 'All rights reserved.'}
           </div>
           <div className="flex items-center gap-4 text-[11px]">
             <button onClick={() => go('universite')} className="hover:text-white">

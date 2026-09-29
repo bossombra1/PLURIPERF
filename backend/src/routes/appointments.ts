@@ -1,11 +1,11 @@
 import { Router, Request, Response } from 'express';
 import { z } from 'zod';
-import { zodParse } from '../validate';
-import { query, transaction } from '../db';
-import { requireAuth, optionalAuth, AuthUser } from '../auth';
-import { HttpError, asyncHandler } from '../middleware';
-import { notifyStaff } from '../mailer';
-import { config } from '../config';
+import { zodParse } from '../validate.js';
+import { query, transaction } from '../db.js';
+import { requireAuth, optionalAuth, AuthUser } from '../auth.js';
+import { HttpError, asyncHandler } from '../middleware.js';
+import { notifyStaff } from '../mailer.js';
+import { config } from '../config.js';
 
 const TIME_SLOTS = ['09:00','11:00','14:30','16:30'] as const;
 const router=Router();

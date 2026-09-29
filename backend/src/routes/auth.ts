@@ -27,55 +27,6 @@ const publicUser = (u: AuthUser) => ({
   studentRef: u.student_ref,
 });
 
-const registerSchema = z.object({
-  email: z.string().email().max(255),
-  password: z.string().min(8, '8 caractères minimum').max(128),
-  fullName: z.string().min(2).max(120),
-});
-
-router.post('/register', sensitiveLimiter, zodParse(registerSchema), asyncHandler(async (req: Request, res: Response) => {
-  const { email, password, fullName } = req.body as z.infer<typeof registerSchema>;
-  const normalizedEmail = email.toLowerCase();
-  const exists = await query('SELECT id FROM users WHERE email = $1', [normalizedEmail]);
-  if (exists.rowCount) throw new HttpError(409, 'Un compte existe déjà avec cet email');
-
-  const hash = await bcrypt.hash(password, 12);
-  const year = new Date().getFullYear();
-
-  const user = await transaction(async (client) => {
-    const countResult = await client.query<{ c: string }>('SELECT COUNT(*)::int AS c FROM users');
-    const seq = Number(countResult.rows[0]?.c || 0) + 1;
-    const studentRef = 'PLU-' + year + '-' + String(seq).padStart(4, '0');
-    const inserted = await client.query<AuthUser>(
-      "INSERT INTO users (email, password_hash, full_name, role, student_ref) VALUES ($1, $2, $3, 'student', $4) RETURNING id, email, full_name, role, student_ref",
-      [normalizedEmail, hash, fullName, studentRef],
-    );
-    const created = inserted.rows[0];
-    await client.query(
-      "INSERT INTO notifications (user_id, type, payload_fr, payload_en) VALUES ($1, 'welcome', $2, $3)",
-      [created.id, 'Bienvenue à PLURIPERF International, ' + created.full_name + ' ! Votre matricule est ' + studentRef + '.', 'Welcome to PLURIPERF International, ' + created.full_name + '! Your student ID is ' + studentRef + '.'],
-    );
-    return created;
-  });
-
-  const verificationToken = crypto.randomBytes(32).toString('hex');
-  const verificationHash = crypto.createHash('sha256').update(verificationToken).digest('hex');
-  const verificationExpires = new Date(Date.now() + 24 * 60 * 60_000);
-  await query(
-    'INSERT INTO email_verifications (user_id, token_hash, expires_at) VALUES ($1, $2, $3)',
-    [user.id, verificationHash, verificationExpires],
-  );
-
-  const verificationLink = config.appUrl + '/verify-email?token=' + verificationToken;
-  await sendMail(
-    user.email,
-    'Bienvenue à PLURIPERF International',
-    'Bonjour ' + user.full_name + ',\n\nVotre compte a été créé. Votre matricule est ' + user.student_ref + '.\n\nVérifiez votre adresse e-mail : ' + verificationLink + '\n\nL’équipe PLURIPERF',
-  );
-  setAuthCookie(res, signToken(user));
-  res.status(201).json({ user: publicUser(user) });
-}));
-
 router.get('/verify-email', asyncHandler(async (req: Request, res: Response) => {
   const token = String(req.query.token || '');
   if (token.length < 10) throw new HttpError(400, 'Jeton de vérification invalide');

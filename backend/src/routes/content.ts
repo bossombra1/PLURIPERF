@@ -18,7 +18,7 @@ router.get('/programs',asyncHandler(async(req:Request,res:Response)=>{
  res.json(r.rows.map((p:any)=>({...p,careerOutcomesFr:parseJson(p.career_outcomes_fr),careerOutcomesEn:parseJson(p.career_outcomes_en)})));
 }));
 router.get('/programs/:id',asyncHandler(async(req:Request,res:Response)=>{const r=await query('SELECT * FROM programs WHERE id=$1',[req.params.id]);const row:any=r.rows[0];if(!row)throw new HttpError(404,'Formation introuvable');row.careerOutcomesFr=parseJson(row.career_outcomes_fr);row.careerOutcomesEn=parseJson(row.career_outcomes_en);delete row.career_outcomes_fr;delete row.career_outcomes_en;res.json(row);}));
-router.get('/news',asyncHandler(async(req:Request,res:Response)=>{const r=await query('SELECT * FROM news '+(!req.query.all?'WHERE published=TRUE ':'')+'ORDER BY date DESC,id DESC');res.json(r.rows.map((n:any)=>({...n,featured:Boolean(n.featured),published:Boolean(n.published)}));}));
+router.get('/news',asyncHandler(async(req:Request,res:Response)=>{const r=await query('SELECT * FROM news '+(!req.query.all?'WHERE published=TRUE ':'')+'ORDER BY date DESC,id DESC');res.json(r.rows.map((n:any)=>({...n,featured:Boolean(n.featured),published:Boolean(n.published)})));}));
 router.get('/news/:slug',asyncHandler(async(req:Request,res:Response)=>{const r=await query('SELECT * FROM news WHERE slug=$1',[req.params.slug]);if(!r.rows[0])throw new HttpError(404,'Actualité introuvable');res.json(r.rows[0]);}));
 router.get('/library',asyncHandler(async(_req,res:Response)=>res.json((await query('SELECT * FROM library_items ORDER BY year DESC')).rows)));
 router.get('/research',asyncHandler(async(_req,res:Response)=>res.json((await query('SELECT * FROM research_projects ORDER BY year DESC')).rows)));

@@ -21,8 +21,8 @@ export function signToken(user: AuthUser): string {
 }
 
 export function setAuthCookie(res: Response, token: string) {
-  const secure = config.env === 'production' ? '; Secure' : '';
-  res.setHeader('Set-Cookie', SESSION_COOKIE + '=' + encodeURIComponent(token) + '; Path=/; HttpOnly; SameSite=Lax; Max-Age=604800' + secure);
+  const cookiePolicy = config.env === 'production' ? '; Secure; SameSite=None' : '; SameSite=Lax';
+  res.setHeader('Set-Cookie', SESSION_COOKIE + '=' + encodeURIComponent(token) + '; Path=/; HttpOnly; Max-Age=604800' + cookiePolicy);
 }
 
 export function clearAuthCookie(res: Response) {

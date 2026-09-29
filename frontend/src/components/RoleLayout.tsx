@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import {
   BarChart3, BookOpen, CalendarDays, ChevronLeft, ChevronRight, FileText,
-  GraduationCap, LayoutDashboard, Library, LogOut, Menu, MessageSquare,
+  GraduationCap, Home, LayoutDashboard, Library, LogOut, Menu, MessageSquare,
   Newspaper, Settings, Shield, Users, X
 } from 'lucide-react';
 import { useAuth, Role } from '../context/AuthContext';
@@ -173,6 +173,10 @@ export const RoleLayout: React.FC<RoleLayoutProps> = ({ children }) => {
         </nav>
 
         <div className="border-t border-border-subtle p-3">
+          <Link to="/" onClick={() => setOpen(false)} title={collapsed ? 'Retour au site public' : undefined} className={['flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-semibold text-primary hover:bg-primary/10', collapsed ? 'lg:justify-center' : ''].join(' ')}>
+            <Home className="h-5 w-5 shrink-0" />
+            {!collapsed && <span>Retour au site public</span>}
+          </Link>
           <div className={collapsed ? 'flex justify-center' : 'flex items-center gap-3 rounded-xl bg-surface-muted p-3'}>
             <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-primary/10 text-sm font-bold text-primary">
               {user.fullName.charAt(0).toUpperCase()}
@@ -213,6 +217,7 @@ export const RoleLayout: React.FC<RoleLayoutProps> = ({ children }) => {
             </div>
           </div>
           <div className="flex items-center gap-2">
+            <Link to="/" className="hidden sm:inline-flex items-center gap-1.5 rounded-full bg-primary/10 px-3 py-1 text-[10px] font-bold text-primary hover:bg-primary/15"><Home className="h-3.5 w-3.5" />Site public</Link>
             <span className="hidden rounded-full bg-primary/10 px-3 py-1 text-[10px] font-bold uppercase tracking-wide text-primary sm:inline-flex">
               {meta.subtitle}
             </span>

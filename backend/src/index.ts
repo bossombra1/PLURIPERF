@@ -23,19 +23,23 @@ app.use(cors({ origin: config.corsOrigin, credentials: true }));
 app.use(express.json({ limit: '1mb' }));
 
 const apiLimiter = rateLimit({ windowMs: 15 * 60_000, limit: 300, standardHeaders: true });
-const authLimiter = rateLimit({ windowMs: 15 * 60_000, limit: 20, standardHeaders: true });
+const loginLimiter = rateLimit({ windowMs: 15 * 60_000, limit: 20, standardHeaders: true, message: { error: 'RATE_LIMITED', message: 'Trop de tentatives. Réessayez plus tard.' } });
 
 const mountApi = (prefix: string) => {
-  app.use(`${prefix}/auth`, authLimiter, authRoutes);
-  app.use(`${prefix}/applications`, apiLimiter, applicationRoutes);
-  app.use(`${prefix}/appointments`, apiLimiter, appointmentRoutes);
-  app.use(`${prefix}/contact`, apiLimiter, contactRoutes);
-  app.use(`${prefix}/newsletter`, apiLimiter, newsletterRoutes);
-  app.use(`${prefix}/advisory`, apiLimiter, advisoryRoutes);
+  app.use(prefix + '/auth', authRoutes);
+  app.use(prefix + '/auth/login', loginLimiter);
+  app.use(prefix + '/auth/register', loginLimiter);
+  app.use(prefix + '/auth/forgot-password', loginLimiter);
+  app.use(prefix + '/auth/reset-password', loginLimiter);
+  app.use(prefix + '/applications', apiLimiter, applicationRoutes);
+  app.use(prefix + '/appointments', apiLimiter, appointmentRoutes);
+  app.use(prefix + '/contact', apiLimiter, contactRoutes);
+  app.use(prefix + '/newsletter', apiLimiter, newsletterRoutes);
+  app.use(prefix + '/advisory', apiLimiter, advisoryRoutes);
   app.use(prefix, apiLimiter, contentRoutes);
-  app.use(`${prefix}/admin`, apiLimiter, adminRoutes);
-  app.use(`${prefix}/student`, apiLimiter, studentRoutes);
-  app.use(`${prefix}/teacher`, apiLimiter, teacherRoutes);
+  app.use(prefix + '/admin', apiLimiter, adminRoutes);
+  app.use(prefix + '/student', apiLimiter, studentRoutes);
+  app.use(prefix + '/teacher', apiLimiter, teacherRoutes);
 };
 
 mountApi('/api');
@@ -55,9 +59,7 @@ if (config.env === 'production') {
 }
 
 if (!process.env.VERCEL) {
-  app.listen(config.port, () => {
-    console.log(`PLURIPERF API prête sur http://localhost:${config.port} (${config.env})`);
-  });
+  app.listen(config.port, () => console.log('PLURIPERF API prête sur http://localhost:' + config.port + ' (' + config.env + ')'));
 }
 
 export default app;

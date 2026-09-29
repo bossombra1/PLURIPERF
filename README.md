@@ -36,7 +36,7 @@ PLURIPERF est une application full-stack organisée en monorepo :
 - français/anglais.
 
 ### Authentification
-- inscription ;
+- comptes créés par l'administration ;
 - connexion par e-mail ou matricule ;
 - déconnexion ;
 - session persistante par cookie HttpOnly ;
@@ -245,26 +245,33 @@ Le support prefers-reduced-motion est intégré.
 - uploads avec taille/type contrôlés ;
 - stockage des CV hors dossier public ;
 - autorisation serveur par rôle ;
-- contraintes SQLite pour les relations et doubles réservations ;
+- contraintes PostgreSQL pour les relations et doubles réservations ;
 - réponses d'erreur uniformisées ;
 - aucune donnée de mot de passe renvoyée par l'API.
 
 Voir SECURITY.md.
 
-## Déploiement
+## Déploiement Railway
+
+L'architecture de production cible est entièrement hébergée sur Railway :
+
+- service Frontend React/Vite ;
+- service Backend Node.js/Express ;
+- PostgreSQL Railway ;
+- variables d'environnement et HTTPS gérés au niveau des services.
 
 Avant production :
 
 1. générer un vrai JWT_SECRET ;
 2. définir NODE_ENV=production ;
-3. définir APP_URL et CORS_ORIGIN ;
-4. activer SMTP ;
-5. définir un stockage persistant sécurisé pour la base et les uploads ;
-6. configurer HTTPS ;
+3. définir APP_URL et CORS_ORIGIN avec les domaines Railway ;
+4. configurer DATABASE_URL avec PostgreSQL Railway ;
+5. activer SMTP ;
+6. configurer un stockage objet/persistant pour les CV et documents ;
 7. remplacer les comptes de démonstration ;
 8. effectuer une sauvegarde de la base ;
-9. lancer lint, build, tests et build serveur ;
-10. vérifier les routes profondes SPA et les cookies.
+9. lancer build et tests ;
+10. vérifier les routes profondes SPA et les cookies HTTPS.
 
 ## Limites restantes
 

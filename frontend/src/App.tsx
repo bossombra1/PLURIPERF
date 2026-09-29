@@ -204,7 +204,7 @@ const Shell: React.FC = () => {
               routeParam === 'forum' ? <StudentForumPage {...commonProps} /> :
               routeParam === '' ? <StudentSpacePage {...commonProps} /> :
               <Navigate to="/espace-etudiant" replace />}
-          </RequireAuth>
+          </RequireRole>
         );
       case 'espace-conseiller':
         return (

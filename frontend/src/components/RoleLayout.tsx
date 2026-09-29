@@ -116,7 +116,7 @@ export const RoleLayout: React.FC<RoleLayoutProps> = ({ children }) => {
   };
 
   return (
-    <div className="flex min-h-[calc(100vh-2.5rem)] bg-[#f5f7f4]">
+    <div className="flex h-dvh min-h-0 overflow-hidden bg-[#f5f7f4]">
       {open && (
         <button
           aria-label="Fermer le menu"
@@ -127,7 +127,7 @@ export const RoleLayout: React.FC<RoleLayoutProps> = ({ children }) => {
 
       <aside
         className={[
-          'fixed inset-y-0 left-0 z-50 flex w-72 flex-col border-r border-border-ui bg-white transition-transform duration-200 lg:static lg:z-auto lg:translate-x-0',
+          'fixed inset-y-0 left-0 z-50 flex h-dvh w-72 min-h-0 flex-col border-r border-border-ui bg-white transition-transform duration-200 lg:static lg:z-auto lg:translate-x-0',
           open ? 'translate-x-0' : '-translate-x-full',
           collapsed ? 'lg:w-[76px]' : 'lg:w-72',
         ].join(' ')}
@@ -149,7 +149,7 @@ export const RoleLayout: React.FC<RoleLayoutProps> = ({ children }) => {
           </button>
         </div>
 
-        <nav className="flex-1 space-y-1 overflow-y-auto p-3">
+        <nav className="min-h-0 flex-1 space-y-1 overflow-y-auto overscroll-contain p-3 [scrollbar-gutter:stable]">
           {items.map((item) => {
             const active = location.pathname === item.to;
             const Icon = item.icon;
@@ -202,7 +202,7 @@ export const RoleLayout: React.FC<RoleLayoutProps> = ({ children }) => {
         </div>
       </aside>
 
-      <div className="min-w-0 flex-1">
+      <div className="flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden">
         <header className="sticky top-0 z-30 flex h-16 items-center justify-between border-b border-border-ui bg-white/95 px-4 backdrop-blur sm:px-6">
           <div className="flex min-w-0 items-center gap-3">
             <button className="rounded-lg p-2 hover:bg-surface-muted lg:hidden" onClick={() => setOpen(true)}>
@@ -226,7 +226,7 @@ export const RoleLayout: React.FC<RoleLayoutProps> = ({ children }) => {
             </div>
           </div>
         </header>
-        <main className="min-w-0 p-4 sm:p-6 lg:p-8">
+        <main className="min-h-0 min-w-0 flex-1 overflow-y-auto overscroll-contain p-4 sm:p-6 lg:p-8 [scrollbar-gutter:stable]">
           {children}
         </main>
       </div>

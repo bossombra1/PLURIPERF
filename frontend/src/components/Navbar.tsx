@@ -437,11 +437,11 @@ export const Navbar: React.FC<NavbarProps> = ({
 
       {/* 2. Barre principale */}
       <div className="border-b border-border-subtle bg-white shadow-[0_4px_20px_rgba(0,0,0,0.06)]">
-        <div className="mx-auto flex h-20 max-w-7xl items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
+        <div className="mx-auto flex h-20 max-w-7xl items-center justify-between gap-3 px-4 sm:px-6 lg:px-8">
           {/* Logo */}
           <button
             onClick={() => handleNavigate('accueil')}
-            className="flex min-w-0 shrink items-center text-left"
+            className="flex min-w-0 shrink-0 items-center text-left"
             title="PLURIPERF International"
             aria-label="PLURIPERF International"
           >
@@ -451,7 +451,7 @@ export const Navbar: React.FC<NavbarProps> = ({
           {/* Navigation desktop (à partir de 1280 px) */}
           <nav
             aria-label={tr('Navigation principale', 'Main navigation')}
-            className="hidden min-w-0 flex-1 items-center justify-center gap-1 xl:flex"
+            className="hidden min-w-0 flex-1 items-center justify-center gap-0.5 2xl:flex"
           >
             <button
               onClick={() => handleNavigate('accueil')}
@@ -550,7 +550,7 @@ export const Navbar: React.FC<NavbarProps> = ({
           </nav>
 
           {/* Actions permanentes : rechercher, se connecter, candidater */}
-          <div className="flex shrink-0 items-center gap-2 sm:gap-3">
+          <div className="flex shrink-0 items-center gap-1.5 sm:gap-2 lg:gap-2.5">
             <button
               onClick={handleFindProgram}
               aria-label={tr('Trouver une formation', 'Find a programme')}
@@ -565,12 +565,13 @@ export const Navbar: React.FC<NavbarProps> = ({
                 type="button"
                 onClick={() => handleNavigate('campus_virtuel')}
                 aria-label={tr('Mon espace', 'My space')}
-                className="flex h-9 items-center gap-2 rounded border border-primary px-2.5 text-xs font-semibold text-primary transition-colors hover:bg-primary hover:text-primary-foreground sm:px-3"
+                className="flex h-9 min-w-0 max-w-[190px] items-center gap-1.5 rounded border border-primary px-2 sm:px-2.5 lg:max-w-[210px]"
               >
-                <User className="h-4 w-4" />
-                <span className="hidden max-w-[90px] truncate sm:inline">{user.fullName}</span>
-                <span className="hidden lg:inline">·</span>
-                <span className="hidden lg:inline text-[11px] uppercase">{user.role.replace('_', ' ')}</span>
+                <User className="h-4 w-4 shrink-0" />
+                <span className="hidden min-w-0 truncate text-xs font-semibold sm:inline">{user.fullName}</span>
+                <span className="hidden shrink-0 rounded bg-primary/10 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide lg:inline">
+                  {user.role.replace(/_/g, ' ')}
+                </span>
               </button>
             ) : (
               <button
@@ -589,7 +590,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                 type="button"
                 onClick={async () => { await onLogout(); window.location.assign('/login'); }}
                 aria-label={tr('Se déconnecter', 'Sign out')}
-                className="hidden h-9 items-center gap-1.5 rounded border border-border-ui px-2.5 text-xs font-semibold text-text-primary transition-colors hover:border-primary hover:text-primary lg:flex"
+                className="hidden h-9 shrink-0 items-center gap-1.5 whitespace-nowrap rounded border border-border-ui px-2.5 text-xs font-semibold text-text-primary transition-colors hover:border-primary hover:text-primary lg:flex"
               >
                 <LogIn className="h-4 w-4 text-primary" />
                 <span>{tr('Déconnexion', 'Sign out')}</span>
@@ -611,7 +612,7 @@ export const Navbar: React.FC<NavbarProps> = ({
               }
               aria-expanded={mobileMenuOpen}
               aria-controls="mobile-menu"
-              className="rounded p-2 text-text-primary transition-colors hover:text-primary xl:hidden"
+              className="rounded p-2 text-text-primary transition-colors hover:text-primary 2xl:hidden"
             >
               {mobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
             </button>
@@ -623,7 +624,7 @@ export const Navbar: React.FC<NavbarProps> = ({
       {mobileMenuOpen && (
         <div
           id="mobile-menu"
-          className="absolute inset-x-0 top-full z-50 max-h-[calc(100dvh-7.5rem)] overflow-y-auto border-t border-border-ui bg-white p-4 pb-6 shadow-2xl xl:hidden"
+          className="absolute inset-x-0 top-full z-50 max-h-[calc(100dvh-7.5rem)] overflow-y-auto border-t border-border-ui bg-white p-4 pb-6 shadow-2xl 2xl:hidden"
         >
           <div className="space-y-3">
             <button

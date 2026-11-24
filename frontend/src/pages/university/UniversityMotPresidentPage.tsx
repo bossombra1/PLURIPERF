@@ -2,6 +2,7 @@ import React from 'react';
 import { Language, PageId } from '../../types';
 import { UNIVERSITY_SECTIONS } from '../../data/universityData';
 import { UNIVERSITY_ASSETS } from '../../assets/images';
+import rectorPortrait from '../../assets/images/recteur_image.jpeg';
 import { UniversityLayout } from '../../components/UniversityLayout';
 import {
   Quote,
@@ -54,16 +55,16 @@ export const UniversityMotPresidentPage: React.FC<UniversityPageProps> = ({
             <div className="md:col-span-4 space-y-3">
               <div className="border-4 border-[#eaf5ec] p-1 bg-white shadow-sm rounded-sm">
                 <img
-                  src={UNIVERSITY_ASSETS.presidentPortrait}
-                  alt="Pr. Aimé-Jules B. Kouamé - Recteur-Président"
-                  className="w-full h-auto object-cover rounded-xs"
-                />
+  src={rectorPortrait}
+  alt="Dr.  Claude Evariste Zan - BI - Recteur-Président"
+  className="w-full h-auto object-cover rounded-xs"
+/>
               </div>
               <div className="p-3 bg-[#f8fafc] border border-[#eaeaea] rounded-sm text-center">
-                <h4 className="font-bold text-sm text-[#111827]">Pr. Aimé-Jules B. Kouamé</h4>
+                <h4 className="font-bold text-sm text-[#111827]">Dr.  Claude Evariste Zan - BI</h4>
                 <p className="text-[11px] text-[#008629] font-medium mt-0.5">
                   {lang === 'fr'
-                    ? 'Recteur-Président du Conseil d’Administration'
+                    ? 'Recteur'
                     : 'Rector-President & Board Chairman'}
                 </p>
                 <div className="mt-2 pt-2 border-t border-[#eaeaea] text-[10px] text-[#666666] space-y-0.5">
@@ -117,7 +118,7 @@ export const UniversityMotPresidentPage: React.FC<UniversityPageProps> = ({
               {/* Signature block */}
               <div className="pt-4 border-t border-[#eaeaea] flex items-center justify-between">
                 <div>
-                  <div className="font-serif italic text-base text-[#111827]">Pr. Aimé-Jules B. Kouamé</div>
+                  <div className="font-serif italic text-base text-[#111827]">Dr.  Claude Evariste Zan - BI</div>
                   <div className="text-[11px] text-[#666666]">Yamoussoukro & Abidjan · Rectorat Général</div>
                 </div>
                 <div className="flex items-center gap-1.5 text-xs text-[#008629] font-medium bg-[#f0f9f1] px-3 py-1.5 rounded-sm">

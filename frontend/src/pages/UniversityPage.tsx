@@ -288,7 +288,7 @@ export const UniversityPage: React.FC<UniversityPageProps> = ({
 
   const handleDownloadBrochure = () => {
     // Generate institutional brochure download prompt or simulated download
-    const dummyContent = `PLURIPERF INTERNATIONAL\nPlaquette Institutionnelle & Guide des Études 2026-2027\n\n1ère Université de Management Durable, d'Écologie Responsable et de Leadership Régénératif.\nCampus : Abidjan - Yamoussoukro - Paris - Genève\nContact admissions : admissions@pluriperf.com`;
+    const dummyContent = `PLURIPERF INTERNATIONAL\nPlaquette Institutionnelle & Guide des Études 2026-2027\n\n1ère Université de Management Durable, d'Écologie Responsable et de Leadership Régénératif.\nCampus : Abidjan - Yamoussoukro -  Grenoble - Genève\nContact admissions : admissions@pluriperf.com`;
     const blob = new Blob([dummyContent], { type: 'text/plain;charset=utf-8' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
@@ -666,8 +666,8 @@ export const UniversityPage: React.FC<UniversityPageProps> = ({
                   </p>
                   <p>
                     {lang === 'fr'
-                      ? "Grâce à notre ancrage à Abidjan et Yamoussoukro, et nos représentations à Paris et Genève, nos étudiants bénéficient d'un environnement multiculturel et de standards académiques internationaux."
-                      : "With campuses in Abidjan, Yamoussoukro, Paris, and Geneva, our scholars thrive in a multicultural environment aligned with the highest global academic benchmarks."}
+                      ? "Grâce à notre ancrage à Abidjan et Yamoussoukro, et nos représentations à  Grenoble et Genève, nos étudiants bénéficient d'un environnement multiculturel et de standards académiques internationaux."
+                      : "With campuses in Abidjan, Yamoussoukro,  Grenoble, and Geneva, our scholars thrive in a multicultural environment aligned with the highest global academic benchmarks."}
                   </p>
                 </div>
 

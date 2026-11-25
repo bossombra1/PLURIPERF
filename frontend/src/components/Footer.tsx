@@ -262,7 +262,7 @@ export const Footer: React.FC<FooterProps> = ({
                 <div>
                   <b className="text-white block">{lang === 'fr' ? 'Siège Académique :' : 'Headquarters:'}</b>
                   <span>Abidjan Cocody, Côte d’Ivoire</span>
-                  <span className="block text-[11px] text-[#888888]">Campus annexes : Yamoussoukro • Paris • Genève</span>
+                  <span className="block text-[11px] text-[#888888]">Campus annexes : Yamoussoukro •  Grenoble • Genève</span>
                 </div>
               </div>
 

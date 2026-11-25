@@ -8,7 +8,7 @@ import { notifyStaff } from '../mailer.js';
 const router = Router();
 const contactSchema = z.object({
   name: z.string().min(2).max(120), email: z.string().email(), subject: z.string().min(2).max(200),
-  message: z.string().min(10).max(5000), campus: z.enum(['paris','abidjan','geneva']).default('paris'),
+  message: z.string().min(10).max(5000), campus: z.enum([' Grenoble','abidjan','geneva']).default(' Grenoble'),
 });
 
 router.post('/', zodParse(contactSchema), asyncHandler(async (req: Request, res: Response) => {

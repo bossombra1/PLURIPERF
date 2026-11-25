@@ -76,7 +76,7 @@ export const UniversityPresentationPage: React.FC<UniversityPageProps> = ({
             </div>
             <strong className="block text-xl sm:text-2xl font-bold text-[#111827]">4 Campus</strong>
             <span className="text-xs text-[#666666] font-medium">
-              {lang === 'fr' ? 'Abidjan · Yamoussoukro · Paris · Genève' : 'Global Hubs'}
+              {lang === 'fr' ? 'Abidjan · Yamoussoukro ·  Grenoble · Genève' : 'Global Hubs'}
             </span>
           </div>
 
@@ -114,8 +114,8 @@ export const UniversityPresentationPage: React.FC<UniversityPageProps> = ({
               </p>
               <p>
                 {lang === 'fr'
-                  ? "Grâce à notre ancrage à Abidjan et Yamoussoukro, et nos représentations à Paris et Genève, nos étudiants bénéficient d'un environnement multiculturel et de standards académiques internationaux les plus rigoureux."
-                  : "With campuses in Abidjan, Yamoussoukro, Paris, and Geneva, our scholars thrive in a multicultural environment aligned with the highest global academic benchmarks."}
+                  ? "Grâce à notre ancrage à Abidjan et Yamoussoukro, et nos représentations à  Grenoble et Genève, nos étudiants bénéficient d'un environnement multiculturel et de standards académiques internationaux les plus rigoureux."
+                  : "With campuses in Abidjan, Yamoussoukro,  Grenoble, and Geneva, our scholars thrive in a multicultural environment aligned with the highest global academic benchmarks."}
               </p>
             </div>
 
@@ -170,8 +170,8 @@ export const UniversityPresentationPage: React.FC<UniversityPageProps> = ({
               </div>
               <p className="text-xs text-[#555555] leading-relaxed">
                 {lang === 'fr'
-                  ? 'Paris & Genève : Bureaux de coordination pour les mobilités professorales européennes, les colloques internationaux et les partenariats multilatéraux.'
-                  : 'Paris & Geneva: Coordination liaisons for European faculty exchanges, global symposia, and multilateral university alliances.'}
+                  ? ' Grenoble & Genève : Bureaux de coordination pour les mobilités professorales européennes, les colloques internationaux et les partenariats multilatéraux.'
+                  : ' Grenoble & Geneva: Coordination liaisons for European faculty exchanges, global symposia, and multilateral university alliances.'}
               </p>
             </div>
           </div>

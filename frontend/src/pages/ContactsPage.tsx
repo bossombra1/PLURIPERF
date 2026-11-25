@@ -34,7 +34,7 @@ export const ContactsPage: React.FC<ContactsPageProps> = ({
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-  const [selectedCampus, setSelectedCampus] = useState<'abidjan' | 'yamoussoukro' | 'paris' | 'geneva'>('abidjan');
+  const [selectedCampus, setSelectedCampus] = useState<'abidjan' | 'yamoussoukro' | ' Grenoble' | 'geneva'>('abidjan');
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -69,14 +69,14 @@ export const ContactsPage: React.FC<ContactsPageProps> = ({
       hours: 'Lun - Ven : 08h00 - 17h30 GMT',
       mapEmbed: 'https://maps.google.com/maps?q=Yamoussoukro+Cote+d+Ivoire&t=&z=13&ie=UTF8&iwloc=&output=embed',
     },
-    paris: {
-      nameFr: 'Campus Européen & Représentation Internationale (Paris)',
-      nameEn: 'European Campus & International Office (Paris)',
-      address: '42 Avenue de la Grande Armée, 75017 Paris, France',
+     Grenoble: {
+      nameFr: 'Campus Européen & Représentation Internationale ( Grenoble)',
+      nameEn: 'European Campus & International Office ( Grenoble)',
+      address: '42 Avenue de la Grande Armée, 75017  Grenoble, France',
       phone: '+33 1 76 42 09 10',
       email: 'admissions.europe@pluriperf.com',
       hours: 'Lun - Ven : 08h30 - 18h30 GMT+1',
-      mapEmbed: 'https://maps.google.com/maps?q=Paris+France&t=&z=13&ie=UTF8&iwloc=&output=embed',
+      mapEmbed: 'https://maps.google.com/maps?q= Grenoble+France&t=&z=13&ie=UTF8&iwloc=&output=embed',
     },
     geneva: {
       nameFr: 'Bureau Diplomatique & Relations ONU (Genève)',
@@ -133,7 +133,7 @@ export const ContactsPage: React.FC<ContactsPageProps> = ({
             [
               ['abidjan', 'Abidjan (Siège)', 'Abidjan (HQ)'],
               ['yamoussoukro', 'Yamoussoukro (MIN Pole)', 'Yamoussoukro (NIM)'],
-              ['paris', 'Paris (Europe)', 'Paris (Europe)'],
+              [' Grenoble', ' Grenoble (Europe)', ' Grenoble (Europe)'],
               ['geneva', 'Genève (Suisse)', 'Geneva (Switzerland)'],
             ] as const
           ).map(([id, fr, en]) => {

@@ -375,7 +375,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             <div className="hidden items-center gap-1 whitespace-nowrap text-text-muted xl:flex">
               <span>{tr('Campus :', 'Campuses:')}</span>
               <span className="font-semibold text-text-primary">
-                Abidjan • Yamoussoukro • Paris • Genève
+                Abidjan • Yamoussoukro •  Grenoble • Genève
               </span>
             </div>
             <a

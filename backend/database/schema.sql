@@ -107,7 +107,7 @@ CREATE TABLE IF NOT EXISTS contact_messages (
   email TEXT NOT NULL,
   subject TEXT NOT NULL,
   message TEXT NOT NULL,
-  campus TEXT NOT NULL DEFAULT 'paris',
+  campus TEXT NOT NULL DEFAULT ' Grenoble',
   handled BOOLEAN NOT NULL DEFAULT FALSE,
   created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
